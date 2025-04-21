@@ -1,7 +1,6 @@
-# Nama Proyek Anda
+# DBWeb (DutBit Web)
 
-Deskripsi singkat tentang proyek Anda. Contoh:
-Aplikasi web sederhana untuk otentikasi pengguna (Daftar, Masuk, Lupa Password, Reset Password) dan halaman beranda dasar. Dibangun menggunakan HTML, CSS, dan JavaScript untuk frontend, serta Node.js Serverless Functions di Vercel dengan database PostgreSQL (Supabase) sebagai backend.
+Aplikasi web sederhana untuk personal web (Daftar, Masuk, Lupa Password, Reset Password) dan halaman beranda dasar. Dibangun menggunakan HTML, CSS, dan JavaScript untuk frontend, serta Node.js Serverless Functions di Vercel dengan database PostgreSQL (Supabase) sebagai backend.
 
 ## Fitur
 
@@ -33,30 +32,6 @@ Aplikasi web sederhana untuk otentikasi pengguna (Daftar, Masuk, Lupa Password, 
 * **Deployment:**
     * Vercel
 
-## Struktur Proyek
-
-Struktur direktori proyek ini mengikuti konvensi Vercel untuk aplikasi web statis dengan Serverless Functions:
-
-your-project-root/
-├── api/               # Berisi kode Serverless Functions (backend API)
-│   ├── login.js
-│   ├── register.js
-│   ├── forgot-password.js
-│   └── reset-password.js
-├── public/            # Berisi file statis yang dilayani langsung (frontend)
-│   ├── index.html     # Halaman Login & Daftar
-│   ├── homepage.html  # Halaman Beranda
-│   ├── style.css      # File CSS
-│   ├── script.js      # Script JS untuk index.html
-│   ├── homepage.js    # Script JS untuk homepage.html
-│   └── ... file statis lainnya (gambar, favicon, dll)
-├── .env.local         # Environment variables untuk pengembangan lokal (TIDAK di-commit!)
-├── .gitignore         # File yang diabaikan oleh Git
-├── package.json       # Daftar dependensi Node.js
-├── vercel.json        # Konfigurasi deployment Vercel
-└── README.md          # File ini
-
-
 ## Instalasi dan Setup
 
 Ikuti langkah-langkah berikut untuk menjalankan proyek ini secara lokal atau mendeploy-nya.
@@ -72,7 +47,7 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini secara lokal atau men
 
 1.  **Clone Repositori:**
     ```bash
-    git clone <URL_repositori_Anda>
+    git clone git@github.com:DillsJr/DBWeb.git
     cd <nama_folder_proyek>
     ```
 
@@ -152,5 +127,3 @@ Proyek ini dikonfigurasi untuk mudah di-deploy di Vercel:
 * Implementasi sistem sesi atau token (JWT) yang lebih aman daripada hanya mengandalkan `localStorage` untuk status login.
 
 ---
-
-Semoga README ini membantu Anda dan orang lain yang mungkin akan melihat proyek Anda! Jangan lupa ganti "[Nama Proyek Anda]", "[Deskripsi singkat tentang proyek Anda]", dan placeholder URL repositori di awal.

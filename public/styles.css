@@ -1,25 +1,105 @@
+/* public/style.css */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
     /* Warna latar belakang body */
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 20px;
+    /* Tambahkan padding agar konten tidak menempel di tepi */
+    /* Hapus properti flexbox dan height: 100vh yang menengahkan konten */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    /* height: 100vh; */
+    min-height: 100vh;
+    /* Gunakan min-height agar background menutupi seluruh tinggi viewport */
+    color: #fff;
+    /* Warna teks default untuk body (misal untuk pesan error global) */
+    line-height: 1.6;
+    /* Tingkatkan keterbacaan teks paragraf */
 }
 
+/* Gaya container yang sudah ada, akan kita gunakan di homepage.html */
 .container {
     background-color: #fffffe;
     /* Warna latar belakang container */
     border-radius: 8px;
     padding: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
+    /* Sesuaikan lebar maksimum jika perlu */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    /* Menambahkan shadow agar lebih terlihat */
+    /* Menambahkan shadow */
+    margin: 20px auto;
+    /* Tengahkan container di tengah halaman */
+    color: #121629;
+    /* Warna teks default di dalam container */
 }
+
+/* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
+
+/* Gaya untuk judul h1 di dalam container */
+.container h1 {
+    color: #121629;
+    /* Warna judul */
+    margin-top: 0;
+    /* Hapus margin atas default h1 */
+    margin-bottom: 10px;
+    /* Beri jarak bawah */
+    text-align: center;
+    /* Tengahkan judul */
+}
+
+/* Gaya untuk span yang menampilkan nama pengguna di dalam h1 */
+.container h1 span {
+    color: #eebbc3;
+    /* Beri warna aksen pada nama pengguna */
+    font-weight: bold;
+    /* Opsional: buat nama pengguna tebal */
+}
+
+/* Gaya untuk paragraf di dalam container */
+.container p {
+    color: #272343;
+    /* Warna teks paragraf */
+    margin-bottom: 20px;
+    /* Beri jarak bawah */
+    text-align: center;
+    /* Tengahkan paragraf */
+}
+
+/* Gaya untuk tombol Logout */
+.container #logoutButton {
+    display: block;
+    /* Buat tombol menjadi elemen blok */
+    width: auto;
+    /* Lebar otomatis sesuai konten */
+    padding: 10px 20px;
+    background-color: #eebbc3;
+    /* Warna latar belakang */
+    color: #121629;
+    /* Warna teks */
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-left: auto;
+    /* Tengahkan tombol horizontal */
+    margin-right: auto;
+    /* Tengahkan tombol horizontal */
+    transition: background-color 0.3s ease;
+    /* Efek transisi hover */
+}
+
+.container #logoutButton:hover {
+    background-color: #f5c2cc;
+    /* Warna saat hover */
+}
+
+/* --- Gaya untuk Elemen di Index.html (Form Login/Daftar) --- */
+/* Gaya-gaya ini sebagian besar sudah ada dari kode styles.css Anda sebelumnya */
 
 .tabs {
     display: flex;
@@ -37,7 +117,6 @@ body {
     /* Warna teks tombol tab default */
     cursor: pointer;
     transition: color 0.3s ease, border-bottom-color 0.3s ease;
-    /* Efek transisi */
 }
 
 .tabs button.active {
@@ -47,22 +126,27 @@ body {
     /* Garis bawah tombol tab aktif */
 }
 
-.form h2 {
+/* Gaya untuk div kontainer form login/register/forgot/reset */
+/* Tidak ada elemen dengan class 'form' di HTML Anda yang diberikan sebelumnya, */
+/* namun gaya h2, p, dll. di bawah ini diasumsikan berlaku untuk konten dalam form div */
+#loginForm h2,
+#registerForm h2 {
     color: #121629;
     /* Warna judul form */
     margin-bottom: 5px;
     text-align: center;
-    /* Rata tengah judul */
 }
 
-.form p {
+#loginForm p,
+#registerForm p {
+    /* Untuk paragraf deskripsi di dalam form */
     color: #272343;
     /* Warna paragraf deskripsi form */
     font-style: italic;
     margin-bottom: 20px;
     text-align: center;
-    /* Rata tengah paragraf */
 }
+
 
 .input-group {
     margin-bottom: 15px;
@@ -71,10 +155,9 @@ body {
 .input-group label {
     display: block;
     color: #121629;
-    /* Warna label input group */
+    /* Warna label */
     margin-bottom: 5px;
     font-weight: bold;
-    /* Membuat label tebal */
 }
 
 .input-group input {
@@ -82,7 +165,7 @@ body {
     /* Mengurangi sedikit agar padding tidak melebih batas */
     padding: 10px;
     border: 1px solid #d8d8d8;
-    /* Warna border input */
+    /* Warna border */
     border-radius: 4px;
     background-color: #fff;
     /* Warna latar belakang input */
@@ -96,14 +179,13 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    color: #888;
-    /* Warna teks checkbox group default */
-    font-style: italic;
+    /* color: #888; */
+    /* Warna teks keseluruhan checkbox group */
+    /* font-style: italic; */
 }
 
 .checkbox-group input[type="checkbox"] {
     margin-right: 5px;
-    /* Memberi jarak antara checkbox dan label */
     /* Gaya checkbox mungkin perlu penyesuaian lebih lanjut lintas browser */
 }
 
@@ -113,7 +195,9 @@ body {
     margin-bottom: 0;
     /* Menghilangkan margin bawah pada label di dalam checkbox group */
     font-weight: normal;
-    /* Mengembalikan bobot font label checkbox menjadi normal */
+    /* Mengembalikan bobot font normal */
+    font-style: italic;
+    /* Terapkan italic di label jika diinginkan */
 }
 
 
@@ -122,8 +206,8 @@ body {
     /* Warna link lupa password */
     text-decoration: none;
     float: right;
+    /* Posisikan ke kanan */
     font-size: 14px;
-    /* Ukuran font link lupa password */
 }
 
 .forgot-password:hover {
@@ -132,20 +216,19 @@ body {
 }
 
 button[type="submit"] {
+    /* Gaya untuk tombol submit di semua form */
     width: 100%;
     padding: 10px;
     background-color: #eebbc3;
-    /* Warna latar belakang tombol submit */
+    /* Warna latar belakang */
     color: #121629;
-    /* Warna teks tombol submit */
+    /* Warna teks */
     border: none;
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
-    /* Menambahkan margin atas agar tidak terlalu dekat */
     transition: background-color 0.3s ease;
-    /* Efek transisi */
 }
 
 button[type="submit"]:hover {
@@ -156,17 +239,16 @@ button[type="submit"]:hover {
 .switch-form {
     text-align: center;
     color: #121629;
-    /* Warna teks "Belum punya akun?" atau "Sudah punya akun?" */
+    /* Warna teks "Belum punya akun?" dll */
     margin-top: 20px;
     font-size: 14px;
 }
 
 .switch-form a {
     color: #eebbc3;
-    /* Warna link "Daftar Sekarang" atau "Masuk Sekarang" */
+    /* Warna link "Daftar Sekarang" dll */
     text-decoration: none;
     font-weight: bold;
-    /* Membuat link tebal */
 }
 
 .switch-form a:hover {
@@ -206,24 +288,60 @@ button[type="submit"]:hover {
     text-align: center;
     min-width: 250px;
     /* Lebar minimum */
+    max-width: 90%;
+    /* Lebar maksimum agar responsif */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     /* Bayangan */
 }
 
 /* Gaya untuk notifikasi sukses */
 .custom-notification.success {
-    background-color: rgba(40, 167, 69, 0.8);
-    /* Hijau */
+    background-color: rgba(40, 167, 69, 0.9);
+    /* Hijau (sedikit lebih solid) */
 }
 
 /* Gaya untuk notifikasi error */
 .custom-notification.error {
-    background-color: rgba(220, 53, 69, 0.8);
-    /* Merah */
+    background-color: rgba(220, 53, 69, 0.9);
+    /* Merah (sedikit lebih solid) */
 }
+
+/* Gaya untuk notifikasi info */
+.custom-notification.info {
+    background-color: rgba(23, 162, 184, 0.9);
+    /* Biru/Cyan (sedikit lebih solid) */
+}
+
 
 /* Gaya saat notifikasi terlihat */
 .custom-notification.show {
     opacity: 1;
     visibility: visible;
+}
+
+/* Responsif dasar untuk layar kecil */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    .tabs button {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .input-group input,
+    button[type="submit"],
+    .container #logoutButton {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .custom-notification {
+        padding: 10px 15px;
+        font-size: 12px;
+        min-width: unset;
+        width: 90%;
+    }
 }
