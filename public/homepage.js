@@ -1,4 +1,4 @@
-// public/homepage.js - Script untuk halaman homepage (dengan logika foto profil dasar simulasi localStorage)
+// public/homepage.js
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---

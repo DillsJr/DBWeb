@@ -1,4 +1,4 @@
-// public/script.js - Script untuk halaman login/daftar (Simulasi localStorage dan API Calls)
+// public/script.js 
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Mendapatkan elemen-elemen HTML utama ---
