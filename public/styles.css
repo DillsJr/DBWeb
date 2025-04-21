@@ -417,7 +417,7 @@ button[type="submit"]:hover {
 body.homepage-body {
     background-color: #abd1c6;
     /* Contoh warna latar seperti screenshot Happy Hues */
-    color: #fff;
+    color: #e8e4e6;
     /* Warna teks default untuk homepage body */
     /* Timpa gaya Flexbox centering dari body default */
     display: block;
@@ -530,7 +530,7 @@ body.homepage-body .homepage-main-content .welcome-heading span {
 body.homepage-body .homepage-main-content .homepage-description {
     font-size: 1.1em;
     margin-bottom: 20px;
-    color: #d3d3d3;
+    color: #001e1d;
     /* Contoh warna teks deskripsi */
 }
 
