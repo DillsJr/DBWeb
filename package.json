@@ -1,7 +1,7 @@
 {
-  "name": "my-vercel-login-app",
+  "name": "dbweb",
   "version": "1.0.0",
-  "description": "Simple login example for Vercel using Serverless Functions",
+  "description": "Personal Web With Us",
   "scripts": {
     "dev": "vercel dev",
     "start": "vercel dev",
