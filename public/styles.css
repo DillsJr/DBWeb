@@ -1,4 +1,4 @@
-/* public/style.css - Gaya tanpa animasi pada form */
+/* public/style.css - Gaya tanpa animasi pada form perpindahan */
 
 /* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
 body {
@@ -36,10 +36,7 @@ body {
     /* Tengahkan container di tengah halaman */
     color: #121629;
     /* Warna teks default di dalam container */
-    /* Hapus transisi animasi submit jika ada */
-    /* transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; */
-    /* Hapus position: relative; jika hanya untuk absolute positioning form */
-    /* position: relative; */
+    /* Hapus gaya/transisi animasi submit */
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
@@ -235,21 +232,15 @@ button[type="submit"]:hover {
 
 /* --- Gaya untuk Menyembunyikan Form Tanpa Animasi --- */
 
-/* Gunakan display: none; untuk menyembunyikan elemen secara total */
+/* KRITIS: Gunakan display: none; untuk menyembunyikan elemen secara total */
 /* Elemen dengan class ini akan hilang dari alur dokumen */
 .hidden {
     display: none;
 }
 
 /* Hapus gaya .form-hidden-visual jika ada */
-/* .form-hidden-visual { ... } */
-
-
 /* Hapus keyframes animasi submit */
-/* @keyframes pulseSubtle { ... } */
-
 /* Hapus gaya container saat submitting */
-/* .container.submitting { ... } */
 
 
 /* --- Gaya untuk Notifikasi Kustom --- */
