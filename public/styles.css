@@ -1,34 +1,33 @@
-/* public/style.css */
+/* public/style.css - Kode lengkap dengan gaya responsif mobile */
 
+/* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
     /* Warna latar belakang body */
     margin: 0;
     padding: 20px;
-    /* Tambahkan padding agar konten tidak menempel di tepi */
-    /* Hapus properti flexbox dan height: 100vh yang menengahkan konten */
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    /* height: 100vh; */
+    /* Padding default untuk layar lebih besar */
     min-height: 100vh;
-    /* Gunakan min-height agar background menutupi seluruh tinggi viewport */
+    /* Pastikan background menutupi seluruh tinggi viewport */
     color: #fff;
-    /* Warna teks default untuk body (misal untuk pesan error global) */
+    /* Warna teks default untuk body */
     line-height: 1.6;
     /* Tingkatkan keterbacaan teks paragraf */
 }
 
-/* Gaya container yang sudah ada, akan kita gunakan di homepage.html */
+/* Gaya Container - Digunakan di index.html dan homepage.html */
+/* Properti width: 100% dan max-width membuat ini responsif secara horizontal */
 .container {
     background-color: #fffffe;
     /* Warna latar belakang container */
     border-radius: 8px;
     padding: 20px;
+    /* Padding default container */
     width: 100%;
+    /* Gunakan lebar penuh yang tersedia */
     max-width: 500px;
-    /* Sesuaikan lebar maksimum jika perlu */
+    /* Tapi tidak lebih lebar dari 500px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     /* Menambahkan shadow */
     margin: 20px auto;
@@ -38,68 +37,56 @@ body {
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
+/* Pastikan konten homepage.html dibungkus dengan <div class="container">...</div> */
 
-/* Gaya untuk judul h1 di dalam container */
+/* Judul h1 di dalam container */
 .container h1 {
     color: #121629;
-    /* Warna judul */
     margin-top: 0;
-    /* Hapus margin atas default h1 */
     margin-bottom: 10px;
-    /* Beri jarak bawah */
     text-align: center;
-    /* Tengahkan judul */
+    font-size: 2em;
+    /* Menggunakan unit relatif untuk ukuran font */
 }
 
-/* Gaya untuk span yang menampilkan nama pengguna di dalam h1 */
+/* Span yang menampilkan nama pengguna di dalam h1 */
 .container h1 span {
     color: #eebbc3;
-    /* Beri warna aksen pada nama pengguna */
     font-weight: bold;
-    /* Opsional: buat nama pengguna tebal */
 }
 
-/* Gaya untuk paragraf di dalam container */
+/* Paragraf di dalam container */
 .container p {
     color: #272343;
-    /* Warna teks paragraf */
     margin-bottom: 20px;
-    /* Beri jarak bawah */
     text-align: center;
-    /* Tengahkan paragraf */
 }
 
-/* Gaya untuk tombol Logout */
+/* Tombol Logout di dalam container */
 .container #logoutButton {
     display: block;
-    /* Buat tombol menjadi elemen blok */
     width: auto;
-    /* Lebar otomatis sesuai konten */
+    /* Lebar otomatis */
     padding: 10px 20px;
     background-color: #eebbc3;
-    /* Warna latar belakang */
     color: #121629;
-    /* Warna teks */
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 1em;
+    /* Menggunakan unit relatif */
     cursor: pointer;
     margin-top: 20px;
     margin-left: auto;
-    /* Tengahkan tombol horizontal */
     margin-right: auto;
-    /* Tengahkan tombol horizontal */
     transition: background-color 0.3s ease;
-    /* Efek transisi hover */
 }
 
 .container #logoutButton:hover {
     background-color: #f5c2cc;
-    /* Warna saat hover */
 }
 
 /* --- Gaya untuk Elemen di Index.html (Form Login/Daftar) --- */
-/* Gaya-gaya ini sebagian besar sudah ada dari kode styles.css Anda sebelumnya */
+/* Gaya-gaya untuk elemen form */
 
 .tabs {
     display: flex;
@@ -109,45 +96,41 @@ body {
 .tabs button {
     flex: 1;
     padding: 10px;
-    font-size: 16px;
+    font-size: 1em;
+    /* Menggunakan unit relatif */
     font-weight: bolder;
     background-color: transparent;
     border: none;
     color: #888;
-    /* Warna teks tombol tab default */
     cursor: pointer;
     transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
 .tabs button.active {
     color: #eebbc3;
-    /* Warna teks tombol tab aktif */
     border-bottom: 2px solid #eebbc3;
-    /* Garis bawah tombol tab aktif */
 }
 
-/* Gaya untuk div kontainer form login/register/forgot/reset */
-/* Tidak ada elemen dengan class 'form' di HTML Anda yang diberikan sebelumnya, */
-/* namun gaya h2, p, dll. di bawah ini diasumsikan berlaku untuk konten dalam form div */
+/* Judul form */
 #loginForm h2,
 #registerForm h2 {
     color: #121629;
-    /* Warna judul form */
     margin-bottom: 5px;
     text-align: center;
+    font-size: 1.5em;
+    /* Menggunakan unit relatif */
 }
 
+/* Paragraf deskripsi di form */
 #loginForm p,
 #registerForm p {
-    /* Untuk paragraf deskripsi di dalam form */
     color: #272343;
-    /* Warna paragraf deskripsi form */
     font-style: italic;
     margin-bottom: 20px;
     text-align: center;
 }
 
-
+/* Group input */
 .input-group {
     margin-bottom: 15px;
 }
@@ -155,77 +138,72 @@ body {
 .input-group label {
     display: block;
     color: #121629;
-    /* Warna label */
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: 1em;
+    /* Menggunakan unit relatif */
 }
 
+/* Input teks, email, password, tel */
 .input-group input {
     width: 95%;
-    /* Mengurangi sedikit agar padding tidak melebih batas */
     padding: 10px;
+    /* Padding input */
     border: 1px solid #d8d8d8;
-    /* Warna border */
     border-radius: 4px;
     background-color: #fff;
-    /* Warna latar belakang input */
     color: #001858;
-    /* Warna teks yang diketik */
     box-sizing: border-box;
-    /* Memastikan padding dan border dihitung dalam lebar elemen */
+    /* Penting untuk responsivitas input */
+    font-size: 1em;
+    /* Menggunakan unit relatif */
 }
 
+/* Group checkbox */
 .checkbox-group {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    /* color: #888; */
-    /* Warna teks keseluruhan checkbox group */
-    /* font-style: italic; */
 }
 
 .checkbox-group input[type="checkbox"] {
     margin-right: 5px;
-    /* Gaya checkbox mungkin perlu penyesuaian lebih lanjut lintas browser */
 }
 
 .checkbox-group label {
     color: #888;
-    /* Warna label checkbox */
     margin-bottom: 0;
-    /* Menghilangkan margin bawah pada label di dalam checkbox group */
     font-weight: normal;
-    /* Mengembalikan bobot font normal */
     font-style: italic;
-    /* Terapkan italic di label jika diinginkan */
+    font-size: 0.9em;
+    /* Menggunakan unit relatif */
 }
 
-
+/* Link Lupa Password */
 .forgot-password {
     color: #eebbc3;
-    /* Warna link lupa password */
     text-decoration: none;
     float: right;
-    /* Posisikan ke kanan */
-    font-size: 14px;
+    font-size: 0.9em;
+    /* Menggunakan unit relatif */
 }
 
 .forgot-password:hover {
     text-decoration: underline;
-    /* Efek hover */
 }
 
+/* Tombol Submit di semua form */
 button[type="submit"] {
-    /* Gaya untuk tombol submit di semua form */
     width: 100%;
+    /* Lebar penuh */
     padding: 10px;
+    /* Padding tombol */
     background-color: #eebbc3;
-    /* Warna latar belakang */
     color: #121629;
-    /* Warna teks */
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 1em;
+    /* Menggunakan unit relatif */
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s ease;
@@ -233,115 +211,148 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #f5c2cc;
-    /* Warna saat hover */
 }
 
+/* Teks "Belum punya akun?" / "Sudah punya akun?" */
 .switch-form {
     text-align: center;
     color: #121629;
-    /* Warna teks "Belum punya akun?" dll */
     margin-top: 20px;
-    font-size: 14px;
+    font-size: 0.9em;
+    /* Menggunakan unit relatif */
 }
 
 .switch-form a {
     color: #eebbc3;
-    /* Warna link "Daftar Sekarang" dll */
     text-decoration: none;
     font-weight: bold;
 }
 
 .switch-form a:hover {
     text-decoration: underline;
-    /* Efek hover */
 }
 
+/* Kelas untuk menyembunyikan elemen */
 .hidden {
     display: none;
 }
 
-/* Gaya untuk notifikasi kustom */
+/* --- Gaya untuk Notifikasi Kustom --- */
+/* Ini juga didesain responsif dengan max-width: 90% */
 .custom-notification {
     position: fixed;
-    /* Akan tetap terlihat meskipun di-scroll */
     top: 20px;
-    /* Jarak dari atas */
     left: 50%;
-    /* Posisi horizontal di tengah */
     transform: translateX(-50%);
-    /* Geser ke kiri setengah dari lebarnya agar benar-benar di tengah */
     padding: 15px 20px;
     border-radius: 8px;
     color: #fff;
-    /* Warna teks */
     background-color: rgba(0, 0, 0, 0.7);
-    /* Warna latar belakang dengan sedikit transparansi */
     z-index: 1000;
-    /* Pastikan muncul di atas elemen lain */
     opacity: 0;
-    /* Awalnya tersembunyi */
     visibility: hidden;
-    /* Awalnya tidak terlihat */
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    /* Efek transisi saat muncul/hilang */
-    font-size: 14px;
+    font-size: 1em;
+    /* Menggunakan unit relatif */
     text-align: center;
     min-width: 250px;
-    /* Lebar minimum */
     max-width: 90%;
-    /* Lebar maksimum agar responsif */
+    /* Batasi lebar notifikasi agar responsif di mobile */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    /* Bayangan */
 }
 
-/* Gaya untuk notifikasi sukses */
 .custom-notification.success {
     background-color: rgba(40, 167, 69, 0.9);
-    /* Hijau (sedikit lebih solid) */
 }
 
-/* Gaya untuk notifikasi error */
 .custom-notification.error {
     background-color: rgba(220, 53, 69, 0.9);
-    /* Merah (sedikit lebih solid) */
 }
 
-/* Gaya untuk notifikasi info */
 .custom-notification.info {
     background-color: rgba(23, 162, 184, 0.9);
-    /* Biru/Cyan (sedikit lebih solid) */
 }
 
-
-/* Gaya saat notifikasi terlihat */
 .custom-notification.show {
     opacity: 1;
     visibility: visible;
 }
 
-/* Responsif dasar untuk layar kecil */
+/* --- Media Query untuk Layar Kecil (maksimum lebar 600px) --- */
+/* Gaya di dalam blok ini HANYA diterapkan pada layar dengan lebar 600px atau kurang */
 @media (max-width: 600px) {
-    .container {
+    body {
         padding: 15px;
-        margin: 15px auto;
+        /* Mengurangi padding body di layar kecil */
     }
 
-    .tabs button {
-        font-size: 14px;
-        padding: 8px;
+    .container {
+        padding: 15px;
+        /* Mengurangi padding container */
+        margin: 15px auto;
+        /* Mengurangi margin container */
+    }
+
+    /* Menyesuaikan ukuran font dan padding untuk elemen teks dan kontrol di layar kecil */
+    .container h1 {
+        font-size: 1.6em;
+    }
+
+    /* Sedikit lebih kecil dari default 2em */
+    #loginForm h2,
+    #registerForm h2 {
+        font-size: 1.3em;
+    }
+
+    /* Sedikit lebih kecil dari default 1.5em */
+
+    .container p,
+    #loginForm p,
+    #registerForm p,
+    .input-group label,
+    .switch-form,
+    .switch-form a,
+    .forgot-password,
+    .checkbox-group label {
+        font-size: 0.9em;
+        /* Mengurangi ukuran font teks-teks kecil */
     }
 
     .input-group input,
+    .tabs button,
     button[type="submit"],
     .container #logoutButton {
-        font-size: 14px;
-        padding: 8px;
+        font-size: 1em;
+        /* Ukuran font tetap atau disesuaikan jika perlu */
+        padding: 10px;
+        /* Padding tetap atau disesuaikan jika perlu */
     }
+
 
     .custom-notification {
         padding: 10px 15px;
-        font-size: 12px;
+        /* Mengurangi padding notifikasi */
+        font-size: 0.9em;
+        /* Mengurangi ukuran font notifikasi */
         min-width: unset;
-        width: 90%;
+        /* Hapus lebar minimum */
+        width: 95%;
+        /* Bisa gunakan 95% untuk mengisi lebih banyak ruang */
+        top: 10px;
+        /* Posisikan notifikasi sedikit lebih ke atas */
+        transform: translateX(-50%);
+        /* Pastikan tetap di tengah */
+    }
+
+    .checkbox-group {
+        align-items: center;
+        /* Biasanya center sudah cukup baik */
+        /* Sesuaikan gaya jika perlu di mobile */
     }
 }
+
+/* Anda bisa menambahkan media query lain di sini jika perlu penyesuaian */
+/* yang berbeda untuk rentang ukuran layar tertentu, misal tablet */
+/* @media (min-width: 601px) and (max-width: 900px) {
+     // Gaya khusus untuk tablet
+} */
