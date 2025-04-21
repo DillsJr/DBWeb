@@ -1,4 +1,4 @@
-// public/script.js - Script untuk halaman login dan daftar (index.html) dengan animasi dan show/hide diperbaiki
+// public/script.js - Script tanpa animasi pada form perpindahan
 
 document.addEventListener('DOMContentLoaded', () => {
     // Mendapatkan elemen-elemen HTML utama
@@ -9,56 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const switchToRegisterLink = document.getElementById('switchToRegister'); // Link di form login ke daftar
     const switchToLoginLink = document.getElementById('switchToLogin'); // Link di form daftar ke login
 
-    // Dapatkan elemen container utama
-    const container = document.querySelector('.container'); // Pastikan ada div .container di index.html
+    // Dapatkan elemen container utama (masih diperlukan untuk notifikasi, tapi bukan animasi submit)
+    const container = document.querySelector('.container');
 
 
-    // --- Logika Ganti Tab (Dengan Animasi dan Penanganan Display yang Akurat) ---
-
-    // Durasi transisi di CSS adalah 0.3s (300ms). Gunakan sedikit lebih lama untuk timeout display none.
-    const transitionDuration = 300; // ms (sesuaikan dengan durasi transisi di style.css)
-    const displayHideDelay = transitionDuration + 10; // Beri buffer 10ms setelah transisi
-
-
+    // --- Logika Ganti Tab (Show/Hide Langsung Menggunakan Class 'hidden') ---
     function showLogin() {
         if (loginTab) loginTab.classList.add('active');
         if (registerTab) registerTab.classList.remove('active');
 
-        const formToHide = registerFormDiv; // Form yang disembunyikan saat pindah ke Login
-        const formToShow = loginFormDiv; // Form yang ditampilkan saat pindah ke Login
-
-        // Sembunyikan form yang akan disembunyikan (RegisterForm)
-        if (formToHide && !formToHide.classList.contains('form-hidden-visual')) {
-            formToHide.classList.add('form-hidden-visual'); // Mulai animasi keluar (fade out, slide/zoom out)
-            // Setelah animasi selesai, atur display: none agar benar-benar hilang dari alur dokumen
-            // Menggunakan setTimeout dengan delay sesuai durasi transisi + buffer
-            setTimeout(() => {
-                formToHide.style.display = 'none';
-            }, displayHideDelay);
-            // Opsional: fallback menggunakan transitionend jika lebih suka event-based
-            // formToHide.addEventListener('transitionend', function handler() {
-            //      if (formToHide.classList.contains('form-hidden-visual')) { // Pastikan masih dalam kondisi hidden
-            //           formToHide.style.display = 'none';
-            //           formToHide.removeEventListener('transitionend', handler); // Hapus listener setelah selesai
-            //      }
-            // }, { once: true }); // { once: true } otomatis menghapus listener setelah dipanggil sekali
-        } else if (formToHide && formToHide.classList.contains('form-hidden-visual')) {
-            // Jika form yang seharusnya disembunyikan ternyata sudah hidden visual, pastikan display-nya none
-            formToHide.style.display = 'none';
-        }
-
-
-        // Tampilkan form Login
-        if (formToShow) {
-            // Set display: block SEBELUM menghapus class visual hidden
-            // Ini penting agar browser menghitung layout dan animasi masuk bisa berjalan
-            formToShow.style.display = 'block';
-            // Beri sedikit waktu (misalnya 10ms) agar browser bisa menerapkan display: block,
-            // lalu hapus class visual hidden untuk memulai animasi masuk
-            setTimeout(() => {
-                formToShow.classList.remove('form-hidden-visual'); // Mulai animasi masuk (fade in, slide/zoom in)
-            }, 10); // Delay kecil, pastikan > 0
-        }
+        // Tambahkan class 'hidden' ke form Daftar
+        if (registerFormDiv) registerFormDiv.classList.add('hidden');
+        // Hapus class 'hidden' dari form Login
+        if (loginFormDiv) loginFormDiv.classList.remove('hidden');
 
         // Optional: sembunyikan notifikasi saat ganti tab
         const notificationElement = document.getElementById('custom-notification');
@@ -69,31 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (registerTab) registerTab.classList.add('active');
         if (loginTab) loginTab.classList.remove('active');
 
-        const formToHide = loginFormDiv; // Form yang disembunyikan saat pindah ke Daftar
-        const formToShow = registerFormDiv; // Form yang ditampilkan saat pindah ke Daftar
-
-
-        // Sembunyikan form Login (jika ada)
-        if (formToHide && !formToHide.classList.contains('form-hidden-visual')) {
-            formToHide.classList.add('form-hidden-visual'); // Mulai animasi keluar
-            setTimeout(() => {
-                formToHide.style.display = 'none';
-            }, displayHideDelay);
-            // Opsional: fallback transitionend
-            // formToHide.addEventListener('transitionend', function handler() { ... });
-        } else if (formToHide && formToHide.classList.contains('form-hidden-visual')) {
-            // Jika form yang seharusnya disembunyikan ternyata sudah hidden visual, pastikan display-nya none
-            formToHide.style.display = 'none';
-        }
-
-
-        // Tampilkan form Register
-        if (formToShow) {
-            formToShow.style.display = 'block';
-            setTimeout(() => {
-                formToShow.classList.remove('form-hidden-visual'); // Mulai animasi masuk
-            }, 10); // Delay kecil
-        }
+        // Tambahkan class 'hidden' ke form Login
+        if (loginFormDiv) loginFormDiv.classList.add('hidden');
+        // Hapus class 'hidden' dari form Daftar
+        if (registerFormDiv) registerFormDiv.classList.remove('hidden');
 
         // Optional: sembunyikan notifikasi saat ganti tab
         const notificationElement = document.getElementById('custom-notification');
@@ -105,8 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pasang event listener untuk tab dan link switch form
     if (loginTab) loginTab.addEventListener('click', showLogin);
     if (registerTab) registerTab.addEventListener('click', showRegister);
-    if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', showRegister);
-    if (switchToLoginLink) switchToLoginLink.addEventListener('click', showLogin);
+    // Tambahkan preventDefault pada link switch form agar halaman tidak reload
+    if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showRegister();
+    });
+    if (switchToLoginLink) switchToLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showLogin();
+    });
+
 
     // --- Fungsi Notifikasi Kustom ---
     const notificationElement = document.getElementById('custom-notification');
@@ -118,20 +68,23 @@ document.addEventListener('DOMContentLoaded', () => {
         notificationElement.className = 'custom-notification';
         notificationElement.textContent = message;
         notificationElement.classList.add(type);
+        // Langsung tampilkan dengan display block untuk notifikasi
         notificationElement.style.display = 'block';
+        // Picu transisi opacity setelah elemen tampil
         setTimeout(() => {
             notificationElement.classList.add('show');
         }, 10);
 
         notificationTimeout = setTimeout(() => {
             notificationElement.classList.remove('show');
-            // Gunakan setTimeout sebagai fallback jika transitionend tidak yakin bekerja di semua kondisi
+            // Sembunyikan dengan display none setelah transisi opacity selesai
             setTimeout(() => {
                 if (notificationElement.style.display !== 'none' && !notificationElement.classList.contains('show')) {
                     notificationElement.style.display = 'none';
                     notificationElement.textContent = '';
                 }
-            }, 300); // Sesuaikan delay dengan durasi transisi CSS jika ada
+            }, 300); // Sesuaikan delay dengan durasi transisi opacity notifikasi
+
         }, duration);
     }
 
@@ -153,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- VARIABEL DAN FUNGSI UNTUK ALUR LUPA PASSWORD ---
-    // Link "Lupa Password?" diambil di awal, tapi listener dipasang di attachLoginFormListeners
     const originalLoginFormHTML = loginFormDiv ? loginFormDiv.innerHTML : '';
     let forgotPasswordWhatsappNumber = '';
 
@@ -171,8 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         showNotification('Memproses login...', 'info');
-
-        if (container) container.classList.add('submitting');
+        // Hapus penambahan class submitting jika tidak pakai animasi submit
+        // if (container) container.classList.add('submitting');
 
         try {
             const response = await fetch('/api/login', {
@@ -204,12 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (userIdentifierToSave) {
                     localStorage.setItem('loggedInUserIdentifier', userIdentifierToSave);
                     localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.removeItem('loggedInUsername');
-                    localStorage.removeItem('loggedInWhatsapp');
+                    localStorage.removeItem('loggedInUsername'); // Cleanup old key
+                    localStorage.removeItem('loggedInWhatsapp'); // Cleanup old key
                 } else {
                     console.warn("Login berhasil tapi API tidak mengembalikan identifier pengguna yang dikenali. Status login diset.");
                     localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.removeItem('loggedInUserIdentifier');
+                    localStorage.removeItem('loggedInUserIdentifier'); // Ensure key is empty
                 }
 
                 setTimeout(() => {
@@ -232,7 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error saat memanggil API login:', error);
             showNotification('Terjadi kesalahan saat login', 'error');
         } finally {
-            if (container) container.classList.remove('submitting');
+            // Hapus penambahan class submitting jika tidak pakai animasi submit
+            // if (container) container.classList.remove('submitting');
         }
     };
 
@@ -258,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         showNotification('Memproses pendaftaran...', 'info');
-
-        if (container) container.classList.add('submitting');
+        // Hapus penambahan class submitting jika tidak pakai animasi submit
+        // if (container) container.classList.add('submitting');
 
         try {
             const response = await fetch('/api/register', {
@@ -299,7 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error saat memanggil API daftar:', error);
             showNotification('Terjadi kesalahan saat mendaftar', 'error');
         } finally {
-            if (container) container.classList.remove('submitting');
+            // Hapus penambahan class submitting jika tidak pakai animasi submit
+            // if (container) container.classList.remove('submitting');
         }
     };
 
@@ -307,14 +261,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fungsi handler terpisah untuk klik link "Lupa Password?"
     const handleForgotPasswordClick = async (e) => {
         e.preventDefault();
-
         // originalLoginFormHTML sudah diambil saat DOMContentLoaded
 
         // Ganti konten form login dengan form lupa password
         if (loginFormDiv) {
-            // Saat mengganti innerHTML, elemen baru tidak akan memiliki class visual hidden atau display none
-            // Mereka akan langsung terlihat. Tidak ada animasi fade/slide saat ganti innerHTML.
-            // Animasi hanya terjadi saat add/remove class visual hidden pada elemen yang sudah ada.
+            // Karena innerHTML diganti, tidak ada animasi fade/slide di sini
+            // Elemen baru akan langsung menggantikan konten lama
             loginFormDiv.innerHTML = `
                 <h2> Lupa Password </h2>
                 <p style="color: #272343; font-style: italic;"> Masukkan nomor WhatsApp Anda untuk memulai proses reset password. </p>
@@ -355,7 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 forgotPasswordWhatsappNumber = whatsapp;
 
                 showNotification('Mengirim kode reset...', 'info');
-                if (container) container.classList.add('submitting');
+                // Hapus penambahan class submitting
+                // if (container) container.classList.add('submitting');
 
                 try {
                     const response = await fetch('/api/forgot-password', {
@@ -372,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok) {
                         showNotification(data.message || 'Jika nomor terdaftar, instruksi reset akan dikirim.', 'success', 5000);
                         if (loginFormDiv) {
-                            // Saat mengganti ke form reset, juga tidak ada animasi fade/slide
+                            // Mengganti ke form reset
                             loginFormDiv.innerHTML = `
                                 <h2> Reset Password </h2>
                                 <p style="color: #272343; font-style: italic;"> Masukkan kode reset yang telah dikirimkan dan password baru Anda. </p>
@@ -432,14 +385,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error saat memanggil API forgot password:', error);
                     showNotification('Terjadi kesalahan saat memproses lupa password.', 'error');
                 } finally {
-                    if (container) container.classList.remove('submitting');
+                    // Hapus penambahan class submitting
+                    // if (container) container.classList.remove('submitting');
                 }
             });
         }
     };
 
 
-    // Fungsi untuk memasang event listener form reset password
+    // Fungsi untuk memasang kembali event listener form reset password
     function attachResetPasswordFormListener() {
         const resetPasswordForm = document.getElementById('resetPasswordForm');
         if (resetPasswordForm) {
@@ -466,7 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 showNotification('Memproses reset password...', 'info');
-                if (container) container.classList.add('submitting');
+                // Hapus penambahan class submitting
+                // if (container) container.classList.add('submitting');
 
                 try {
                     const response = await fetch('/api/reset-password', {
@@ -504,7 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Error saat memanggil API reset password:', error);
                     showNotification('Terjadi kesalahan saat mereset password.', 'error');
                 } finally {
-                    if (container) container.classList.remove('submitting');
+                    // Hapus penambahan class submitting
+                    // if (container) container.classList.remove('submitting');
                 }
             });
 
@@ -550,21 +506,24 @@ document.addEventListener('DOMContentLoaded', () => {
         attachLoginFormListeners();
 
         // --- PENTING: Atur keadaan awal saat halaman dimuat ---
-        // Sembunyikan form register dan tampilkan form login
+        // Sembunyikan form register dan tampilkan form login menggunakan class 'hidden'
         if (registerFormDiv) {
-            registerFormDiv.classList.add('form-hidden-visual'); // Tambahkan class visual hidden
-            registerFormDiv.style.display = 'none'; // KRITIS: Atur display: none segera
+            registerFormDiv.classList.add('hidden');
+            // Hapus class animasi visual jika ada dari cache
+            registerFormDiv.classList.remove('form-hidden-visual');
+            // Pastikan display: none; diatur
+            registerFormDiv.style.display = 'none';
         }
         if (loginFormDiv) {
-            loginFormDiv.classList.remove('form-hidden-visual'); // Pastikan form login TIDAK visual hidden
-            loginFormDiv.style.display = 'block'; // Pastikan display: block
+            loginFormDiv.classList.remove('hidden');
+            // Hapus class animasi visual jika ada dari cache
+            loginFormDiv.classList.remove('form-hidden-visual');
+            // Pastikan display: block; diatur
+            loginFormDiv.style.display = 'block';
         }
         // --- Akhir pengaturan keadaan awal ---
 
         // Pastikan tab login aktif
-        // showLogin(); // Tidak perlu panggil ini lagi di sini karena pengaturan display/hidden sudah di atas
-        // Pemanggilan ini sebelumnya bisa menyebabkan flicker atau tumpang tindih logika.
-        // Cukup pastikan tab 'Masuk' punya class 'active' secara default di HTML atau atur di sini jika perlu.
         if (loginTab) loginTab.classList.add('active');
         if (registerTab) registerTab.classList.remove('active');
 

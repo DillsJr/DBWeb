@@ -1,4 +1,4 @@
-/* public/style.css - Gaya lengkap dengan animasi dan perbaikan show/hide */
+/* public/style.css - Gaya tanpa animasi pada form */
 
 /* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
 body {
@@ -36,10 +36,10 @@ body {
     /* Tengahkan container di tengah halaman */
     color: #121629;
     /* Warna teks default di dalam container */
-    /* Tambahkan transisi untuk animasi submit jika perlu */
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    position: relative;
-    /* Penting jika menggunakan absolute positioning pada form (meskipun saat ini tidak) */
+    /* Hapus transisi animasi submit jika ada */
+    /* transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; */
+    /* Hapus position: relative; jika hanya untuk absolute positioning form */
+    /* position: relative; */
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
@@ -84,6 +84,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     transition: background-color 0.3s ease;
+    /* Transisi hover tetap OK */
 }
 
 .container #logoutButton:hover {
@@ -108,6 +109,7 @@ body {
     color: #888;
     cursor: pointer;
     transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    /* Transisi hover tab tetap OK */
 }
 
 .tabs button.active {
@@ -206,6 +208,7 @@ button[type="submit"] {
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s ease;
+    /* Transisi hover tombol submit tetap OK */
 }
 
 button[type="submit"]:hover {
@@ -230,78 +233,27 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
+/* --- Gaya untuk Menyembunyikan Form Tanpa Animasi --- */
 
-/* --- Gaya untuk Animasi Perpindahan Form --- */
-
-/* Gaya untuk Form Containers (#loginForm, #registerForm) */
-/* Terapkan transisi di sini */
-#loginForm,
-#registerForm {
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-    /* Transisikan opacity dan transform */
-
-    /* Properti default saat terlihat (akan diatur display: block; oleh JS) */
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    /* Posisi normal */
-    pointer-events: auto;
-    /* Izinkan interaksi saat terlihat */
-
-    /* Posisi absolute agar form bertumpuk dan tidak mendorong satu sama lain */
-    /* Ini alternatif jika display: none; di JS tidak cukup */
-    /* position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%; // Atau auto, tergantung konten */
+/* Gunakan display: none; untuk menyembunyikan elemen secara total */
+/* Elemen dengan class ini akan hilang dari alur dokumen */
+.hidden {
+    display: none;
 }
 
-/* Gaya untuk Form Saat Disembunyikan Secara Visual (digunakan oleh JS) */
-/* Class ini ditambahkan oleh JS untuk memulai animasi keluar */
-.form-hidden-visual {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    /* Geser ke bawah saat tersembunyi */
-    /* atau: transform: scale(0.95); untuk efek zoom out */
-    pointer-events: none;
-    /* Mencegah interaksi saat tidak terlihat */
-}
-
-/*
-Catatan: Properti display: none; akan diatur langsung pada style elemen (inline style)
-oleh JavaScript SETELAH animasi keluar selesai.
-Saat form ditampilkan, JS akan menghapus display: none; dan class .form-hidden-visual
-*/
+/* Hapus gaya .form-hidden-visual jika ada */
+/* .form-hidden-visual { ... } */
 
 
-/* --- Gaya untuk Animasi Saat Submit --- */
-/* Tambahkan Keyframes untuk animasi */
-@keyframes pulseSubtle {
-    0% {
-        transform: scale(1);
-    }
+/* Hapus keyframes animasi submit */
+/* @keyframes pulseSubtle { ... } */
 
-    50% {
-        transform: scale(1.01);
-    }
-
-    /* Sedikit membesar */
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Terapkan animasi pada container saat memiliki class 'submitting' */
-.container.submitting {
-    animation: pulseSubtle 1.5s infinite ease-in-out;
-    /* Terapkan animasi pulse */
-}
+/* Hapus gaya container saat submitting */
+/* .container.submitting { ... } */
 
 
 /* --- Gaya untuk Notifikasi Kustom --- */
-/* Ini juga didesain responsif dengan max-width: 90% */
+/* Tetap pertahankan gaya notifikasi dengan transisi show/hide */
 .custom-notification {
     position: fixed;
     top: 20px;
@@ -313,8 +265,11 @@ Saat form ditampilkan, JS akan menghapus display: none; dan class .form-hidden-v
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     opacity: 0;
+    /* Tetap gunakan opacity untuk transisi show/hide notifikasi */
     visibility: hidden;
+    /* Tetap gunakan visibility untuk transisi show/hide notifikasi */
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    /* Transisi notifikasi tetap OK */
     font-size: 1em;
     text-align: center;
     min-width: 250px;
@@ -340,6 +295,7 @@ Saat form ditampilkan, JS akan menghapus display: none; dan class .form-hidden-v
 }
 
 /* --- Media Query untuk Layar Kecil (maksimum lebar 600px) --- */
+/* Tetap pertahankan gaya responsif */
 @media (max-width: 600px) {
     body {
         padding: 15px;
