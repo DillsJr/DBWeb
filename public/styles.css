@@ -452,7 +452,7 @@ body.homepage-body .homepage-header {
 body.homepage-body .homepage-header .site-title {
     font-size: 1.5em;
     font-weight: bold;
-    color: #22444d;
+    color: #a5c9b1;
     /* Contoh warna judul situs */
 }
 
@@ -461,7 +461,7 @@ body.homepage-body .homepage-header .header-logout-button {
     padding: 8px 15px;
     background-color: #a5c9b1;
     /* Contoh warna tombol logout */
-    color: #abd1c6;
+    color: #001e1d;
     /* Warna teks tombol */
     border: none;
     border-radius: 4px;
@@ -556,7 +556,7 @@ body.homepage-body .homepage-main-content .profile-pic-container {
     /* Bentuk bulat */
     overflow: hidden;
     /* Sembunyikan bagian gambar di luar lingkaran */
-    border: 3px solid #a5c9b1;
+    border: 3px solid #001e1d;
     /* Contoh border */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
