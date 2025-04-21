@@ -138,10 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const forgotPasswordLinkInForm = document.querySelector('.forgot-password'); // Dapatkan kembali link lupa password di dalam form
 
         if (loginForm) {
-            // Pasang KEMBALI event listener submit untuk form login
-            // Hanya pasang jika belum ada listener (opsional, tapi baik) atau biarkan dipasang ulang karena elemen baru
-            // Kode di bawah ini sudah benar untuk memasang listener pada elemen form yang baru
-            loginForm.addEventListener('submit', handleLoginSubmit); // Menggunakan fungsi handler terpisah
+            // PASANG KEMBALI event listener submit untuk form login HANYA SATU KALI DI SINI
+            // Menggunakan fungsi handler terpisah
+            loginForm.addEventListener('submit', handleLoginSubmit); // <-- Pastikan ini dipasang di sini
+
 
             // Pasang kembali event listener lihat password untuk form login
             setupPasswordToggle('showLoginPassword', 'loginPassword');
@@ -158,7 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fungsi handler terpisah untuk SUBMIT form login
     const handleLoginSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // <-- Pastikan ini ada dan tereksekusi
+        console.log('preventDefault executed. Attempting login via fetch.'); // Tambahkan log ini untuk verifikasi
+
         const whatsapp = document.getElementById('loginWhatsapp').value;
         const password = document.getElementById('loginPassword').value;
 
@@ -236,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fungsi handler terpisah untuk klik link "Lupa Password?"
     const handleForgotPasswordClick = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // <-- Pastikan ini ada dan tereksekusi
 
         // Simpan HTML form login awal sebelum diganti
         if (!originalLoginFormHTML && loginFormDiv) {
@@ -265,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             switchToLoginFromForgot.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML; // Kembali ke form login awal
-                attachLoginFormListeners(); // Pasang kembali listener form login dan link lupa password di dalamnya
+                attachLoginFormListeners(); // Pasang kembali listener form login
             });
         }
 
@@ -273,7 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const forgotPasswordForm = document.getElementById('forgotPasswordForm');
         if (forgotPasswordForm) {
             forgotPasswordForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+                e.preventDefault(); // <-- Pastikan ini ada dan tereksekusi
+
                 const whatsapp = document.getElementById('forgotPasswordWhatsapp').value;
 
                 if (!whatsapp) {
@@ -341,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 switchToLoginFromReset.addEventListener('click', (e) => {
                                     e.preventDefault();
                                     if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML; // Kembali ke form login awal
-                                    attachLoginFormListeners(); // Pasang kembali listener form login dan link lupa password di dalamnya
+                                    attachLoginFormListeners(); // Pasang kembali listener form login
                                 });
                             }
 
@@ -374,7 +377,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const resetPasswordForm = document.getElementById('resetPasswordForm');
         if (resetPasswordForm) {
             resetPasswordForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+                e.preventDefault(); // <-- Pastikan ini ada dan tereksekusi
+
                 // Nomor WhatsApp diambil dari variabel forgotPasswordWhatsappNumber
                 const whatsapp = forgotPasswordWhatsappNumber;
                 const resetCode = document.getElementById('resetPasswordCode').value;
@@ -419,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Kembali ke form login setelah notifikasi muncul sebentar
                         setTimeout(() => {
                             if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML; // Kembali ke form login
-                            attachLoginFormListeners(); // Pasang kembali listener form login dan link lupa password di dalamnya
+                            attachLoginFormListeners(); // Pasang kembali listener form login
                         }, 1500); // Delay 1.5 detik
                     } else { // Status kode 400-599
                         let errorMessage = 'Gagal reset password.';
@@ -455,7 +459,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const initialRegisterForm = document.getElementById('register');
         if (initialRegisterForm) {
             initialRegisterForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+                e.preventDefault(); // <-- Pastikan ini ada dan tereksekusi
+                console.log('preventDefault executed. Attempting registration via fetch.'); // Tambahkan log ini
+
                 const fullName = document.getElementById('fullName').value;
                 const username = document.getElementById('username').value;
                 const whatsapp = document.getElementById('whatsapp').value;
@@ -472,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotification('Password minimal 6 karakter.', 'error');
                     return;
                 }
+
 
                 showNotification('Memproses pendaftaran...', 'info'); // Pesan loading
 
@@ -519,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Pasang listener submit form login awal dan link lupa password di dalamnya
+        // Panggil ini di sini untuk memasang listener saat halaman pertama dimuat
         attachLoginFormListeners();
 
         // Pastikan form login awal ditampilkan saat halaman pertama kali dimuat
