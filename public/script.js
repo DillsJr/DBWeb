@@ -1,4 +1,5 @@
 // public/script.js - Script untuk halaman login dan daftar (index.html) dengan animasi
+// Logika showLogin dan showRegister diperbaiki untuk menangani display: none
 
 document.addEventListener('DOMContentLoaded', () => {
     // Mendapatkan elemen-elemen HTML utama
@@ -13,25 +14,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.container'); // Pastikan ada div .container di index.html
 
 
-    // --- Logika Ganti Tab (Animasi diset di CSS) ---
+    // --- Logika Ganti Tab (Dengan Animasi dan Penanganan Display) ---
+
+    // Durasi transisi di CSS adalah 0.3s (300ms). Gunakan sedikit lebih lama untuk timeout.
+    const transitionDuration = 300; // ms
+    const displayHideDelay = transitionDuration + 50; // Beri buffer 50ms
+
     function showLogin() {
-        // Tambah/Hapus class hidden akan memicu animasi transisi di CSS
         if (loginTab) loginTab.classList.add('active');
         if (registerTab) registerTab.classList.remove('active');
 
-        // Hapus hidden dari loginFormDiv, tambahkan ke registerFormDiv
-        // Transisi CSS akan menangani animasi fade/slide
-        if (loginFormDiv) {
-            loginFormDiv.classList.remove('hidden');
-            // Opsional: beri sedikit delay sebelum hidden agar animasi keluar terlihat
-            // setTimeout(() => { if (registerFormDiv) registerFormDiv.classList.add('hidden'); }, 300); // Sesuaikan delay dengan durasi transisi
-            if (registerFormDiv) registerFormDiv.classList.add('hidden'); // Langsung sembunyikan, animasi akan berjalan
-        }
-        if (registerFormDiv) {
-            // Opsional: beri sedikit delay sebelum remove hidden agar animasi masuk terlihat
-            // setTimeout(() => { if (loginFormDiv) loginFormDiv.classList.remove('hidden'); }, 300); // Sesuaikan delay
+        const currentlyVisibleForm = registerFormDiv && !registerFormDiv.classList.contains('hidden') ? registerFormDiv : null;
+        const nextVisibleForm = loginFormDiv;
+
+        // Sembunyikan form yang sedang terlihat (RegisterForm)
+        if (currentlyVisibleForm) {
+            currentlyVisibleForm.classList.add('hidden'); // Mulai animasi keluar (fade out, slide/zoom out)
+            // Setelah animasi selesai, sembunyikan elemen dari alur dokumen
+            setTimeout(() => {
+                currentlyVisibleForm.style.display = 'none';
+            }, displayHideDelay);
         }
 
+        // Tampilkan form Login
+        if (nextVisibleForm) {
+            // Set display: block SEBELUM menghapus 'hidden'
+            // Ini memungkinkan browser menghitung layout sebelum transisi opacity/transform dimulai
+            nextVisibleForm.style.display = 'block';
+            // Beri sedikit waktu (seperti 10ms) agar display: block diterapkan, lalu hapus 'hidden'
+            setTimeout(() => {
+                nextVisibleForm.classList.remove('hidden'); // Mulai animasi masuk (fade in, slide/zoom in)
+            }, 10);
+        }
 
         // Optional: sembunyikan notifikasi saat ganti tab
         const notificationElement = document.getElementById('custom-notification');
@@ -39,24 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showRegister() {
-        // Tambah/Hapus class hidden akan memicu animasi transisi di CSS
         if (registerTab) registerTab.classList.add('active');
         if (loginTab) loginTab.classList.remove('active');
 
-        // Hapus hidden dari registerFormDiv, tambahkan ke loginFormDiv
-        if (registerFormDiv) {
-            registerFormDiv.classList.remove('hidden');
-            // setTimeout(() => { if (loginFormDiv) loginFormDiv.classList.add('hidden'); }, 300); // Delay sembunyi
-            if (loginFormDiv) loginFormDiv.classList.add('hidden'); // Langsung sembunyikan
+        const currentlyVisibleForm = loginFormDiv && !loginFormDiv.classList.contains('hidden') ? loginFormDiv : null;
+        const nextVisibleForm = registerFormDiv;
+
+        // Sembunyikan form yang sedang terlihat (LoginForm)
+        if (currentlyVisibleForm) {
+            currentlyVisibleForm.classList.add('hidden'); // Mulai animasi keluar
+            setTimeout(() => {
+                currentlyVisibleForm.style.display = 'none';
+            }, displayHideDelay);
         }
-        if (loginFormDiv) {
-            // setTimeout(() => { if (registerFormDiv) registerFormDiv.classList.remove('hidden'); }, 300); // Delay tampil
+
+        // Tampilkan form Register
+        if (nextVisibleForm) {
+            nextVisibleForm.style.display = 'block';
+            setTimeout(() => {
+                nextVisibleForm.classList.remove('hidden'); // Mulai animasi masuk
+            }, 10);
         }
 
         // Optional: sembunyikan notifikasi saat ganti tab
         const notificationElement = document.getElementById('custom-notification');
         if (notificationElement) notificationElement.style.display = 'none';
     }
+    // --- Akhir Logika Ganti Tab ---
+
 
     // Pasang event listener untuk tab dan link switch form
     if (loginTab) loginTab.addEventListener('click', showLogin);
@@ -70,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showNotification(message, type = 'info', duration = 3000) {
         if (!notificationElement) return;
-
         clearTimeout(notificationTimeout);
         notificationElement.className = 'custom-notification';
         notificationElement.textContent = message;
@@ -89,15 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     notificationElement.removeEventListener('transitionend', handler);
                 }
             };
-            notificationElement.addEventListener('transitionend', handler, {
-                once: true
-            });
+            // Gunakan setTimeout sebagai fallback jika transitionend tidak terdeteksi
             setTimeout(() => {
                 if (notificationElement.style.display !== 'none' && !notificationElement.classList.contains('show')) {
                     notificationElement.style.display = 'none';
                     notificationElement.textContent = '';
                 }
-            }, 300); // Fallback delay
+            }, 300); // Sesuaikan delay dengan durasi transisi CSS jika ada
         }, duration);
     }
 
@@ -287,12 +308,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ganti konten form login dengan form lupa password
         if (loginFormDiv) {
+            // Sebelum mengganti innerHTML, pastikan div saat ini visible
+            // Set opacity/visibility 1 agar saat innerHTML diganti, elemen baru terlihat
+            loginFormDiv.classList.remove('hidden'); // Ensure it's not hidden before replacing content
+            loginFormDiv.style.display = 'block'; // Ensure it's display block
+
             loginFormDiv.innerHTML = `
                 <h2> Lupa Password </h2>
                 <p style="color: #272343; font-style: italic;"> Masukkan nomor WhatsApp Anda untuk memulai proses reset password. </p>
                 <form id="forgotPasswordForm">
                     <div class="input-group">
-                        <label for="forgotPasswordWhatsapp" style="color: #121629;"> Nomor Whatsapp </label>
+                        <label for="forgotPasswordWhatsapp"> Nomor Whatsapp </label>
                         <input type="tel" id="forgotPasswordWhatsapp" placeholder="Masukan Nomor Whatsapp" required autocomplete="tel">
                     </div>
                     <button type="submit"> Kirim Kode Reset </button>
@@ -306,8 +332,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (switchToLoginFromForgot) {
             switchToLoginFromForgot.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML; // Kembali ke form login awal
-                attachLoginFormListeners(); // Pasang kembali listener form login
+                if (loginFormDiv) {
+                    // Saat kembali ke form login awal, pastikan display block dulu
+                    loginFormDiv.style.display = 'block'; // Ensure display block
+                    loginFormDiv.innerHTML = originalLoginFormHTML; // Kembali ke form login awal
+                    attachLoginFormListeners(); // Pasang kembali listener form login
+                }
             });
         }
 
@@ -345,6 +375,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok) {
                         showNotification(data.message || 'Jika nomor terdaftar, instruksi reset akan dikirim.', 'success', 5000);
                         if (loginFormDiv) {
+                            // Saat mengganti ke form reset, pastikan div saat ini visible
+                            loginFormDiv.classList.remove('hidden');
+                            loginFormDiv.style.display = 'block'; // Ensure display block
+
                             loginFormDiv.innerHTML = `
                                 <h2> Reset Password </h2>
                                 <p style="color: #272343; font-style: italic;"> Masukkan kode reset yang telah dikirimkan dan password baru Anda. </p>
@@ -381,8 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (switchToLoginFromReset) {
                                 switchToLoginFromReset.addEventListener('click', (e) => {
                                     e.preventDefault();
-                                    if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML;
-                                    attachLoginFormListeners();
+                                    if (loginFormDiv) {
+                                        loginFormDiv.style.display = 'block'; // Ensure display block
+                                        loginFormDiv.innerHTML = originalLoginFormHTML;
+                                        attachLoginFormListeners();
+                                    }
                                 });
                             }
                         } else {
@@ -428,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error("forgotPasswordWhatsappNumber is not set.");
                     return;
                 }
-                if (newPassword !== confirmNewPassword) {
+                if (newPassword !== confirmPassword) {
                     showNotification('Password baru dan konfirmasi password tidak cocok.', 'error');
                     return;
                 }
@@ -460,8 +497,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok) {
                         showNotification(data.message || 'Password berhasil direset! Silakan Login.', 'success');
                         setTimeout(() => {
-                            if (loginFormDiv) loginFormDiv.innerHTML = originalLoginFormHTML;
-                            attachLoginFormListeners();
+                            if (loginFormDiv) {
+                                loginFormDiv.style.display = 'block'; // Ensure display block
+                                loginFormDiv.innerHTML = originalLoginFormHTML;
+                                attachLoginFormListeners();
+                            }
                         }, 1500);
                     } else {
                         let errorMessage = 'Gagal reset password.';
@@ -495,15 +535,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const forgotPasswordLinkInForm = document.querySelector('.forgot-password');
 
         if (loginForm) {
-            // Pasang listener submit form login
             loginForm.addEventListener('submit', handleLoginSubmit);
-            setupPasswordToggle('showLoginPassword', 'loginPassword'); // Pasang lihat password
+            setupPasswordToggle('showLoginPassword', 'loginPassword');
         } else {
             console.error("Login form with ID 'login' not found in attachLoginFormListeners.");
         }
 
         if (forgotPasswordLinkInForm) {
-            forgotPasswordLinkInForm.addEventListener('click', handleForgotPasswordClick); // Pasang listener link lupa password
+            forgotPasswordLinkInForm.addEventListener('click', handleForgotPasswordClick);
         } else {
             console.warn("Forgot password link not found in attachLoginFormListeners.");
         }
@@ -525,8 +564,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pasang listener untuk form login awal dan link lupa password di dalamnya
         attachLoginFormListeners();
 
-        // Pastikan form login awal ditampilkan saat halaman pertama kali dimuat
-        showLogin();
+        // --- PENTING: Atur keadaan awal saat halaman dimuat ---
+        // Sembunyikan form register dan tampilkan form login
+        if (registerFormDiv) {
+            registerFormDiv.classList.add('hidden');
+            // Atur display: none segera saat halaman dimuat
+            registerFormDiv.style.display = 'none';
+        }
+        if (loginFormDiv) {
+            loginFormDiv.classList.remove('hidden');
+            // Pastikan display: block segera saat halaman dimuat
+            loginFormDiv.style.display = 'block';
+        }
+        // --- Akhir pengaturan keadaan awal ---
+
+
+        // Pastikan tab login aktif
+        showLogin(); // Panggil ini untuk memastikan tab login aktif dan gaya visualnya benar
+        // Catatan: Panggilan showLogin di sini juga akan menjalankan kembali logika
+        // penyembunyian/penampilan form, tapi karena display sudah diatur di atas,
+        // ini lebih memastikan kelas 'active' pada tab sudah benar.
     }
 
     // Panggil fungsi inisialisasi
