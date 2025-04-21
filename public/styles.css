@@ -454,14 +454,14 @@ body.homepage-body .homepage-header {
 body.homepage-body .homepage-header .site-title {
     font-size: 1.5em;
     font-weight: bold;
-    color: #a5c9b1;
+    color: #004643;
     /* Contoh warna judul situs */
 }
 
 /* Gaya untuk Tombol Logout di Header Homepage */
 body.homepage-body .homepage-header .header-logout-button {
     padding: 8px 15px;
-    background-color: #a5c9b1;
+    background-color: #004643;
     /* Contoh warna tombol logout */
     color: #22444d;
     /* Warna teks tombol */
@@ -473,7 +473,8 @@ body.homepage-body .homepage-header .header-logout-button {
 }
 
 body.homepage-body .homepage-header .header-logout-button:hover {
-    background-color: #b0d4bd;
+    background-color: #004643;
+    color: #abd1c6;
 }
 
 
