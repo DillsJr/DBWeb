@@ -1,4 +1,4 @@
-// public/script.js
+// public/script.js - Integrasi Login, Daftar, Lupa/Reset Password dengan Supabase Auth
 
 // --- Konfigurasi Supabase ---
 // GANTI dengan URL dan ANON KEY proyek Supabase Anda (dari dashboard Supabase -> Project Settings -> API)
