@@ -1,39 +1,44 @@
 // Serverless Function untuk menangani permintaan login
 export default function handler(req, res) {
+    // Memastikan permintaan menggunakan metode POST
     if (req.method === 'POST') {
-        // Asumsikan body permintaan sudah di-parse oleh Vercel
-        // Untuk aplikasi nyata, gunakan body-parser atau framework yang relevan
+        // Mengambil data dari body permintaan
+        // Vercel secara otomatis mem-parse body JSON untuk fungsi Node.js
         const {
-            username,
+            whatsapp, // Mengambil field 'whatsapp'
             password
         } = req.body;
 
-        // --- SIMULASI VALIDASI LOGIN (INI TIDAK AMAN!) ---
-        // Di aplikasi nyata, kamu akan:
-        // 1. Terhubung ke database (PostgreSQL, MongoDB, dll.)
-        // 2. Cari pengguna berdasarkan username
-        // 3. Bandingkan password yang dimasukkan dengan password yang di-hash di database
-        // 4. Hasilkan token otentikasi jika kredensial cocok
-        // -------------------------------------------------
+        // --- SIMULASI VALIDASI LOGIN (INI TIDAK AMAN DAN HANYA CONTOH!) ---
+        // Di aplikasi nyata yang aman dan fungsional, kamu akan:
+        // 1. Menggunakan library Node.js untuk terhubung ke database (PostgreSQL, MongoDB, MySQL, dll.)
+        // 2. Mencari data pengguna di database berdasarkan 'whatsapp' (atau username unik lainnya).
+        // 3. Membandingkan password yang dimasukkan dengan password yang tersimpan dalam bentuk HASH (BUKAN plaintext) di database menggunakan library hashing seperti bcrypt.
+        // 4. Jika password cocok, membuat dan mengirimkan token otentikasi (seperti JWT) atau mengatur sesi.
+        // -------------------------------------------------------------------
 
-        if (username === 'testuser' && password === 'password123') { // Kredensial hardcode (TIDAK AMAN!)
+        // Contoh validasi simulasi dengan hardcode (TIDAK AMAN!)
+        // Menggunakan nomor whatsapp simulasi dan password simulasi
+        if (whatsapp === '081234567890' && password === 'password123') { // Ubah sesuai data simulasi jika perlu
             // Login berhasil (simulasi)
             res.status(200).json({
-                message: 'Login successful!',
-                user: {
-                    username: 'testuser'
+                message: 'Login berhasil!',
+                user: { // Contoh data pengguna yang dikembalikan
+                    whatsapp: whatsapp,
+                    // Info pengguna lain dari database bisa ditambahkan di sini
                 }
             });
         } else {
             // Login gagal (simulasi)
+            // Penting: Pesan error tidak boleh terlalu spesifik (misalnya, jangan bilang "Nomor Whatsapp tidak ditemukan" atau "Password salah"), cukup umum seperti ini demi keamanan.
             res.status(401).json({
-                message: 'Invalid username or password'
+                message: 'Nomor Whatsapp atau password salah.'
             });
         }
     } else {
-        // Metode HTTP selain POST tidak diizinkan untuk endpoint ini
+        // Jika metode HTTP bukan POST
         res.status(405).json({
-            message: 'Method Not Allowed'
+            message: 'Metode Tidak Diizinkan. Gunakan POST.'
         });
     }
 }
