@@ -1,59 +1,95 @@
 // api/register.js
-// Serverless Function untuk menangani permintaan pendaftaran
+import {
+    Pool
+} from 'pg'; // Import library pg
+import bcrypt from 'bcrypt'; // Import library bcrypt
 
-export default function handler(req, res) {
+// Buat koneksi pool ke database menggunakan URL dari Environment Variable
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    // Tambahkan konfigurasi SSL jika database provider Anda memerlukannya (misalnya, di Supabase)
+    // ssl: {
+    //   rejectUnauthorized: false // Hanya jika Anda tahu database Anda mengizinkan ini
+    // }
+});
+
+export default async function handler(req, res) {
     if (req.method === 'POST') {
-        // Mengambil data pendaftaran dari body permintaan
         const {
             fullName,
-            username, // Gunakan username untuk login nanti atau whatsapp
+            username,
             whatsapp,
             email,
-            password, // PASSWORD INI PERLU DI-HASH!
-            // confirmPassword (biasanya divalidasi di frontend, tapi bisa juga di backend)
+            password, // Password yang diterima dari frontend (akan di-hash)
+            // confirmPassword (sudah divalidasi di frontend)
         } = req.body;
 
-        // --- LOGIKA PENDAFTARAN SESUNGGUHNYA ADA DI SINI ---
-        // GANTI BAGIAN INI dengan logika backend sesungguhnya:
-        // 1. Lakukan validasi data (misalnya, format email/nomor WA).
-        // 2. Cek apakah username, whatsapp, atau email sudah terdaftar di database.
-        // 3. HASH password yang diterima (JANGAN SIMPAN PLAINTEXT!). Gunakan library seperti bcrypt.
-        // 4. Simpan data pengguna baru (termasuk password ter-hash) ke database.
-        // 5. Tangani error jika penyimpanan gagal (misalnya, koneksi DB, data duplikat).
-        // ----------------------------------------------------
-
-        console.log("Simulasi menerima data pendaftaran:", req.body); // Log data yang diterima
-
-        // --- SIMULASI RESPON PENDAFTARAN ---
-        // GANTI dengan respons NYATA setelah data disimpan ke DB
-        const simulasiSukses = Math.random() > 0.2; // Simulasi 80% sukses
-
-        if (simulasiSukses) {
-            // Contoh: Jika username atau email sudah terdaftar, kirim error
-            if (username === 'existing_user') { // Contoh kondisi simulasi
-                res.status(409).json({
-                    message: 'Username sudah terdaftar.'
-                });
-            } else if (email === 'existing@example.com') { // Contoh kondisi simulasi
-                res.status(409).json({
-                    message: 'Email sudah terdaftar.'
-                });
-            }
-            // Jika tidak ada duplikasi dan sukses menyimpan
-            else {
-                res.status(201).json({ // Status 201 Created
-                    message: 'Pendaftaran berhasil!',
-                    userId: 'simulasi_user_id' // Contoh ID pengguna baru
-                });
-            }
-
-        } else {
-            // Simulasi error pendaftaran
-            res.status(500).json({
-                message: 'Pendaftaran gagal. Terjadi kesalahan internal simulasi.'
+        // --- LOGIKA PENDAFTARAN SESUNGGUHNYA ---
+        // Lakukan validasi dasar di backend juga (meskipun sudah di frontend)
+        if (!whatsapp || !password) {
+            return res.status(400).json({
+                message: 'Nomor Whatsapp dan password harus diisi.'
             });
         }
-        // ------------------------------------
+        // Tambahkan validasi lain (format email, dll)
+
+        let client; // Variabel untuk klien database
+        try {
+            // 1. Hash Password
+            const saltRounds = 10; // Jumlah putaran untuk hashing (semakin tinggi semakin aman tapi lambat)
+            const passwordHash = await bcrypt.hash(password, saltRounds);
+
+            // 2. Terhubung ke Database
+            client = await pool.connect();
+
+            // 3. Query SQL untuk Menyimpan Pengguna Baru
+            const query = `
+                INSERT INTO users (whatsapp, username, email, full_name, password_hash)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING id; -- Mengembalikan ID pengguna yang baru dibuat
+            `;
+            const values = [whatsapp, username, email, fullName, passwordHash];
+
+            const result = await client.query(query, values);
+            const newUserId = result.rows[0].id;
+
+            // 4. Kirim Respons Sukses
+            res.status(201).json({ // Status 201 Created
+                message: 'Pendaftaran berhasil!',
+                userId: newUserId
+            });
+
+        } catch (error) {
+            console.error('Error saat pendaftaran:', error);
+
+            // Tangani error spesifik (misalnya, data duplikat)
+            if (error.code === '23505') { // Kode error PostgreSQL untuk unique violation
+                let errorMessage = 'Pendaftaran gagal. Data sudah terdaftar: ';
+                if (error.constraint === 'users_whatsapp_key') {
+                    errorMessage += 'Nomor Whatsapp sudah terdaftar.';
+                } else if (error.constraint === 'users_username_key') {
+                    errorMessage += 'Username sudah terdaftar.';
+                } else if (error.constraint === 'users_email_key') {
+                    errorMessage += 'Email sudah terdaftar.';
+                } else {
+                    errorMessage = 'Pendaftaran gagal. Data duplikat.'; // Error duplikat umum
+                }
+                return res.status(409).json({
+                    message: errorMessage
+                }); // Status 409 Conflict
+            }
+
+            // Tangani error lainnya
+            res.status(500).json({
+                message: 'Pendaftaran gagal. Terjadi kesalahan internal.'
+            });
+
+        } finally {
+            // Penting: Lepaskan koneksi klien kembali ke pool
+            if (client) {
+                client.release();
+            }
+        }
 
     } else {
         res.status(405).json({

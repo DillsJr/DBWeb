@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Ganti konten form dengan form reset password
                         loginFormElement.innerHTML = `
                             <h2> Reset Password </h2>
-                            <p style="color: #b8c1ec;"> Masukkan kode reset yang telah dikirimkan dan password baru Anda. </p>
+                            <p style="color: #272343;"> Masukkan kode reset yang telah dikirimkan dan password baru Anda. </p>
                             <form id="resetPasswordForm">
                                 <div class="input-group">
                                     <label for="resetPasswordCode" style="color: #121629;"> Kode Reset </label>

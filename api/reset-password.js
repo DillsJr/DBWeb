@@ -1,47 +1,104 @@
 // api/reset-password.js
-// Serverless Function untuk menangani permintaan reset password
+import {
+    Pool
+} from 'pg'; // Import library pg
+import bcrypt from 'bcrypt'; // Import library bcrypt
 
-export default function handler(req, res) {
+// Gunakan pool koneksi yang sama
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    // ssl: { rejectUnauthorized: false } // Sesuaikan jika perlu SSL
+});
+
+export default async function handler(req, res) {
     if (req.method === 'POST') {
-        // Mengambil data dari body permintaan
         const {
             whatsapp, // Identitas pengguna
-            token, // Kode reset yang dimasukkan pengguna
-            newPassword, // Password baru yang dimasukkan pengguna (PERLU DI-HASH!)
+            token, // Kode reset dari pengguna
+            newPassword, // Password baru (akan di-hash)
+            // confirmNewPassword (sudah divalidasi di frontend)
         } = req.body;
 
-        // --- LOGIKA RESET PASSWORD SESUNGGUHNYA ADA DI SINI ---
-        // GANTI BAGIAN INI dengan logika backend sesungguhnya:
-        // 1. Cari pengguna di database berdasarkan 'whatsapp'.
-        // 2. Jika pengguna ditemukan:
-        //    a. Verifikasi kode reset ('token') yang dimasukkan pengguna dengan kode reset yang tersimpan di database untuk pengguna tersebut.
-        //    b. Cek apakah kode reset tersebut masih berlaku (belum kedaluwarsa).
-        //    c. Jika kode valid:
-        //       i. HASH `newPassword` yang diterima.
-        //       ii. Perbarui password pengguna di database dengan password baru yang sudah di-hash.
-        //       iii. Invalidasi atau hapus kode reset dari database agar tidak bisa digunakan lagi.
-        //    d. Tangani jika kode tidak valid atau sudah kedaluwarsa.
-        // 3. Tangani jika pengguna tidak ditemukan (pesan umum demi keamanan).
-        // --------------------------------------------------------
-
-        console.log("Simulasi menerima permintaan reset password:", req.body); // Log data
-
-        // --- SIMULASI RESPON RESET PASSWORD ---
-        // GANTI dengan respons NYATA setelah logika dijalankan
-        const simulasiTokenValid = token === '123456'; // Contoh simulasi token valid
-
-        if (simulasiTokenValid) {
-            // Simulasi berhasil reset password
-            res.status(200).json({
-                message: 'Password berhasil direset.'
-            });
-        } else {
-            // Simulasi token tidak valid atau error lain
-            res.status(400).json({ // Status 400 Bad Request atau 401 Unauthorized
-                message: 'Kode reset tidak valid atau sudah kedaluwarsa.'
+        // Validasi input dasar
+        if (!whatsapp || !token || !newPassword) {
+            return res.status(400).json({
+                message: 'Nomor Whatsapp, kode reset, dan password baru harus diisi.'
             });
         }
-        // --------------------------------------
+        // Tambahkan validasi kekuatan password baru jika perlu
+
+        let client;
+        try {
+            client = await pool.connect();
+
+            // 1. Cari Pengguna Berdasarkan Whatsapp
+            const userQuery = 'SELECT id FROM users WHERE whatsapp = $1;';
+            const userResult = await client.query(userQuery, [whatsapp]);
+            const user = userResult.rows[0];
+
+            if (!user) {
+                // Pengguna tidak ditemukan (pesan umum)
+                return res.status(400).json({
+                    message: 'Kode reset tidak valid atau sudah kedaluwarsa.'
+                });
+            }
+
+            const userId = user.id;
+
+            // 2. Cari Token Reset untuk Pengguna dan Token yang Diberikan
+            const tokenQuery = `
+                SELECT token_id, expires_at
+                FROM password_reset_tokens
+                WHERE user_id = $1 AND token = $2;
+            `;
+            const tokenResult = await client.query(tokenQuery, [userId, token]);
+            const resetTokenData = tokenResult.rows[0];
+
+            // 3. Verifikasi Token Valid dan Belum Kedaluwarsa
+            if (!resetTokenData || new Date() > new Date(resetTokenData.expires_at)) {
+                // Token tidak ditemukan, atau sudah kedaluwarsa
+                // Penting: Hapus token yang sudah kedaluwarsa/tidak valid untuk keamanan
+                if (resetTokenData) { // Jika token ditemukan tapi kedaluwarsa
+                    await client.query('DELETE FROM password_reset_tokens WHERE token_id = $1;', [resetTokenData.token_id]);
+                }
+                return res.status(400).json({
+                    message: 'Kode reset tidak valid atau sudah kedaluwarsa.'
+                });
+            }
+
+            // 4. Jika Token Valid: Hash Password Baru
+            const saltRounds = 10;
+            const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+            // 5. Perbarui Password Pengguna di Tabel users
+            const updatePasswordQuery = `
+                UPDATE users
+                SET password_hash = $1
+                WHERE id = $2;
+            `;
+            await client.query(updatePasswordQuery, [newPasswordHash, userId]);
+
+            // 6. Hapus Token Reset Setelah Berhasil Digunakan
+            const deleteTokenQuery = 'DELETE FROM password_reset_tokens WHERE token_id = $1;';
+            await client.query(deleteTokenQuery, [resetTokenData.token_id]);
+
+
+            // 7. Kirim Respons Sukses
+            res.status(200).json({
+                message: 'Password Anda berhasil direset. Silahkan login dengan password baru Anda.'
+            });
+
+        } catch (error) {
+            console.error('Error saat reset password:', error);
+            res.status(500).json({
+                message: 'Terjadi kesalahan internal saat reset password.'
+            });
+
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
 
     } else {
         res.status(405).json({

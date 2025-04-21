@@ -1,42 +1,137 @@
 // api/forgot-password.js
-// Serverless Function untuk menangani permintaan lupa password
+import {
+    Pool
+} from 'pg'; // Import library pg
+// Import library untuk menghasilkan token unik (misalnya, 'uuid' atau 'crypto')
+// import { v4 as uuidv4 } from 'uuid'; // Contoh pakai uuid
+import crypto from 'crypto'; // Node.js built-in module
 
-export default function handler(req, res) {
+// Gunakan pool koneksi yang sama
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    // ssl: { rejectUnauthorized: false } // Sesuaikan jika perlu SSL
+});
+
+// Fungsi helper untuk menghasilkan token acak sederhana (misalnya, 6 digit angka)
+function generateResetCode(length = 6) {
+    const characters = '0123456789';
+    let code = '';
+    for (let i = 0; i < length; i++) {
+        code += characters[Math.floor(Math.random() * characters.length)];
+    }
+    return code;
+}
+
+// Atau gunakan cara yang lebih aman dan unik seperti UUID
+// function generateResetToken() {
+//     return uuidv4(); // Memerlukan 'uuid' library
+// }
+
+// Atau gunakan cara dari crypto Node.js
+function generateSecureToken(bytes = 32) {
+    return crypto.randomBytes(bytes).toString('hex');
+}
+
+
+export default async function handler(req, res) {
     if (req.method === 'POST') {
-        // Mengambil data dari body permintaan
         const {
-            whatsapp, // Asumsi pengguna memasukkan nomor WA
-            // atau email, username, dll. tergantung desain
+            whatsapp, // Identitas pengguna dari frontend
+            // Jika frontend juga mengirim email/username, sesuaikan di sini
         } = req.body;
 
-        // --- LOGIKA LUPA PASSWORD SESUNGGUHNYA ADA DI SINI ---
-        // GANTI BAGIAN INI dengan logika backend sesungguhnya:
-        // 1. Cari pengguna di database berdasarkan 'whatsapp'.
-        // 2. Jika pengguna ditemukan:
-        //    a. Hasilkan kode reset password yang unik (misalnya, angka acak atau token JWT pendek).
-        //    b. Simpan kode reset ini di database terkait pengguna tersebut, beserta waktu kedaluwarsa.
-        //    c. Kirimkan kode reset ini ke pengguna (misalnya, melalui SMS ke nomor WhatsApp, memerlukan integrasi dengan layanan SMS API).
-        // 3. Tangani jika pengguna tidak ditemukan (PENTING: Jangan berikan pesan yang terlalu spesifik ke frontend demi keamanan).
-        // ----------------------------------------------------
-
-        console.log("Simulasi menerima permintaan lupa password untuk WA:", whatsapp); // Log data
-
-        // --- SIMULASI RESPON LUPA PASSWORD ---
-        // GANTI dengan respons NYATA setelah logika dijalankan
-        const simulasiUserDitemukan = whatsapp === '081234567890'; // Contoh simulasi pengguna ditemukan
-
-        if (simulasiUserDitemukan) {
-            // Simulasi berhasil mengirim kode (kode tidak benar-benar dikirim)
-            res.status(200).json({
-                message: 'Kode reset telah dikirim ke WhatsApp Anda.'
-            });
-        } else {
-            // Simulasi pengguna tidak ditemukan atau gagal kirim (pesan umum demi keamanan)
-            res.status(404).json({ // Status 404 Not Found atau 400 Bad Request
-                message: 'Nomor Whatsapp tidak terdaftar atau terjadi kesalahan.'
+        // Validasi input dasar
+        if (!whatsapp) {
+            return res.status(400).json({
+                message: 'Nomor Whatsapp harus diisi.'
             });
         }
-        // --------------------------------------
+
+        let client;
+        try {
+            client = await pool.connect();
+
+            // 1. Cari Pengguna Berdasarkan Whatsapp
+            const userQuery = 'SELECT id FROM users WHERE whatsapp = $1;';
+            const userResult = await client.query(userQuery, [whatsapp]);
+            const user = userResult.rows[0];
+
+            if (!user) {
+                // PENTING: Kirim pesan umum meskipun pengguna tidak ditemukan demi keamanan
+                // Ini mencegah enumerasi pengguna (mencoba nomor WA untuk melihat mana yang terdaftar)
+                console.warn(`Attempted password reset for non-existent WA: ${whatsapp}`);
+                return res.status(200).json({
+                    message: 'Jika nomor terdaftar, instruksi reset akan dikirim.'
+                });
+            }
+
+            const userId = user.id;
+
+            // 2. Hapus Token Reset yang Lama untuk Pengguna Ini (Bersihkan)
+            const deleteOldTokensQuery = 'DELETE FROM password_reset_tokens WHERE user_id = $1;';
+            await client.query(deleteOldTokensQuery, [userId]);
+
+            // 3. Hasilkan Token Reset Baru dan Tentukan Waktu Kedaluwarsa
+            // const resetToken = generateResetCode(6); // Contoh pakai kode 6 digit
+            const resetToken = generateSecureToken(32); // Contoh pakai token hex lebih aman
+            const expiresAt = new Date(Date.now() + 3600000); // Contoh kedaluwarsa dalam 1 jam (3600000 ms)
+
+            // 4. Simpan Token Reset Baru di Database
+            const insertTokenQuery = `
+                INSERT INTO password_reset_tokens (user_id, token, expires_at)
+                VALUES ($1, $2, $3);
+            `;
+            await client.query(insertTokenQuery, [userId, resetToken, expiresAt]);
+
+            // --- TEMPAT UNTUK MENGIRIM TOKEN KE PENGGUNA ---
+            // INI ADALAH BAGIAN YANG PALING KOMPLEKS DAN MEMERLUKAN LAYANAN EKSTERNAL!
+            // Contoh:
+            // try {
+            //    // Gunakan Twilio API untuk mengirim SMS:
+            //    // const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+            //    // await twilioClient.messages.create({
+            //    //    body: `Kode reset password Anda: ${resetToken}. Akan kedaluwarsa dalam 1 jam.`,
+            //    //    from: process.env.TWILIO_PHONE_NUMBER, // Nomor pengirim Twilio Anda
+            //    //    to: whatsapp // Nomor WA pengguna
+            //    // });
+            //
+            //    // Atau gunakan Nodemailer + SMTP service untuk mengirim email:
+            //    // const nodemailer = require('nodemailer');
+            //    // const transporter = nodemailer.createTransport({ /* Konfigurasi SMTP Anda */ });
+            //    // await transporter.sendMail({
+            //    //    from: '"Nama Anda" <your_email@example.com>',
+            //    //    to: emailPenggunaDariDB, // Ambil email dari data pengguna yang dicari sebelumnya
+            //    //    subject: 'Permintaan Reset Password Anda',
+            //    //    text: `Kode reset password Anda: ${resetToken}. Akan kedaluwarsa dalam 1 jam.`,
+            //    //    html: `<p>Kode reset password Anda: <strong>${resetToken}</strong>.</p><p>Akan kedaluwarsa dalam 1 jam.</p>`
+            //    // });
+            //
+            // } catch (sendError) {
+            //    console.error('Gagal mengirim kode reset:', sendError);
+            //    // Pertimbangkan apakah Anda ingin memberitahu frontend error pengiriman
+            //    // atau tetap menganggap proses reset "dimulai" meskipun pengiriman gagal.
+            //    // Untuk keamanan, seringkali lebih baik menganggapnya sukses dari sisi frontend.
+            // }
+            // -------------------------------------------------
+
+
+            // 5. Kirim Respons Sukses ke Frontend (Meski pengiriman mungkin gagal)
+            // Pesan umum demi keamanan, jangan sebutkan token di sini.
+            res.status(200).json({
+                message: 'Jika nomor terdaftar, instruksi reset akan dikirim.'
+            });
+
+        } catch (error) {
+            console.error('Error saat proses lupa password:', error);
+            res.status(500).json({
+                message: 'Terjadi kesalahan internal saat lupa password.'
+            });
+
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
 
     } else {
         res.status(405).json({

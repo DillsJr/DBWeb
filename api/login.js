@@ -1,47 +1,94 @@
 // api/login.js
-// Serverless Function untuk menangani permintaan login
+import {
+    Pool
+} from 'pg'; // Import library pg
+import bcrypt from 'bcrypt'; // Import library bcrypt
 
-export default function handler(req, res) {
-    // Memastikan permintaan menggunakan metode POST
+// Gunakan pool koneksi yang sama seperti di register.js
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    // ssl: { rejectUnauthorized: false } // Sesuaikan jika perlu SSL
+});
+
+export default async function handler(req, res) {
     if (req.method === 'POST') {
-        // Mengambil data dari body permintaan (diasumsikan sudah di-parse Vercel)
         const {
-            whatsapp, // Mengambil field 'whatsapp'
-            password
+            whatsapp, // Nomor WA atau username/email yang digunakan untuk login
+            password // Password yang dimasukkan pengguna
         } = req.body;
 
-        // --- SIMULASI VALIDASI LOGIN (INI TIDAK AMAN DAN HANYA CONTOH!) ---
-        // GANTI BAGIAN INI dengan logika backend sesungguhnya:
-        // 1. Terhubung ke database.
-        // 2. Cari pengguna di database berdasarkan 'whatsapp' (atau identitas unik).
-        // 3. Bandingkan password yang dimasukkan dengan password ter-hash dari database (gunakan library seperti bcrypt).
-        // 4. Jika cocok, hasilkan token otentikasi (misalnya JWT) atau atur sesi.
-        // -------------------------------------------------------------------
-
-        // Contoh validasi simulasi dengan hardcode (TIDAK AMAN! GANTI!)
-        const SIMULASI_WHATSAPP = '081234567890'; // Ganti dengan nomor simulasi
-        const SIMULASI_PASSWORD = 'password123'; // Ganti dengan password simulasi (di aplikasi nyata, JANGAN SIMPAN PLAINTEXT)
-
-        if (whatsapp === SIMULASI_WHATSAPP && password === SIMULASI_PASSWORD) {
-            // Login berhasil (simulasi)
-            res.status(200).json({
-                message: 'Login berhasil!',
-                user: {
-                    // Di sini kamu akan mengembalikan data pengguna dari database, BUKAN password!
-                    whatsapp: whatsapp,
-                    username: 'simulasi_user', // Contoh username simulasi
-                    // data lain seperti nama, email, dll.
-                }
-            });
-        } else {
-            // Login gagal (simulasi)
-            // Pesan error umum untuk keamanan
-            res.status(401).json({
-                message: 'Nomor Whatsapp atau password salah.'
+        // Validasi input dasar
+        if (!whatsapp || !password) {
+            return res.status(400).json({
+                message: 'Nomor Whatsapp dan password harus diisi.'
             });
         }
+
+
+        let client; // Variabel untuk klien database
+        try {
+            // 1. Terhubung ke Database
+            client = await pool.connect();
+
+            // 2. Cari Pengguna Berdasarkan Whatsapp (atau username/email)
+            const query = `
+                SELECT id, whatsapp, username, full_name, password_hash
+                FROM users
+                WHERE whatsapp = $1; -- Cari berdasarkan nomor WA
+                -- ATAU WHERE username = $1;
+                -- ATAU WHERE email = $1;
+            `;
+            const values = [whatsapp]; // Gunakan whatsapp sebagai nilai pencarian
+
+            const result = await client.query(query, values);
+            const user = result.rows[0]; // Ambil baris pertama (jika ada)
+
+            // 3. Verifikasi Pengguna Ditemukan dan Password
+            if (user) {
+                // Bandingkan password yang dimasukkan dengan password hash dari database
+                const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+                if (passwordMatch) {
+                    // Login berhasil
+                    // PENTING: Jangan kembalikan password_hash ke frontend!
+                    res.status(200).json({
+                        message: 'Login berhasil!',
+                        user: { // Kembalikan data pengguna (tanpa password hash)
+                            id: user.id,
+                            whatsapp: user.whatsapp,
+                            username: user.username,
+                            fullName: user.full_name,
+                            // Anda bisa tambahkan data lain dari DB di sini
+                        }
+                        // Di sini Anda juga akan menghasilkan token otentikasi (JWT) untuk sesi
+                    });
+                } else {
+                    // Password tidak cocok
+                    res.status(401).json({
+                        message: 'Nomor Whatsapp atau password salah.'
+                    }); // Pesan umum
+                }
+            } else {
+                // Pengguna tidak ditemukan
+                res.status(401).json({
+                    message: 'Nomor Whatsapp atau password salah.'
+                }); // Pesan umum
+            }
+
+        } catch (error) {
+            console.error('Error saat login:', error);
+            res.status(500).json({
+                message: 'Terjadi kesalahan internal saat login.'
+            });
+
+        } finally {
+            // Penting: Lepaskan koneksi klien kembali ke pool
+            if (client) {
+                client.release();
+            }
+        }
+
     } else {
-        // Jika metode HTTP bukan POST
         res.status(405).json({
             message: 'Metode Tidak Diizinkan. Gunakan POST.'
         });
