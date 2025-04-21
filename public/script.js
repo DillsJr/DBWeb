@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ganti konten form login dengan form lupa password
             loginFormElement.innerHTML = `
                 <h2> Lupa Password </h2>
-                <p style="color: #b8c1ec;"> Masukkan nomor WhatsApp Anda untuk memulai proses reset password. </p>
+                <p style="color: #272343;"> Masukkan nomor WhatsApp Anda untuk memulai proses reset password. </p>
                 <form id="forgotPasswordForm">
                     <div class="input-group">
                         <label for="forgotPasswordWhatsapp" style="color: #121629;"> Nomor Whatsapp </label>
