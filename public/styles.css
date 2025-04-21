@@ -1,13 +1,13 @@
-/* public/style.css - Gaya tanpa animasi pada form perpindahan */
+/* public/style.css
 
-/* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
+/* Gaya Dasar untuk Body - Aktifkan Flexbox untuk centering seluruh container */
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
     /* Warna latar belakang body */
     margin: 0;
     padding: 20px;
-    /* Padding default untuk layar lebih besar */
+    /* Padding di tepi viewport */
     min-height: 100vh;
     /* Pastikan background menutupi seluruh tinggi viewport */
     color: #fff;
@@ -15,28 +15,47 @@ body {
     line-height: 1.6;
     /* Tingkatkan keterbacaan teks paragraf */
     box-sizing: border-box;
-    /* Penting untuk padding */
+    /* Penting agar padding body tidak menambah ukuran */
+
+    /* --- KRITIS untuk Centering Vertikal dan Horizontal Container --- */
+    display: flex;
+    /* Mengaktifkan Flexbox */
+    justify-content: center;
+    /* Menengahkan konten anak (container) secara horizontal */
+    align-items: center;
+    /* Menengahkan konten anak (container) secara vertikal */
+    /* height: 100vh; // min-height 100vh lebih fleksibel */
 }
 
-/* Gaya Container - Digunakan di index.html dan homepage.html */
-/* Properti width: 100% dan max-width membuat ini responsif secara horizontal */
+/* Gaya Container - Set min-height, position relative, dan hapus margin auto */
 .container {
     background-color: #fffffe;
     /* Warna latar belakang container */
     border-radius: 8px;
+    /* Padding di dalam container - Padding atas di sini AKAN MEMPENGARUHI posisi tab ke bawah */
     padding: 20px;
-    /* Padding default container */
     width: 100%;
     /* Gunakan lebar penuh yang tersedia */
     max-width: 500px;
     /* Tapi tidak lebih lebar dari 500px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     /* Menambahkan shadow */
-    margin: 20px auto;
-    /* Tengahkan container di tengah halaman */
+    /* Hapus margin: 20px auto; karena centering sekarang ditangani oleh body flexbox */
+    margin: 0;
+    /* Atur margin menjadi 0 agar flexbox centering bekerja penuh */
+
     color: #121629;
-    /* Warna teks default di dalam container */
-    /* Hapus gaya/transisi animasi submit */
+    position: relative;
+    /* KRITIS: Penting sebagai acuan untuk absolute positioning anak-anak form */
+    /* Set Minimum Height agar container tidak 'melompat' saat ganti form */
+    /* Sesuaikan nilai ini (px) agar cukup tinggi untuk form Register + padding */
+    /* Anda mungkin perlu sedikit coba-coba nilai ini */
+    min-height: 580px;
+    /* Contoh nilai, sesuaikan jika perlu */
+    overflow: hidden;
+    /* Sembunyikan konten yang mungkin meluap jika min-height kurang pas */
+    box-sizing: border-box;
+    /* Penting agar padding container masuk dalam lebar/tinggi */
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
@@ -94,6 +113,12 @@ body {
 .tabs {
     display: flex;
     margin-bottom: 20px;
+    /* Memberikan jarak di bawah tab area */
+    /* Tabs tetap dalam alur normal */
+    position: relative;
+    /* Memberikan stacking context agar di atas form yg absolute */
+    z-index: 1;
+    /* Memastikan tab berada di depan form yg absolute di bawahnya */
 }
 
 .tabs button {
@@ -114,7 +139,7 @@ body {
     border-bottom: 2px solid #eebbc3;
 }
 
-/* Judul form */
+/* Judul form - Menghapus margin-top tambahan, akan diganti oleh posisi 'top' form div */
 #loginForm h2,
 #registerForm h2,
 #loginForm form h2,
@@ -122,6 +147,8 @@ body {
 #registerForm form h2 {
     color: #121629;
     margin-bottom: 5px;
+    margin-top: 0;
+    /* KRITIS: Kembalikan margin-top ke 0 atau nilai kecil jika perlu */
     text-align: center;
     font-size: 1.5em;
 }
@@ -138,9 +165,10 @@ body {
     text-align: center;
 }
 
-/* Group input */
+/* Group input - Menambah jarak bawah */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    /* Disesuaikan dari 15px */
 }
 
 .input-group label {
@@ -163,10 +191,12 @@ body {
     font-size: 1em;
 }
 
+/* Checkbox group - Menambah jarak bawah */
 .checkbox-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    /* Disesuaikan dari 15px */
 }
 
 .checkbox-group input[type="checkbox"] {
@@ -230,18 +260,54 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
-/* --- Gaya untuk Menyembunyikan Form Tanpa Animasi --- */
+/* --- Gaya untuk Form Containers (#loginForm, #registerForm) --- */
+/* KRITIS: Posisi absolute agar form bertumpuk di dalam container */
+/* KRITIS: Atur 'top' agar form dimulai di bawah area tab */
+#loginForm,
+#registerForm {
+    /* Hapus transisi animasi jika ada */
+    /* transition: opacity 0.3s ease-out, transform 0.3s ease-out; */
 
-/* KRITIS: Gunakan display: none; untuk menyembunyikan elemen secara total */
-/* Elemen dengan class ini akan hilang dari alur dokumen */
-.hidden {
-    display: none;
+    /* Properti visual saat terlihat (akan diatur display: block oleh JS via remove class hidden) */
+    opacity: 1;
+    visibility: visible;
+    /* Tetap visible saat tidak hidden */
+    transform: translateY(0);
+    /* Posisi normal */
+    pointer-events: auto;
+    /* Izinkan interaksi saat terlihat */
+
+    /* --- KRITIS untuk Absolute Positioning & Penyesuaian Posisi --- */
+    position: absolute;
+    /* Posisikan secara absolut di dalam container */
+    /* top: 0; // Hapus atau ubah ini */
+    top: 60px;
+    /* KRITIS: Geser form ke bawah agar dimulai di bawah area tab (sesuaikan nilai jika perlu) */
+    left: 0;
+    /* Mulai dari tepi kiri container */
+    /* width 100% dan padding inherit + box-sizing membuat konten form pas di dalam padding container */
+    width: 100%;
+    /* height: 100%; // Hapus atau ubah ini */
+    bottom: 0;
+    /* KRITIS: Buat tinggi form mengisi ruang dari 'top' hingga dasar kontainer */
+    padding: inherit;
+    /* Warisi padding dari container */
+    box-sizing: border-box;
+    /* Pastikan padding masuk dalam hitungan width/height */
+    overflow-y: auto;
+    /* Tambahkan scroll vertikal jika konten form melebihi tinggi container */
+    z-index: 0;
+    /* Pastikan form berada di belakang tab */
 }
 
-/* Hapus gaya .form-hidden-visual jika ada */
-/* Hapus keyframes animasi submit */
-/* Hapus gaya container saat submitting */
 
+/* Gaya untuk Form Saat Disembunyikan Secara Total (digunakan oleh JS via class 'hidden') */
+/* KRITIS: Gunakan display: none; untuk menyembunyikan elemen secara total dari alur dan rendering */
+.hidden {
+    display: none;
+    /* KRITIS: Hapus dari alur dokumen */
+    /* Hapus gaya opacity, visibility, transform, pointer-events jika tidak pakai animasi visual */
+}
 
 /* --- Gaya untuk Notifikasi Kustom --- */
 /* Tetap pertahankan gaya notifikasi dengan transisi show/hide */
@@ -286,18 +352,29 @@ button[type="submit"]:hover {
 }
 
 /* --- Media Query untuk Layar Kecil (maksimum lebar 600px) --- */
-/* Tetap pertahankan gaya responsif */
+/* Tetap pertahankan gaya responsif, sesuaikan padding/min-height jika perlu */
 @media (max-width: 600px) {
     body {
         padding: 15px;
+        /* Kurangi padding body */
     }
 
     .container {
         padding: 15px;
-        margin: 15px auto;
+        /* Kurangi padding container */
+        /* margin: 15px auto; // Tidak perlu margin auto jika body flex/grid centering */
+        margin: 0;
+        /* Atur margin menjadi 0 */
+        min-height: 550px;
+        /* Sesuaikan min-height untuk mobile jika perlu */
     }
 
-    /* Menyesuaikan ukuran font dan padding di layar kecil */
+    /* Penyesuaian posisi top form untuk mobile jika area tab berbeda */
+    /* Jika area tab sama, aturan top: 60px; di atas sudah cukup */
+    /* #loginForm, #registerForm { top: 50px; // Contoh penyesuaian } */
+
+
+    /* Menyesuaikan ukuran font dan padding elemen di dalam form tetap seperti sebelumnya */
     .container h1 {
         font-size: 1.6em;
     }

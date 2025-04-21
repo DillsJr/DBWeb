@@ -1,4 +1,4 @@
-// public/homepage.js - Script untuk halaman beranda setelah login (homepage.html)
+// public/homepage.js 
 
 document.addEventListener('DOMContentLoaded', () => {
 
