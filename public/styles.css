@@ -1,4 +1,4 @@
-/* public/style.css - Gaya Gabungan Lengkap untuk Login/Daftar dan Homepage (FINAL) */
+/* public/style.css
 
 /* --- BAGIAN 1: Gaya untuk Body dan Container (Umum atau Khusus Index.html) --- */
 
@@ -348,11 +348,14 @@ button[type="submit"]:hover {
 
 /* --- Media Query untuk Layar Kecil (Penyesuaian Umum dan Login/Daftar) --- */
 @media (max-width: 600px) {
+
+    /* Penyesuaian Body Umum untuk Mobile */
     body {
         padding: 15px;
         /* Kurangi padding body */
     }
 
+    /* Penyesuaian Container Login/Daftar untuk Mobile */
     .container {
         padding: 15px;
         /* Kurangi padding container */
@@ -362,7 +365,7 @@ button[type="submit"]:hover {
         /* Sesuaikan min-height untuk mobile jika perlu */
     }
 
-    /* Menyesuaikan ukuran font dan padding elemen di dalam form tetap seperti sebelumnya */
+    /* Penyesuaian Gaya Elemen di dalam Form Login/Daftar untuk Mobile */
     .container h1 {
         font-size: 1.6em;
     }
@@ -406,6 +409,56 @@ button[type="submit"]:hover {
 
     .checkbox-group {
         align-items: center;
+    }
+
+    /* Penyesuaian Spesifik Homepage untuk Mobile (di dalam media query) */
+    body.homepage-body .homepage-header {
+        flex-direction: column;
+        /* Tumpuk elemen header vertikal */
+        padding: 10px 20px;
+        /* Sesuaikan padding header mobile */
+        gap: 10px;
+        /* Jarak antar elemen header saat ditumpuk */
+    }
+
+    body.homepage-body .homepage-header .header-left,
+    body.homepage-body .homepage-header .header-right {
+        width: 100%;
+        /* Berikan lebar penuh */
+        text-align: center;
+        /* Tengahkan teks/tombol */
+    }
+
+    body.homepage-body .homepage-main-content {
+        flex-direction: column;
+        /* Tumpuk kolom teks dan gambar vertikal */
+        padding: 30px 20px;
+        /* Sesuaikan padding konten utama mobile */
+        gap: 30px;
+        /* Jarak antar kolom saat ditumpuk */
+    }
+
+    body.homepage-body .homepage-main-content .text-column {
+        max-width: 100%;
+        /* Izinkan kolom teks selebar container */
+        text-align: center;
+        /* Tengahkan teks di kolom teks */
+    }
+
+    body.homepage-body .homepage-main-content .welcome-heading {
+        font-size: 2em;
+        /* Sesuaikan ukuran judul */
+    }
+
+    body.homepage-body .homepage-main-content .image-column {
+        min-width: unset;
+        /* Hapus min-width kolom gambar */
+    }
+
+    body.homepage-body .homepage-main-content .profile-pic-container {
+        width: 120px;
+        /* Sesuaikan ukuran gambar profil di mobile */
+        height: 120px;
     }
 }
 
@@ -465,7 +518,6 @@ body.homepage-body .homepage-header .header-logout-button {
     /* Warna teks tombol */
     border: none;
     border-radius: 4px;
-    cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s ease;
 }
@@ -479,22 +531,26 @@ body.homepage-body .homepage-header .header-logout-button:hover {
 body.homepage-body .homepage-main-content {
     display: flex;
     /* Aktifkan Flexbox untuk layout kolom */
-    flex-direction: row;
-    /* Atur arah Flex menjadi baris (kolom) */
+    /* justify-content: space-between; */
+    /* Sebar kolom ke pinggir - Diubah ke center */
+    justify-content: center;
+    /* KRITIS: Mengganti space-between ke center agar konten di tengah */
     align-items: center;
     /* Tengahkan item (kolom) secara vertikal di dalam container Flex */
-    justify-content: center;
-    /* Tengahkan item (kolom) secara horizontal jika total lebar < container Flex */
+    flex-direction: row;
+    /* Atur arah Flex menjadi baris (kolom) */
     padding: 60px 40px;
     /* Padding di dalam area konten utama */
     gap: 40px;
     /* Jarak antar kolom */
     flex-wrap: wrap;
     /* Biarkan kolom wrap ke bawah di layar kecil */
-    /* min-height: calc(100vh - (2 * 15px + 40px)); */
-    /* Sesuaikan min-height konten utama jika perlu */
+    min-height: calc(100vh - 70px - 0px);
+    /* Sesuaikan min-height: 100vh - tinggi header (~70px) - tinggi footer (0px karena tidak ada footer) */
     box-sizing: border-box;
     /* Pastikan padding masuk hitungan ukuran */
+    /* min-height: calc(100vh - 70px - 120px); */
+    /* Contoh: 100vh - tinggi header (~70px) - tinggi footer (~120px jika ada) - Disesuaikan */
 }
 
 /* Gaya untuk Kolom Teks di Homepage */
@@ -505,8 +561,8 @@ body.homepage-body .homepage-main-content .text-column {
     /* Lebar minimum sebelum wrap */
     max-width: 500px;
     /* Lebar maksimum kolom teks */
-    color: #fff;
-    /* Warna teks di kolom teks */
+    color: #e8e4e6;
+    /* Warna teks di kolom teks - Disesuaikan dengan warna teks body */
 }
 
 /* Gaya untuk Judul Selamat Datang di Homepage */
@@ -522,7 +578,7 @@ body.homepage-body .homepage-main-content .welcome-heading {
 
 body.homepage-body .homepage-main-content .welcome-heading span {
     color: #22444d;
-    /* Contoh warna nama pengguna */
+    /* Contoh warna nama pengguna - Disesuaikan */
     font-weight: bold;
 }
 
@@ -559,6 +615,14 @@ body.homepage-body .homepage-main-content .profile-pic-container {
     border: 3px solid #001e1d;
     /* Contoh border */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    /* Penting untuk menempatkan upload area di atas */
+    display: flex;
+    /* Gunakan Flexbox untuk menengahkan konten di dalamnya */
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    /* Warna latar container saat belum ada foto */
 }
 
 /* Gaya untuk Tag Img Foto Profil */
@@ -569,6 +633,67 @@ body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     height: 100%;
     object-fit: cover;
     /* Pastikan gambar tidak terdistorsi */
+    /* Gaya display diatur oleh JS (block/none) */
+    z-index: 1;
+    /* Pastikan gambar di depan upload area */
+}
+
+/* Gaya untuk Area Upload */
+body.homepage-body .homepage-main-content .upload-area {
+    position: absolute;
+    /* Tempatkan di atas container */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* Gunakan Flexbox untuk menengahkan konten */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Latar belakang transparan */
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    /* Ubah kursor */
+    z-index: 2;
+    /* Pastikan area upload di depan gambar (saat terlihat) */
+    /* Gaya display diatur oleh JS (flex/none) */
+    font-size: 0.9em;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Sembunyikan input file default */
+body.homepage-body .homepage-main-content .upload-area .file-input {
+    display: none;
+}
+
+/* Gaya untuk Label yang bertindak sebagai tombol */
+body.homepage-body .homepage-main-content .upload-area .upload-button {
+    display: block;
+    /* Buat block agar padding/margin bekerja */
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background-color: #a5c9b1;
+    /* Warna tombol */
+    color: #22444d;
+    /* Warna teks tombol */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+body.homepage-body .homepage-main-content .upload-area .upload-button:hover {
+    background-color: #b0d4bd;
+}
+
+body.homepage-body .homepage-main-content .upload-area .upload-text {
+    font-size: 0.8em;
+    margin-top: 0;
+    color: #ccc;
 }
 
 
@@ -638,9 +763,6 @@ body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     }
 
     /* Penyesuaian Spesifik Homepage untuk Mobile (di dalam media query) */
-    /* Hapus aturan kosong body.homepage-body {} di sini */
-    /* (Tidak perlu aturan body.homepage-body {} kosong di dalam media query) */
-
     body.homepage-body .homepage-header {
         flex-direction: column;
         /* Tumpuk elemen header vertikal */
