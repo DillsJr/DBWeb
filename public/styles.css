@@ -1,6 +1,9 @@
-/* public/style.css
+/* public/style.css - Gaya Gabungan Lengkap untuk Login/Daftar dan Homepage (FINAL) */
 
-/* Gaya Dasar untuk Body - Aktifkan Flexbox untuk centering seluruh container */
+/* --- BAGIAN 1: Gaya untuk Body dan Container (Umum atau Khusus Index.html) --- */
+
+/* Gaya Dasar untuk Body (Default - Berlaku di index.html kecuali ditimpa) */
+/* Note: Gaya body di homepage.html akan ditimpa oleh body.homepage-body di bawah */
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
@@ -17,7 +20,8 @@ body {
     box-sizing: border-box;
     /* Penting agar padding body tidak menambah ukuran */
 
-    /* --- KRITIS untuk Centering Vertikal dan Horizontal Container --- */
+    /* --- KRITIS untuk Centering Vertikal dan Horizontal Container di Index.html --- */
+    /* Gaya ini akan ditimpa oleh body.homepage-body di bawah saat di homepage */
     display: flex;
     /* Mengaktifkan Flexbox */
     justify-content: center;
@@ -27,20 +31,20 @@ body {
     /* height: 100vh; // min-height 100vh lebih fleksibel */
 }
 
-/* Gaya Container - Set min-height, position relative, dan hapus margin auto */
+/* Gaya Container (Khusus Index.html - karena homepage.html tidak lagi pakai div.container) */
 .container {
     background-color: #fffffe;
     /* Warna latar belakang container */
     border-radius: 8px;
-    /* Padding di dalam container - Padding atas di sini AKAN MEMPENGARUHI posisi tab ke bawah */
     padding: 20px;
+    /* Padding di dalam container */
     width: 100%;
     /* Gunakan lebar penuh yang tersedia */
     max-width: 500px;
     /* Tapi tidak lebih lebar dari 500px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     /* Menambahkan shadow */
-    /* Hapus margin: 20px auto; karena centering sekarang ditangani oleh body flexbox */
+    /* Hapus margin: 20px auto; karena centering ditangani oleh body flexbox di index.html */
     margin: 0;
     /* Atur margin menjadi 0 agar flexbox centering bekerja penuh */
 
@@ -49,7 +53,6 @@ body {
     /* KRITIS: Penting sebagai acuan untuk absolute positioning anak-anak form */
     /* Set Minimum Height agar container tidak 'melompat' saat ganti form */
     /* Sesuaikan nilai ini (px) agar cukup tinggi untuk form Register + padding */
-    /* Anda mungkin perlu sedikit coba-coba nilai ini */
     min-height: 580px;
     /* Contoh nilai, sesuaikan jika perlu */
     overflow: hidden;
@@ -58,37 +61,32 @@ body {
     /* Penting agar padding container masuk dalam lebar/tinggi */
 }
 
-/* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
-/* Pastikan konten homepage.html dibungkus dengan <div class="container">...</div> */
-
-/* Judul h1 di dalam container */
+/* --- Gaya untuk Elemen di Homepage.html (Di dalam .container - Gaya LAMA yang mungkin tidak dipakai lagi) --- */
+/* Properti ini tetap ada jika Anda menggunakan div.container di homepage lagi,
+   tapi gaya body.homepage-body di bawah lebih spesifik untuk layout baru. */
 .container h1 {
     color: #121629;
     margin-top: 0;
     margin-bottom: 10px;
     text-align: center;
     font-size: 2em;
-    /* Menggunakan unit relatif untuk ukuran font */
 }
 
-/* Span yang menampilkan nama pengguna di dalam h1 */
 .container h1 span {
     color: #eebbc3;
     font-weight: bold;
 }
 
-/* Paragraf di dalam container */
 .container p {
     color: #272343;
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* Tombol Logout di dalam container */
 .container #logoutButton {
+    /* Gaya tombol logout di container lama */
     display: block;
     width: auto;
-    /* Lebar otomatis */
     padding: 10px 20px;
     background-color: #eebbc3;
     color: #121629;
@@ -100,7 +98,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     transition: background-color 0.3s ease;
-    /* Transisi hover tetap OK */
 }
 
 .container #logoutButton:hover {
@@ -108,7 +105,7 @@ body {
 }
 
 /* --- Gaya untuk Elemen di Index.html (Form Login/Daftar) --- */
-/* Gaya-gaya untuk elemen form */
+/* Gaya-gaya untuk elemen form Login/Daftar */
 
 .tabs {
     display: flex;
@@ -139,7 +136,7 @@ body {
     border-bottom: 2px solid #eebbc3;
 }
 
-/* Judul form - Menghapus margin-top tambahan, akan diganti oleh posisi 'top' form div */
+/* Judul form Login/Daftar - Menghapus margin-top tambahan, akan diganti oleh posisi 'top' form div */
 #loginForm h2,
 #registerForm h2,
 #loginForm form h2,
@@ -153,7 +150,7 @@ body {
     font-size: 1.5em;
 }
 
-/* Paragraf deskripsi di form */
+/* Paragraf deskripsi di form Login/Daftar */
 #loginForm p,
 #registerForm p,
 #loginForm form p,
@@ -165,7 +162,7 @@ body {
     text-align: center;
 }
 
-/* Group input - Menambah jarak bawah */
+/* Group input Login/Daftar - Menambah jarak bawah */
 .input-group {
     margin-bottom: 20px;
     /* Disesuaikan dari 15px */
@@ -179,7 +176,7 @@ body {
     font-size: 1em;
 }
 
-/* Input teks, email, password, tel */
+/* Input teks, email, password, tel Login/Daftar */
 .input-group input {
     width: 95%;
     padding: 10px;
@@ -191,7 +188,7 @@ body {
     font-size: 1em;
 }
 
-/* Checkbox group - Menambah jarak bawah */
+/* Checkbox group Login/Daftar - Menambah jarak bawah */
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -211,7 +208,7 @@ body {
     font-size: 0.9em;
 }
 
-/* Link Lupa Password */
+/* Link Lupa Password Login/Daftar */
 .forgot-password {
     color: #eebbc3;
     text-decoration: none;
@@ -223,7 +220,7 @@ body {
     text-decoration: underline;
 }
 
-/* Tombol Submit di semua form */
+/* Tombol Submit di semua form Login/Daftar */
 button[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -242,7 +239,7 @@ button[type="submit"]:hover {
     background-color: #f5c2cc;
 }
 
-/* Teks "Belum punya akun?" / "Sudah punya akun?" */
+/* Teks "Belum punya akun?" / "Sudah punya akun?" Login/Daftar */
 .switch-form {
     text-align: center;
     color: #121629;
@@ -260,7 +257,7 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
-/* --- Gaya untuk Form Containers (#loginForm, #registerForm) --- */
+/* --- Gaya untuk Form Containers (#loginForm, #registerForm) - Ini adalah gaya ABSOLUTE POSITIONING Login/Daftar --- */
 /* KRITIS: Posisi absolute agar form bertumpuk di dalam container */
 /* KRITIS: Atur 'top' agar form dimulai di bawah area tab */
 #loginForm,
@@ -280,14 +277,12 @@ button[type="submit"]:hover {
     /* --- KRITIS untuk Absolute Positioning & Penyesuaian Posisi --- */
     position: absolute;
     /* Posisikan secara absolut di dalam container */
-    /* top: 0; // Hapus atau ubah ini */
     top: 60px;
     /* KRITIS: Geser form ke bawah agar dimulai di bawah area tab (sesuaikan nilai jika perlu) */
     left: 0;
     /* Mulai dari tepi kiri container */
-    /* width 100% dan padding inherit + box-sizing membuat konten form pas di dalam padding container */
+    /* Width 100% dan padding inherit + box-sizing membuat konten form pas di dalam padding container */
     width: 100%;
-    /* height: 100%; // Hapus atau ubah ini */
     bottom: 0;
     /* KRITIS: Buat tinggi form mengisi ruang dari 'top' hingga dasar kontainer */
     padding: inherit;
@@ -351,8 +346,7 @@ button[type="submit"]:hover {
     visibility: visible;
 }
 
-/* --- Media Query untuk Layar Kecil (maksimum lebar 600px) --- */
-/* Tetap pertahankan gaya responsif, sesuaikan padding/min-height jika perlu */
+/* --- Media Query untuk Layar Kecil (Penyesuaian Umum dan Login/Daftar) --- */
 @media (max-width: 600px) {
     body {
         padding: 15px;
@@ -362,17 +356,11 @@ button[type="submit"]:hover {
     .container {
         padding: 15px;
         /* Kurangi padding container */
-        /* margin: 15px auto; // Tidak perlu margin auto jika body flex/grid centering */
         margin: 0;
         /* Atur margin menjadi 0 */
         min-height: 550px;
         /* Sesuaikan min-height untuk mobile jika perlu */
     }
-
-    /* Penyesuaian posisi top form untuk mobile jika area tab berbeda */
-    /* Jika area tab sama, aturan top: 60px; di atas sudah cukup */
-    /* #loginForm, #registerForm { top: 50px; // Contoh penyesuaian } */
-
 
     /* Menyesuaikan ukuran font dan padding elemen di dalam form tetap seperti sebelumnya */
     .container h1 {
@@ -418,5 +406,287 @@ button[type="submit"]:hover {
 
     .checkbox-group {
         align-items: center;
+    }
+}
+
+
+/* --- BAGIAN 2: Gaya Spesifik untuk Homepage.html --- */
+/* Menggunakan selektor body.homepage-body sebagai awalan */
+
+/* Gaya Spesifik untuk Body Homepage (menimpa gaya body default di atas) */
+body.homepage-body {
+    background-color: #22444d;
+    /* Contoh warna latar seperti screenshot Happy Hues */
+    color: #fff;
+    /* Warna teks default untuk homepage body */
+    /* Timpa gaya Flexbox centering dari body default */
+    display: block;
+    /* KRITIS: Agar konten homepage mengalir normal dari atas ke bawah */
+    justify-content: unset;
+    /* Hapus centering Flexbox */
+    align-items: unset;
+    /* Hapus centering Flexbox */
+    padding: 0;
+    /* Hapus padding body default jika konten full width */
+    margin: 0;
+    /* Pastikan margin 0 */
+    min-height: 100vh;
+    /* Tetap setinggi viewport */
+}
+
+/* Gaya untuk Header Homepage */
+body.homepage-body .homepage-header {
+    display: flex;
+    justify-content: space-between;
+    /* Sebar elemen ke pinggir */
+    align-items: center;
+    /* Tengahkan elemen vertikal */
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Contoh background transparan */
+    padding: 15px 40px;
+    /* Sesuaikan padding header */
+    color: #fff;
+    /* Warna teks header */
+}
+
+body.homepage-body .homepage-header .site-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #a5c9b1;
+    /* Contoh warna judul situs */
+}
+
+/* Gaya untuk Tombol Logout di Header Homepage */
+body.homepage-body .homepage-header .header-logout-button {
+    padding: 8px 15px;
+    background-color: #a5c9b1;
+    /* Contoh warna tombol logout */
+    color: #22444d;
+    /* Warna teks tombol */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+body.homepage-body .homepage-header .header-logout-button:hover {
+    background-color: #b0d4bd;
+}
+
+
+/* Gaya untuk Konten Utama Homepage (Dua Kolom Layout) */
+body.homepage-body .homepage-main-content {
+    display: flex;
+    /* Aktifkan Flexbox untuk layout kolom */
+    flex-direction: row;
+    /* Atur arah Flex menjadi baris (kolom) */
+    align-items: center;
+    /* Tengahkan item (kolom) secara vertikal di dalam container Flex */
+    justify-content: center;
+    /* Tengahkan item (kolom) secara horizontal jika total lebar < container Flex */
+    padding: 60px 40px;
+    /* Padding di dalam area konten utama */
+    gap: 40px;
+    /* Jarak antar kolom */
+    flex-wrap: wrap;
+    /* Biarkan kolom wrap ke bawah di layar kecil */
+    /* min-height: calc(100vh - (2 * 15px + 40px)); */
+    /* Sesuaikan min-height konten utama jika perlu */
+    box-sizing: border-box;
+    /* Pastikan padding masuk hitungan ukuran */
+}
+
+/* Gaya untuk Kolom Teks di Homepage */
+body.homepage-body .homepage-main-content .text-column {
+    flex: 1;
+    /* Biarkan kolom mengisi ruang */
+    min-width: 280px;
+    /* Lebar minimum sebelum wrap */
+    max-width: 500px;
+    /* Lebar maksimum kolom teks */
+    color: #fff;
+    /* Warna teks di kolom teks */
+}
+
+/* Gaya untuk Judul Selamat Datang di Homepage */
+body.homepage-body .homepage-main-content .welcome-heading {
+    font-size: 2.5em;
+    /* Ukuran judul selamat datang */
+    margin-top: 0;
+    /* Hapus margin-top default h1 jika perlu */
+    margin-bottom: 15px;
+    color: #f9f9f9;
+    /* Contoh warna judul */
+}
+
+body.homepage-body .homepage-main-content .welcome-heading span {
+    color: #a5c9b1;
+    /* Contoh warna nama pengguna */
+    font-weight: bold;
+}
+
+/* Gaya untuk Paragraf Deskripsi di Homepage */
+body.homepage-body .homepage-main-content .homepage-description {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    color: #d3d3d3;
+    /* Contoh warna teks deskripsi */
+}
+
+
+/* Gaya untuk Kolom Gambar di Homepage */
+body.homepage-body .homepage-main-content .image-column {
+    flex-shrink: 0;
+    /* Jangan biarkan menyusut */
+    min-width: 200px;
+    /* Lebar minimum kolom gambar */
+    display: flex;
+    justify-content: center;
+    /* Tengahkan gambar di kolom gambar */
+    align-items: center;
+}
+
+/* Gaya untuk Container Gambar Profil */
+body.homepage-body .homepage-main-content .profile-pic-container {
+    width: 150px;
+    /* Ukuran container gambar */
+    height: 150px;
+    border-radius: 50%;
+    /* Bentuk bulat */
+    overflow: hidden;
+    /* Sembunyikan bagian gambar di luar lingkaran */
+    border: 3px solid #a5c9b1;
+    /* Contoh border */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Gaya untuk Tag Img Foto Profil */
+body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
+    display: block;
+    width: 100%;
+    /* Gambar mengisi container */
+    height: 100%;
+    object-fit: cover;
+    /* Pastikan gambar tidak terdistorsi */
+}
+
+
+/* --- Media Query untuk Layar Kecil (Penyesuaian Homepage dan Login/Daftar) --- */
+@media (max-width: 600px) {
+
+    /* Penyesuaian Body Umum untuk Mobile */
+    body {
+        padding: 15px;
+        /* Kurangi padding body */
+    }
+
+    /* Penyesuaian Container Login/Daftar untuk Mobile */
+    .container {
+        padding: 15px;
+        /* Kurangi padding container */
+        margin: 0;
+        /* Atur margin menjadi 0 */
+        min-height: 550px;
+        /* Sesuaikan min-height untuk mobile jika perlu */
+    }
+
+    /* Penyesuaian Gaya Elemen di dalam Form Login/Daftar untuk Mobile */
+    .container h1 {
+        font-size: 1.6em;
+    }
+
+    #loginForm h2,
+    #registerForm h2,
+    #loginForm form h2,
+    #registerForm form h2 {
+        font-size: 1.3em;
+    }
+
+    .container p,
+    #loginForm p,
+    #registerForm p,
+    #loginForm form p,
+    #registerForm form p,
+    .input-group label,
+    .switch-form,
+    .switch-form a,
+    .forgot-password,
+    .checkbox-group label {
+        font-size: 0.9em;
+    }
+
+    .input-group input,
+    .tabs button,
+    button[type="submit"],
+    .container #logoutButton {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    .custom-notification {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        min-width: unset;
+        width: 95%;
+        top: 10px;
+        transform: translateX(-50%);
+    }
+
+    .checkbox-group {
+        align-items: center;
+    }
+
+    /* Penyesuaian Spesifik Homepage untuk Mobile (di dalam media query) */
+    /* Hapus aturan kosong body.homepage-body {} di sini */
+    /* (Tidak perlu aturan body.homepage-body {} kosong di dalam media query) */
+
+    body.homepage-body .homepage-header {
+        flex-direction: column;
+        /* Tumpuk elemen header vertikal */
+        padding: 10px 20px;
+        /* Sesuaikan padding header mobile */
+        gap: 10px;
+        /* Jarak antar elemen header saat ditumpuk */
+    }
+
+    body.homepage-body .homepage-header .header-left,
+    body.homepage-body .homepage-header .header-right {
+        width: 100%;
+        /* Berikan lebar penuh */
+        text-align: center;
+        /* Tengahkan teks/tombol */
+    }
+
+    body.homepage-body .homepage-main-content {
+        flex-direction: column;
+        /* Tumpuk kolom teks dan gambar vertikal */
+        padding: 30px 20px;
+        /* Sesuaikan padding konten utama mobile */
+        gap: 30px;
+        /* Jarak antar kolom saat ditumpuk */
+    }
+
+    body.homepage-body .homepage-main-content .text-column {
+        max-width: 100%;
+        /* Izinkan kolom teks selebar container */
+        text-align: center;
+        /* Tengahkan teks di kolom teks */
+    }
+
+    body.homepage-body .homepage-main-content .welcome-heading {
+        font-size: 2em;
+        /* Sesuaikan ukuran judul */
+    }
+
+    body.homepage-body .homepage-main-content .image-column {
+        min-width: unset;
+        /* Hapus min-width kolom gambar */
+    }
+
+    body.homepage-body .homepage-main-content .profile-pic-container {
+        width: 120px;
+        /* Sesuaikan ukuran gambar profil di mobile */
+        height: 120px;
     }
 }

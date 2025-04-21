@@ -4,19 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Homepage </title>
+    <title>Homepage</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="homepage-body">
 
-    <div class="container">
-        <h1> Selamat datang, <span id="welcomeUsername"> </span>!</h1>
-        <p> Ini adalah halaman beranda. </p>
-        <button id="logoutButton"> Logout </button>
-    </div>
+    <header class="homepage-header">
+        <div class="header-left">
+            <span class="site-title">Aplikasi Saya</span>
+        </div>
+        <div class="header-right">
+            <button id="logoutButton" class="header-logout-button">Logout</button>
+        </div>
+    </header>
+
+    <main class="homepage-main-content">
+        <section class="text-column">
+            <h1 class="welcome-heading">Selamat datang, <span id="loggedInUsername">Pengguna!</span>!</h1>
+            <p class="homepage-description">Ini adalah halaman beranda Anda. Jelajahi fitur aplikasi.</p>
+        </section>
+
+        <section class="image-column">
+            <div class="profile-pic-container">
+                <img src="https://via.placeholder.com/150" alt="Foto Profil Pengguna" id="userProfilePic"
+                    class="profile-pic">
+            </div>
+        </section>
+    </main>
+
     <script src="homepage.js"></script>
-
 </body>
 
 </html>
