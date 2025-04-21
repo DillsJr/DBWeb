@@ -1,23 +1,12 @@
 {
-  "name": "projek-web",
+  "name": "my-vercel-login-app",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "Simple login example for Vercel using Serverless Functions",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "deploy": "vercel"
   },
-  "keywords": [
-    "web",
-    "express",
-    "node.js"
-  ],
-  "author": "reytanokodriansyah",
-  "license": "MIT",
-  "description": "SEMANGAT BELAJARNYA",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
-    "express": "^4.21.1",
-    "sqlite3": "^5.1.7"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

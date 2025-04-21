@@ -1,229 +1,113 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #232946;
-    /* Warna latar belakang body */
-    margin: 0;
-    padding: 0;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    /* Ubah background */
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    /* Sintaks linear-gradient diperbaiki */
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
 }
 
-.container {
-    background-color: #fffffe;
-    /* Warna latar belakang container */
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    /* Menambahkan shadow agar lebih terlihat */
-}
-
-.tabs {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.tabs button {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    font-weight: bolder;
-    background-color: transparent;
-    border: none;
-    color: #888;
-    /* Warna teks tombol tab default */
-    cursor: pointer;
-    transition: color 0.3s ease, border-bottom-color 0.3s ease;
-    /* Efek transisi */
-}
-
-.tabs button.active {
-    color: #eebbc3;
-    /* Warna teks tombol tab aktif */
-    border-bottom: 2px solid #eebbc3;
-    /* Garis bawah tombol tab aktif */
-}
-
-.form h2 {
-    color: #121629;
-    /* Warna judul form */
-    margin-bottom: 5px;
+.login-container {
+    background-color: #ffffff;
+    /* Putih bersih */
+    padding: 40px;
+    /* Tambah padding */
+    border-radius: 10px;
+    /* Sudut lebih membulat */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    /* Bayangan lebih jelas */
+    width: 320px;
+    /* Lebar sedikit ditambah */
+    max-width: 90%;
+    /* Responsif */
     text-align: center;
-    /* Rata tengah judul */
-}
-
-.form p {
-    color: #272343;
-    /* Warna paragraf deskripsi form */
-    font-style: italic;
-    margin-bottom: 20px;
-    text-align: center;
-    /* Rata tengah paragraf */
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    display: block;
-    color: #121629;
-    /* Warna label input group */
-    margin-bottom: 5px;
-    font-weight: bold;
-    /* Membuat label tebal */
-}
-
-.input-group input {
-    width: 95%;
-    /* Mengurangi sedikit agar padding tidak melebih batas */
-    padding: 10px;
-    border: 1px solid #d8d8d8;
-    /* Warna border input */
-    border-radius: 4px;
-    background-color: #fff;
-    /* Warna latar belakang input */
-    color: #001858;
-    /* Warna teks yang diketik */
     box-sizing: border-box;
-    /* Memastikan padding dan border dihitung dalam lebar elemen */
+    /* Pastikan padding termasuk dalam lebar */
 }
 
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    color: #888;
-    /* Warna teks checkbox group default */
-    font-style: italic;
+.login-container h2 {
+    margin-top: 0;
+    /* Hapus margin atas default */
+    margin-bottom: 25px;
+    /* Margin bawah judul */
+    color: #333;
+    font-size: 24px;
 }
 
-.checkbox-group input[type="checkbox"] {
-    margin-right: 5px;
-    /* Memberi jarak antara checkbox dan label */
-    /* Gaya checkbox mungkin perlu penyesuaian lebih lanjut lintas browser */
+.form-group {
+    margin-bottom: 20px;
+    /* Margin bawah antar grup form */
+    text-align: left;
 }
 
-.checkbox-group label {
-    color: #888;
-    /* Warna label checkbox */
-    margin-bottom: 0;
-    /* Menghilangkan margin bawah pada label di dalam checkbox group */
-    font-weight: normal;
-    /* Mengembalikan bobot font label checkbox menjadi normal */
-}
-
-
-.forgot-password {
-    color: #eebbc3;
-    /* Warna link lupa password */
-    text-decoration: none;
-    float: right;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    /* Margin bawah label */
+    color: #555;
+    font-weight: bold;
     font-size: 14px;
-    /* Ukuran font link lupa password */
 }
 
-.forgot-password:hover {
-    text-decoration: underline;
-    /* Efek hover */
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    /* Tambah padding input */
+    border: 1px solid #ccc;
+    /* Border abu-abu terang */
+    border-radius: 5px;
+    /* Sudut input membulat */
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 button[type="submit"] {
     width: 100%;
-    padding: 10px;
-    background-color: #eebbc3;
-    /* Warna latar belakang tombol submit */
-    color: #121629;
-    /* Warna teks tombol submit */
+    /* Tombol full-width */
+    background-color: #007bff;
+    /* Warna biru primer */
+    color: white;
+    padding: 12px 20px;
+    /* Padding tombol */
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
-    /* Menambahkan margin atas agar tidak terlalu dekat */
-    transition: background-color 0.3s ease;
+    font-size: 18px;
+    /* Ukuran font tombol */
+    transition: background-color 0.3s ease, transform 0.1s ease;
     /* Efek transisi */
+    margin-top: 10px;
+    /* Margin atas tombol */
 }
 
 button[type="submit"]:hover {
-    background-color: #f5c2cc;
-    /* Warna saat hover */
+    background-color: #0056b3;
+    /* Warna biru lebih gelap saat hover */
 }
 
-.switch-form {
-    text-align: center;
-    color: #121629;
-    /* Warna teks "Belum punya akun?" atau "Sudah punya akun?" */
+button[type="submit"]:active {
+    transform: scale(0.98);
+    /* Sedikit mengecil saat ditekan */
+}
+
+
+.message {
     margin-top: 20px;
-    font-size: 14px;
+    /* Margin atas pesan */
+    font-size: 15px;
+    color: #dc3545;
+    /* Warna merah untuk error */
+    min-height: 1em;
+    /* Agar tidak bergeser saat pesan muncul */
 }
 
-.switch-form a {
-    color: #eebbc3;
-    /* Warna link "Daftar Sekarang" atau "Masuk Sekarang" */
-    text-decoration: none;
-    font-weight: bold;
-    /* Membuat link tebal */
-}
-
-.switch-form a:hover {
-    text-decoration: underline;
-    /* Efek hover */
-}
-
-.hidden {
-    display: none;
-}
-
-/* Gaya untuk notifikasi kustom */
-.custom-notification {
-    position: fixed;
-    /* Akan tetap terlihat meskipun di-scroll */
-    top: 20px;
-    /* Jarak dari atas */
-    left: 50%;
-    /* Posisi horizontal di tengah */
-    transform: translateX(-50%);
-    /* Geser ke kiri setengah dari lebarnya agar benar-benar di tengah */
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: #fff;
-    /* Warna teks */
-    background-color: rgba(0, 0, 0, 0.7);
-    /* Warna latar belakang dengan sedikit transparansi */
-    z-index: 1000;
-    /* Pastikan muncul di atas elemen lain */
-    opacity: 0;
-    /* Awalnya tersembunyi */
-    visibility: hidden;
-    /* Awalnya tidak terlihat */
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    /* Efek transisi saat muncul/hilang */
-    font-size: 14px;
-    text-align: center;
-    min-width: 250px;
-    /* Lebar minimum */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    /* Bayangan */
-}
-
-/* Gaya untuk notifikasi sukses */
-.custom-notification.success {
-    background-color: rgba(40, 167, 69, 0.8);
-    /* Hijau */
-}
-
-/* Gaya untuk notifikasi error */
-.custom-notification.error {
-    background-color: rgba(220, 53, 69, 0.8);
-    /* Merah */
-}
-
-/* Gaya saat notifikasi terlihat */
-.custom-notification.show {
-    opacity: 1;
-    visibility: visible;
+.message.success {
+    color: #28a745;
+    /* Warna hijau untuk sukses */
 }
