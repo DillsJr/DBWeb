@@ -415,7 +415,7 @@ button[type="submit"]:hover {
 
 /* Gaya Spesifik untuk Body Homepage (menimpa gaya body default di atas) */
 body.homepage-body {
-    background-color: #22444d;
+    background-color: #abd1c6;
     /* Contoh warna latar seperti screenshot Happy Hues */
     color: #fff;
     /* Warna teks default untuk homepage body */
@@ -436,6 +436,8 @@ body.homepage-body {
 
 /* Gaya untuk Header Homepage */
 body.homepage-body .homepage-header {
+    background-color: #004643;
+    /* Contoh warna latar seperti screenshot Happy Hues */
     display: flex;
     justify-content: space-between;
     /* Sebar elemen ke pinggir */
