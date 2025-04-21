@@ -1,14 +1,19 @@
-/* public/style.css - Gaya lengkap dengan animasi */
+/* public/style.css - Gaya lengkap dengan animasi dan perbaikan show/hide */
 
 /* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
+    /* Warna latar belakang body */
     margin: 0;
     padding: 20px;
+    /* Padding default untuk layar lebih besar */
     min-height: 100vh;
+    /* Pastikan background menutupi seluruh tinggi viewport */
     color: #fff;
+    /* Warna teks default untuk body */
     line-height: 1.6;
+    /* Tingkatkan keterbacaan teks paragraf */
     box-sizing: border-box;
     /* Penting untuk padding */
 }
@@ -17,15 +22,24 @@ body {
 /* Properti width: 100% dan max-width membuat ini responsif secara horizontal */
 .container {
     background-color: #fffffe;
+    /* Warna latar belakang container */
     border-radius: 8px;
     padding: 20px;
+    /* Padding default container */
     width: 100%;
+    /* Gunakan lebar penuh yang tersedia */
     max-width: 500px;
+    /* Tapi tidak lebih lebar dari 500px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    /* Menambahkan shadow */
     margin: 20px auto;
+    /* Tengahkan container di tengah halaman */
     color: #121629;
-    /* Tambahkan transisi untuk animasi submit */
+    /* Warna teks default di dalam container */
+    /* Tambahkan transisi untuk animasi submit jika perlu */
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    position: relative;
+    /* Penting jika menggunakan absolute positioning pada form (meskipun saat ini tidak) */
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
@@ -38,6 +52,7 @@ body {
     margin-bottom: 10px;
     text-align: center;
     font-size: 2em;
+    /* Menggunakan unit relatif untuk ukuran font */
 }
 
 /* Span yang menampilkan nama pengguna di dalam h1 */
@@ -57,6 +72,7 @@ body {
 .container #logoutButton {
     display: block;
     width: auto;
+    /* Lebar otomatis */
     padding: 10px 20px;
     background-color: #eebbc3;
     color: #121629;
@@ -214,41 +230,50 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
-/* --- Gaya untuk Animasi Perpindahan Form --- */
-/* Ubah properti .hidden untuk mendukung transisi opacity dan visibility */
-.hidden {
-    /* display: none; */
-    /* Ganti ini */
-    opacity: 0;
-    visibility: hidden;
-    /* Opsional: tambahkan sedikit pergeseran vertikal atau zoom untuk efek naik/turun atau zoom */
-    transform: translateY(10px);
-    /* Efek geser ke bawah saat tersembunyi */
-    /* transform: scale(0.95); */
-    /* Efek zoom out saat tersembunyi */
-    transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
-    /* Transisikan properti ini */
-    /* Untuk menghindari layout shift saat display: none dihapus, bisa atur tinggi atau posisi absolut */
-    /* Karena formDiv diganti innerHTML, ini mungkin kurang efektif untuk form lupa/reset, */
-    /* tapi akan bekerja untuk transisi login/register tab awal. */
-}
 
-/* Pastikan form yang terlihat memiliki transisi yang sama */
+/* --- Gaya untuk Animasi Perpindahan Form --- */
+
+/* Gaya untuk Form Containers (#loginForm, #registerForm) */
+/* Terapkan transisi di sini */
 #loginForm,
-#registerForm,
-#loginForm>form,
-/* Terapkan transisi pada form di dalam loginFormDiv (lupa/reset) */
-#registerForm>form {
-    /* Terapkan transisi pada form di dalam registerFormDiv */
-    transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
-    /* Pastikan properti default (saat tidak hidden) */
+#registerForm {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    /* Transisikan opacity dan transform */
+
+    /* Properti default saat terlihat (akan diatur display: block; oleh JS) */
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    /* Kembali ke posisi normal */
-    /* transform: scale(1); */
-    /* Kembali ke ukuran normal */
+    /* Posisi normal */
+    pointer-events: auto;
+    /* Izinkan interaksi saat terlihat */
+
+    /* Posisi absolute agar form bertumpuk dan tidak mendorong satu sama lain */
+    /* Ini alternatif jika display: none; di JS tidak cukup */
+    /* position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%; // Atau auto, tergantung konten */
 }
+
+/* Gaya untuk Form Saat Disembunyikan Secara Visual (digunakan oleh JS) */
+/* Class ini ditambahkan oleh JS untuk memulai animasi keluar */
+.form-hidden-visual {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    /* Geser ke bawah saat tersembunyi */
+    /* atau: transform: scale(0.95); untuk efek zoom out */
+    pointer-events: none;
+    /* Mencegah interaksi saat tidak terlihat */
+}
+
+/*
+Catatan: Properti display: none; akan diatur langsung pada style elemen (inline style)
+oleh JavaScript SETELAH animasi keluar selesai.
+Saat form ditampilkan, JS akan menghapus display: none; dan class .form-hidden-visual
+*/
 
 
 /* --- Gaya untuk Animasi Saat Submit --- */
@@ -256,20 +281,15 @@ button[type="submit"]:hover {
 @keyframes pulseSubtle {
     0% {
         transform: scale(1);
-        /* opacity: 1; */
-        /* Opsional: animasikan opacity */
     }
 
     50% {
         transform: scale(1.01);
-        /* Sedikit membesar */
-        /* opacity: 0.98; */
     }
 
+    /* Sedikit membesar */
     100% {
         transform: scale(1);
-        /* Kembali normal */
-        /* opacity: 1; */
     }
 }
 
@@ -370,5 +390,9 @@ button[type="submit"]:hover {
         width: 95%;
         top: 10px;
         transform: translateX(-50%);
+    }
+
+    .checkbox-group {
+        align-items: center;
     }
 }

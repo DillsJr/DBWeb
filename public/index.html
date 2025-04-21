@@ -16,6 +16,7 @@
             <button id="loginTab" class="active"> Masuk </button>
             <button id="registerTab"> Daftar </button>
         </div>
+
         <div id="loginForm" class="form">
             <h2 style="color: #121629;"> Silahkan Login </h2>
             <p style="color: #272343; font-style: italic;"> Login menggunakan akun yang terdaftar </p>
@@ -35,16 +36,20 @@
                     <label for="showLoginPassword" style="color: #888; font-style: italic;"> Lihat Password </label>
                 </div>
                 <a href="#" class="forgot-password"
-                    style="color: #eebbc3; text-decoration: none; float: right; font-size: 14px; font-style: italic;"> Lupa Password? </a>
+                    style="color: #eebbc3; text-decoration: none; float: right; font-size: 14px; font-style: italic;">
+                    Lupa
+                    Password? </a>
                 <button type="submit"
                     style="width: 100%; padding: 10px; background-color: #eebbc3; color: #121629; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px;">
-                    Masuk </button>
+                    Masuk
+                </button>
             </form>
             <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;"> Belum
                 punya akun? <a href="#" id="switchToRegister"
                     style="color: #eebbc3; text-decoration: none; font-weight: bold;"> Daftar Sekarang </a></p>
         </div>
-        <div id="registerForm" class="form hidden">
+
+        <div id="registerForm" class="form form-hidden-visual" style="display: none;">
             <h2 style="color: #121629;"> Silahkan Daftar </h2>
             <p style="color: #272343; font-style: italic;"> Masukan informasi daftar dengan benar </p>
             <form id="register">
@@ -80,18 +85,20 @@
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="showConfirmPassword">
-                    <label for="showConfirmPassword" style="color: #888; font-style: italic;"> Lihat Konfirmasi Password
-                    </label>
+                    <label for="showConfirmPassword" style="color: #888; font-style: italic;"> Lihat Konfirmasi
+                        Password </label>
                 </div>
                 <button type="submit"
                     style="width: 100%; padding: 10px; background-color: #eebbc3; color: #121629; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px;">
-                    Daftar </button>
+                    Daftar
+                </button>
             </form>
             <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;"> Sudah
                 punya akun? <a href="#" id="switchToLogin"
                     style="color: #eebbc3; text-decoration: none; font-weight: bold;"> Masuk Sekarang </a></p>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 
