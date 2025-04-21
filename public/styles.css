@@ -415,7 +415,7 @@ button[type="submit"]:hover {
 
 /* Gaya Spesifik untuk Body Homepage (menimpa gaya body default di atas) */
 body.homepage-body {
-    background-color: #22444d;
+    background-color: #abd1c6;
     /* Contoh warna latar seperti screenshot Happy Hues */
     color: #fff;
     /* Warna teks default untuk homepage body */
@@ -441,7 +441,7 @@ body.homepage-body .homepage-header {
     /* Sebar elemen ke pinggir */
     align-items: center;
     /* Tengahkan elemen vertikal */
-    background-color: #f9bc60;
+    background-color: #22444d;
     /* Contoh background transparan */
     padding: 15px 40px;
     /* Sesuaikan padding header */
@@ -452,7 +452,7 @@ body.homepage-body .homepage-header {
 body.homepage-body .homepage-header .site-title {
     font-size: 1.5em;
     font-weight: bold;
-    color: #a5c9b1;
+    color: #22444d;
     /* Contoh warna judul situs */
 }
 
@@ -461,7 +461,7 @@ body.homepage-body .homepage-header .header-logout-button {
     padding: 8px 15px;
     background-color: #a5c9b1;
     /* Contoh warna tombol logout */
-    color: #22444d;
+    color: #abd1c6;
     /* Warna teks tombol */
     border: none;
     border-radius: 4px;
@@ -471,7 +471,7 @@ body.homepage-body .homepage-header .header-logout-button {
 }
 
 body.homepage-body .homepage-header .header-logout-button:hover {
-    background-color: #b0d4bd;
+    background-color: #22444d;
 }
 
 
@@ -521,7 +521,7 @@ body.homepage-body .homepage-main-content .welcome-heading {
 }
 
 body.homepage-body .homepage-main-content .welcome-heading span {
-    color: #a5c9b1;
+    color: #22444d;
     /* Contoh warna nama pengguna */
     font-weight: bold;
 }
