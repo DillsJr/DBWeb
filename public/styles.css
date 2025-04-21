@@ -436,13 +436,12 @@ body.homepage-body {
 
 /* Gaya untuk Header Homepage */
 body.homepage-body .homepage-header {
-    background-color: #f9bc60;
     display: flex;
     justify-content: space-between;
     /* Sebar elemen ke pinggir */
     align-items: center;
     /* Tengahkan elemen vertikal */
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #f9bc60;
     /* Contoh background transparan */
     padding: 15px 40px;
     /* Sesuaikan padding header */
