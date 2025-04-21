@@ -1,39 +1,31 @@
-/* public/style.css - Kode lengkap dengan gaya responsif mobile */
+/* public/style.css - Gaya lengkap dengan animasi */
 
 /* Gaya Dasar untuk Body - Berlaku di semua ukuran layar */
 body {
     font-family: Arial, sans-serif;
     background-color: #232946;
-    /* Warna latar belakang body */
     margin: 0;
     padding: 20px;
-    /* Padding default untuk layar lebih besar */
     min-height: 100vh;
-    /* Pastikan background menutupi seluruh tinggi viewport */
     color: #fff;
-    /* Warna teks default untuk body */
     line-height: 1.6;
-    /* Tingkatkan keterbacaan teks paragraf */
+    box-sizing: border-box;
+    /* Penting untuk padding */
 }
 
 /* Gaya Container - Digunakan di index.html dan homepage.html */
 /* Properti width: 100% dan max-width membuat ini responsif secara horizontal */
 .container {
     background-color: #fffffe;
-    /* Warna latar belakang container */
     border-radius: 8px;
     padding: 20px;
-    /* Padding default container */
     width: 100%;
-    /* Gunakan lebar penuh yang tersedia */
     max-width: 500px;
-    /* Tapi tidak lebih lebar dari 500px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    /* Menambahkan shadow */
     margin: 20px auto;
-    /* Tengahkan container di tengah halaman */
     color: #121629;
-    /* Warna teks default di dalam container */
+    /* Tambahkan transisi untuk animasi submit */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 /* --- Gaya untuk Elemen di Homepage.html (Di dalam .container) --- */
@@ -46,7 +38,6 @@ body {
     margin-bottom: 10px;
     text-align: center;
     font-size: 2em;
-    /* Menggunakan unit relatif untuk ukuran font */
 }
 
 /* Span yang menampilkan nama pengguna di dalam h1 */
@@ -66,14 +57,12 @@ body {
 .container #logoutButton {
     display: block;
     width: auto;
-    /* Lebar otomatis */
     padding: 10px 20px;
     background-color: #eebbc3;
     color: #121629;
     border: none;
     border-radius: 4px;
     font-size: 1em;
-    /* Menggunakan unit relatif */
     cursor: pointer;
     margin-top: 20px;
     margin-left: auto;
@@ -97,7 +86,6 @@ body {
     flex: 1;
     padding: 10px;
     font-size: 1em;
-    /* Menggunakan unit relatif */
     font-weight: bolder;
     background-color: transparent;
     border: none;
@@ -113,17 +101,22 @@ body {
 
 /* Judul form */
 #loginForm h2,
-#registerForm h2 {
+#registerForm h2,
+#loginForm form h2,
+/* Menargetkan h2 di form lupa/reset juga */
+#registerForm form h2 {
     color: #121629;
     margin-bottom: 5px;
     text-align: center;
     font-size: 1.5em;
-    /* Menggunakan unit relatif */
 }
 
 /* Paragraf deskripsi di form */
 #loginForm p,
-#registerForm p {
+#registerForm p,
+#loginForm form p,
+/* Menargetkan p di form lupa/reset juga */
+#registerForm form p {
     color: #272343;
     font-style: italic;
     margin-bottom: 20px;
@@ -141,25 +134,20 @@ body {
     margin-bottom: 5px;
     font-weight: bold;
     font-size: 1em;
-    /* Menggunakan unit relatif */
 }
 
 /* Input teks, email, password, tel */
 .input-group input {
     width: 95%;
     padding: 10px;
-    /* Padding input */
     border: 1px solid #d8d8d8;
     border-radius: 4px;
     background-color: #fff;
     color: #001858;
     box-sizing: border-box;
-    /* Penting untuk responsivitas input */
     font-size: 1em;
-    /* Menggunakan unit relatif */
 }
 
-/* Group checkbox */
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -176,7 +164,6 @@ body {
     font-weight: normal;
     font-style: italic;
     font-size: 0.9em;
-    /* Menggunakan unit relatif */
 }
 
 /* Link Lupa Password */
@@ -185,7 +172,6 @@ body {
     text-decoration: none;
     float: right;
     font-size: 0.9em;
-    /* Menggunakan unit relatif */
 }
 
 .forgot-password:hover {
@@ -195,15 +181,12 @@ body {
 /* Tombol Submit di semua form */
 button[type="submit"] {
     width: 100%;
-    /* Lebar penuh */
     padding: 10px;
-    /* Padding tombol */
     background-color: #eebbc3;
     color: #121629;
     border: none;
     border-radius: 4px;
     font-size: 1em;
-    /* Menggunakan unit relatif */
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s ease;
@@ -219,7 +202,6 @@ button[type="submit"]:hover {
     color: #121629;
     margin-top: 20px;
     font-size: 0.9em;
-    /* Menggunakan unit relatif */
 }
 
 .switch-form a {
@@ -232,10 +214,71 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
-/* Kelas untuk menyembunyikan elemen */
+/* --- Gaya untuk Animasi Perpindahan Form --- */
+/* Ubah properti .hidden untuk mendukung transisi opacity dan visibility */
 .hidden {
-    display: none;
+    /* display: none; */
+    /* Ganti ini */
+    opacity: 0;
+    visibility: hidden;
+    /* Opsional: tambahkan sedikit pergeseran vertikal atau zoom untuk efek naik/turun atau zoom */
+    transform: translateY(10px);
+    /* Efek geser ke bawah saat tersembunyi */
+    /* transform: scale(0.95); */
+    /* Efek zoom out saat tersembunyi */
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
+    /* Transisikan properti ini */
+    /* Untuk menghindari layout shift saat display: none dihapus, bisa atur tinggi atau posisi absolut */
+    /* Karena formDiv diganti innerHTML, ini mungkin kurang efektif untuk form lupa/reset, */
+    /* tapi akan bekerja untuk transisi login/register tab awal. */
 }
+
+/* Pastikan form yang terlihat memiliki transisi yang sama */
+#loginForm,
+#registerForm,
+#loginForm>form,
+/* Terapkan transisi pada form di dalam loginFormDiv (lupa/reset) */
+#registerForm>form {
+    /* Terapkan transisi pada form di dalam registerFormDiv */
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out, transform 0.3s ease-out;
+    /* Pastikan properti default (saat tidak hidden) */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    /* Kembali ke posisi normal */
+    /* transform: scale(1); */
+    /* Kembali ke ukuran normal */
+}
+
+
+/* --- Gaya untuk Animasi Saat Submit --- */
+/* Tambahkan Keyframes untuk animasi */
+@keyframes pulseSubtle {
+    0% {
+        transform: scale(1);
+        /* opacity: 1; */
+        /* Opsional: animasikan opacity */
+    }
+
+    50% {
+        transform: scale(1.01);
+        /* Sedikit membesar */
+        /* opacity: 0.98; */
+    }
+
+    100% {
+        transform: scale(1);
+        /* Kembali normal */
+        /* opacity: 1; */
+    }
+}
+
+/* Terapkan animasi pada container saat memiliki class 'submitting' */
+.container.submitting {
+    animation: pulseSubtle 1.5s infinite ease-in-out;
+    /* Terapkan animasi pulse */
+}
+
 
 /* --- Gaya untuk Notifikasi Kustom --- */
 /* Ini juga didesain responsif dengan max-width: 90% */
@@ -253,11 +296,9 @@ button[type="submit"]:hover {
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     font-size: 1em;
-    /* Menggunakan unit relatif */
     text-align: center;
     min-width: 250px;
     max-width: 90%;
-    /* Batasi lebar notifikasi agar responsif di mobile */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -279,43 +320,39 @@ button[type="submit"]:hover {
 }
 
 /* --- Media Query untuk Layar Kecil (maksimum lebar 600px) --- */
-/* Gaya di dalam blok ini HANYA diterapkan pada layar dengan lebar 600px atau kurang */
 @media (max-width: 600px) {
     body {
         padding: 15px;
-        /* Mengurangi padding body di layar kecil */
     }
 
     .container {
         padding: 15px;
-        /* Mengurangi padding container */
         margin: 15px auto;
-        /* Mengurangi margin container */
     }
 
-    /* Menyesuaikan ukuran font dan padding untuk elemen teks dan kontrol di layar kecil */
+    /* Menyesuaikan ukuran font dan padding di layar kecil */
     .container h1 {
         font-size: 1.6em;
     }
 
-    /* Sedikit lebih kecil dari default 2em */
     #loginForm h2,
-    #registerForm h2 {
+    #registerForm h2,
+    #loginForm form h2,
+    #registerForm form h2 {
         font-size: 1.3em;
     }
-
-    /* Sedikit lebih kecil dari default 1.5em */
 
     .container p,
     #loginForm p,
     #registerForm p,
+    #loginForm form p,
+    #registerForm form p,
     .input-group label,
     .switch-form,
     .switch-form a,
     .forgot-password,
     .checkbox-group label {
         font-size: 0.9em;
-        /* Mengurangi ukuran font teks-teks kecil */
     }
 
     .input-group input,
@@ -323,36 +360,15 @@ button[type="submit"]:hover {
     button[type="submit"],
     .container #logoutButton {
         font-size: 1em;
-        /* Ukuran font tetap atau disesuaikan jika perlu */
         padding: 10px;
-        /* Padding tetap atau disesuaikan jika perlu */
     }
-
 
     .custom-notification {
         padding: 10px 15px;
-        /* Mengurangi padding notifikasi */
         font-size: 0.9em;
-        /* Mengurangi ukuran font notifikasi */
         min-width: unset;
-        /* Hapus lebar minimum */
         width: 95%;
-        /* Bisa gunakan 95% untuk mengisi lebih banyak ruang */
         top: 10px;
-        /* Posisikan notifikasi sedikit lebih ke atas */
         transform: translateX(-50%);
-        /* Pastikan tetap di tengah */
-    }
-
-    .checkbox-group {
-        align-items: center;
-        /* Biasanya center sudah cukup baik */
-        /* Sesuaikan gaya jika perlu di mobile */
     }
 }
-
-/* Anda bisa menambahkan media query lain di sini jika perlu penyesuaian */
-/* yang berbeda untuk rentang ukuran layar tertentu, misal tablet */
-/* @media (min-width: 601px) and (max-width: 900px) {
-     // Gaya khusus untuk tablet
-} */
