@@ -1,0 +1,320 @@
+/* public/homestyle.css */
+
+body.homepage-body {
+	background-color: #abd1c6;
+	/* Contoh warna latar seperti screenshot Happy Hues */
+	color: #e8e4e6;
+	/* Warna teks default untuk homepage body */
+	/* Timpa gaya Flexbox centering dari body default */
+	display: block;
+	/* KRITIS: Agar konten homepage mengalir normal dari atas ke bawah */
+	justify-content: unset;
+	/* Hapus centering Flexbox */
+	align-items: unset;
+	/* Hapus centering Flexbox */
+	padding: 0;
+	/* Hapus padding body default jika konten full width */
+	margin: 0;
+	/* Pastikan margin 0 */
+	min-height: 100vh;
+	/* Tetap setinggi viewport */
+}
+
+/* Gaya untuk Header Homepage */
+body.homepage-body .homepage-header {
+	display: flex;
+	justify-content: space-between;
+	/* Sebar elemen ke pinggir */
+	align-items: center;
+	/* Tengahkan elemen vertikal */
+	background-color: #22444d;
+	/* Contoh background transparan */
+	padding: 15px 40px;
+	/* Sesuaikan padding header */
+	color: #fff;
+	/* Warna teks header */
+}
+
+body.homepage-body .homepage-header .site-title {
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #a5c9b1;
+	/* Contoh warna judul situs */
+}
+
+/* Gaya untuk Tombol Logout di Header Homepage */
+body.homepage-body .homepage-header .header-logout-button {
+	padding: 8px 15px;
+	background-color: #a5c9b1;
+	/* Contoh warna tombol logout */
+	color: #001e1d;
+	/* Warna teks tombol */
+	border: none;
+	border-radius: 4px;
+	font-size: 1em;
+	transition: background-color 0.3s ease;
+}
+
+body.homepage-body .homepage-header .header-logout-button:hover {
+	background-color: #b0d4bd;
+}
+
+
+/* Gaya untuk Konten Utama Homepage (Dua Kolom Layout) */
+body.homepage-body .homepage-main-content {
+	display: flex;
+	/* Aktifkan Flexbox untuk layout kolom */
+	justify-content: center;
+	/* Mengganti space-between ke center agar konten di tengah */
+	align-items: center;
+	/* Tengahkan item (kolom) secara vertikal di dalam container Flex */
+	flex-direction: row;
+	/* Atur arah Flex menjadi baris (kolom) */
+	padding: 60px 40px;
+	/* Padding di dalam area konten utama */
+	gap: 40px;
+	/* Jarak antar kolom */
+	flex-wrap: wrap;
+	/* Biarkan kolom wrap ke bawah di layar kecil */
+	min-height: calc(100vh - 70px - 0px);
+	/* Sesuaikan min-height: 100vh - tinggi header (~70px) - tinggi footer (0px karena tidak ada footer) */
+	box-sizing: border-box;
+	/* Pastikan padding masuk hitungan ukuran */
+}
+
+/* Gaya untuk Kolom Teks di Homepage */
+body.homepage-body .homepage-main-content .text-column {
+	flex: 1;
+	/* Biarkan kolom mengisi ruang */
+	min-width: 280px;
+	/* Lebar minimum sebelum wrap */
+	max-width: 500px;
+	/* Lebar maksimum kolom teks */
+	color: #e8e4e6;
+	/* Warna teks di kolom teks - Disesuaikan dengan warna teks body */
+}
+
+/* Gaya untuk Judul Selamat Datang di Homepage */
+body.homepage-body .homepage-main-content .welcome-heading {
+	font-size: 2.5em;
+	/* Ukuran judul selamat datang */
+	margin-top: 0;
+	margin-bottom: 15px;
+	color: #f9f9f9;
+	/* Contoh warna judul */
+}
+
+body.homepage-body .homepage-main-content .welcome-heading span {
+	color: #22444d;
+	/* Contoh warna nama pengguna - Disesuaikan */
+	font-weight: bold;
+}
+
+/* Gaya untuk Paragraf Deskripsi di Homepage */
+body.homepage-body .homepage-main-content .homepage-description {
+	font-size: 1.1em;
+	margin-bottom: 20px;
+	color: #001e1d;
+	/* Contoh warna teks deskripsi */
+}
+
+/* Gaya untuk Kolom Gambar di Homepage */
+body.homepage-body .homepage-main-content .image-column {
+	flex-shrink: 0;
+	/* Jangan biarkan menyusut */
+	min-width: 200px;
+	/* Lebar minimum kolom gambar */
+	display: flex;
+	justify-content: center;
+	/* Tengahkan gambar di kolom gambar */
+	align-items: center;
+}
+
+/* Gaya untuk Container Gambar Profil */
+body.homepage-body .homepage-main-content .profile-pic-container {
+	width: 150px;
+	/* Ukuran container gambar - Sesuai permintaan */
+	height: 150px;
+	/* Ukuran container gambar - Sesuai permintaan */
+	border-radius: 50%;
+	/* Bentuk bulat */
+	overflow: hidden;
+	/* Sembunyikan bagian gambar di luar lingkaran */
+	border: 3px solid #001e1d;
+	/* Contoh border */
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	position: relative;
+	/* Penting untuk menempatkan upload area di atas */
+	display: flex;
+	/* Gunakan Flexbox untuk menengahkan konten di dalamnya */
+	justify-content: center;
+	align-items: center;
+	background-color: #333;
+	/* Warna latar container saat belum ada foto */
+	/* Tambahkan transisi untuk efek bayangan saat hover */
+	transition: box-shadow 0.3s ease;
+    cursor: pointer; /* Kursor pointer pada container untuk mengindikasikan bisa diklik */
+}
+
+/* Gaya untuk Tag Img Foto Profil */
+body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
+	display: block;
+	width: 100%;
+	/* Gambar mengisi container */
+	height: 100%;
+	object-fit: cover;
+	/* Pastikan gambar tidak terdistorsi */
+	/* Gaya display diatur oleh JS (block/none) */
+	z-index: 1;
+	/* Pastikan gambar di depan upload area */
+	/* Transisi bayangan jika bayangan diterapkan langsung ke img (tidak disarankan dengan overflow: hidden) */
+	/* transition: box-shadow 0.3s ease; */
+}
+
+/* --- Gaya Efek Bayangan Saat Hover --- */
+/* Tambahkan bayangan pada container saat kursor di atasnya */
+body.homepage-body .homepage-main-content .profile-pic-container:hover {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Contoh bayangan yang sedikit lebih jelas */
+}
+
+
+/* Gaya untuk Area Upload */
+body.homepage-body .homepage-main-content .upload-area {
+	position: absolute;
+	/* Tempatkan di atas container */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	/* Gunakan Flexbox untuk menengahkan konten */
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	/* Latar belakang transparan */
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+	/* Ubah kursor */
+	z-index: 2;
+	/* Pastikan area upload di depan gambar (saat terlihat) */
+	/* Gaya display diatur oleh JS (flex/none) */
+	font-size: 0.9em;
+	padding: 10px;
+	box-sizing: border-box;
+	opacity: 1; /* Tampilkan secara default jika belum ada foto */
+	transition: opacity 0.3s ease; /* Transisi opacity */
+}
+
+/* Sembunyikan area upload saat foto profil ditampilkan */
+/* Kondisi ini perlu sesuai dengan placeholder di homepage.js/html */
+/* Menargetkan .upload-area setelah .profile-pic yang memiliki src */
+body.homepage-body .homepage-main-content .profile-pic-container .profile-pic:not([src="placeholder-profile-pic.png"]):not([src=""]):not([src^="data:image"]) + .upload-area {
+    display: none !important; /* Sembunyikan total dari alur */
+    opacity: 0; /* Tambahkan opacity 0 untuk konsistensi jika transisi tidak dipakai */
+    pointer-events: none; /* Non-aktifkan interaksi */
+}
+
+
+/* Gaya hover untuk area upload */
+body.homepage-body .homepage-main-content .upload-area:hover {
+	background-color: rgba(0, 0, 0, 0.6); /* Sedikit lebih gelap saat hover */
+}
+
+
+/* Sembunyikan input file yang sebenarnya */
+body.homepage-body .homepage-main-content .upload-area .file-input {
+	display: none;
+}
+
+/* Gaya untuk Label yang bertindak sebagai tombol */
+body.homepage-body .homepage-main-content .upload-area .upload-button {
+	display: block;
+	/* Buat block agar padding/margin bekerja */
+	padding: 5px 10px;
+	margin-bottom: 5px;
+	background-color: #a5c9b1;
+	/* Warna tombol */
+	color: #22444d;
+	/* Warna teks tombol */
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9em;
+	transition: background-color 0.3s ease;
+}
+
+body.homepage-body .homepage-main-content .upload-area .upload-button:hover {
+	background-color: #b0d4bd;
+}
+
+body.homepage-body .homepage-main-content .upload-area .upload-text {
+	font-size: 0.8em;
+	margin-top: 0;
+	color: #ccc;
+}
+
+
+/* --- Media Query untuk Layar Kecil (Penyesuaian Homepage) --- */
+/* Media Query yang spesifik untuk homepage */
+@media (max-width: 600px) {
+     /* Penyesuaian Body Umum (dari styles.css, bisa ditimpa jika perlu) */
+     /* body { padding: 15px; } */
+
+	/* Penyesuaian Spesifik Homepage untuk Mobile (di dalam media query) */
+	body.homepage-body .homepage-header {
+		flex-direction: column;
+		/* Tumpuk elemen header vertikal */
+		padding: 10px 20px;
+		/* Sesuaikan padding header mobile */
+		gap: 10px;
+		/* Jarak antar elemen header saat ditumpuk */
+	}
+
+	body.homepage-body .homepage-header .header-left,
+	body.homepage-body .homepage-header .header-right {
+		width: 100%;
+		/* Berikan lebar penuh */
+		text-align: center;
+		/* Tengahkan teks/tombol */
+	}
+
+	body.homepage-body .homepage-main-content {
+		flex-direction: column;
+		/* Tumpuk kolom teks dan gambar vertikal */
+		padding: 30px 20px;
+		/* Sesuaikan padding konten utama mobile */
+		gap: 30px;
+		/* Jarak antar kolom saat ditumpuk */
+	}
+
+	body.homepage-body .homepage-main-content .text-column {
+		max-width: 100%;
+		/* Izinkan kolom teks selebar container */
+		text-align: center;
+		/* Tengahkan teks di kolom teks */
+	}
+
+	body.homepage-body .homepage-main-content .welcome-heading {
+		font-size: 2em;
+		/* Sesuaikan ukuran judul */
+	}
+
+	body.homepage-body .homepage-main-content .image-column {
+		min-width: unset;
+		/* Hapus min-width kolom gambar */
+	}
+
+	body.homepage-body .homepage-main-content .profile-pic-container {
+		width: 120px;
+		/* Sesuaikan ukuran gambar profil di mobile */
+		height: 120px;
+	}
+
+    /* Hapus penyesuaian container login/daftar dan form di dalam media query ini */
+    /* Karena sudah di styles.css */
+    /* .container { ... } */
+    /* #loginForm h2, #registerForm h2, ... { ... } */
+    /* .input-group { ... } */
+    /* ... dan gaya login/register lainnya di dalam media query */
+}
