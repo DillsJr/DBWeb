@@ -4,103 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Homepage </title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        p {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .logout-button {
-            padding: 10px 20px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-        }
-
-        .logout-button:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1 id="welcome-message">Selamat Datang!</h1>
-        <p>Anda berhasil login ke homepage.</p>
-        <a href="/" class="logout-button">Logout</a>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loggedInUsername = localStorage.getItem('loggedInUsername');
-            const welcomeMessageElement = document.getElementById('welcome-message');
-            if (loggedInUsername) {
-                welcomeMessageElement.textContent = `Selamat Datang, ${loggedInUsername}!`;
-            }
-        });
+    <h1>Selamat datang, <span id="welcomeUsername"></span>!</h1>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Ambil username dari local storage
-            const loggedInUsername = localStorage.getItem('loggedInUsername');
-            const welcomeMessageElement = document.getElementById('welcome-message');
-            const logoutButton = document.querySelector('.logout-button'); // Ambil tombol logout
+    <p>Ini adalah halaman beranda.</p>
 
-            // Jika username tidak ditemukan di local storage, arahkan kembali ke halaman login
-            if (!loggedInUsername) {
-                // Menggunakan replace() agar halaman login menggantikan halaman saat ini dalam history browser
-                window.location.replace('/');
-                return; // Hentikan eksekusi script selanjutnya
-            }
+    <button id="logoutButton">Logout</button>
 
-            // Jika username ditemukan, tampilkan pesan selamat datang yang dipersonalisasi
-            if (welcomeMessageElement) {
-                welcomeMessageElement.textContent = `Selamat Datang, ${loggedInUsername}!`;
-            }
 
-            // Tambahkan event listener untuk tombol logout
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault(); // Mencegah aksi default link
+    <script src="homepage.js"></script>
 
-                    // Hapus status login dari local storage
-                    localStorage.removeItem('loggedInUsername');
-
-                    // Arahkan pengguna ke halaman login
-                    // Menggunakan replace() agar tidak bisa kembali ke homepage dengan tombol back
-                    window.location.replace('/');
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>
