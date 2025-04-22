@@ -1,5 +1,6 @@
-/* public/homestyle.css */
+/* public/homestyle.css - Gaya untuk Halaman Homepage */
 
+/* Gaya Spesifik untuk Body Homepage (menimpa gaya body default di styles.css) */
 body.homepage-body {
     font-family: Arial, sans-serif;
     /* Pastikan font set di sini atau di styles.css */
@@ -236,7 +237,8 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
 }
 
 
-/* --- BAGIAN BARU: Gaya untuk Antarmuka Unggah Foto Konten Umum --- */
+/* --- BAGIAN GAYA BARU: Antarmuka Unggah Foto Konten Umum & Galeri --- */
+
 .upload-general-photos-section,
 .user-photos-gallery-section {
     max-width: 1200px;
@@ -288,6 +290,7 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
     border-color: #001e1d;
 }
 
+/* Gaya untuk label yang bertindak sebagai tombol di area upload umum */
 .general-upload-button {
     display: inline-block;
     /* Tampilkan sebagai blok inline */
@@ -323,10 +326,69 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
     /* Biarkan preview wrap ke baris baru */
     gap: 10px;
     /* Jarak antar preview */
-    /* Tambahkan style untuk preview individual di JS/inline atau class terpisah */
+    align-items: center;
+    /* Tengahkan item secara vertikal */
+    /* Tambahkan border atau background jika ingin area preview terlihat jelas saat kosong */
+    /* border: 1px solid #eee; */
+    /* min-height: 50px; */
+    /* padding: 10px; */
+    /* background-color: #f9f9f9; */
+    /* border-radius: 4px; */
 }
 
-/* --- BAGIAN BARU: Gaya untuk Area Tampilan Foto Konten Umum (Galeri) --- */
+/* Gaya untuk setiap item preview (div kontainer) */
+.upload-preview-item {
+    display: flex;
+    align-items: center;
+    /* Tengahkan vertikal */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    font-size: 0.9em;
+    color: #333;
+}
+
+.upload-preview-item img {
+    margin-right: 10px;
+    border-radius: 3px;
+    border: 1px solid #eee;
+}
+
+.upload-preview-item span {
+    flex-grow: 1;
+    /* Beri nama file ruang */
+    margin-right: 10px;
+    word-break: break-all;
+    /* Paksa break jika nama file terlalu panjang */
+}
+
+.upload-preview-item .remove-preview-button {
+    background-color: #dc3545;
+    /* Merah */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    /* Bentuk bulat */
+    width: 20px;
+    height: 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    flex-shrink: 0;
+    /* Jangan biarkan menyusut */
+}
+
+.upload-preview-item .remove-preview-button:hover {
+    background-color: #c82333;
+}
+
+
+/* Gaya untuk Kontainer Galeri Foto */
 .user-photos-gallery {
     display: grid;
     /* Gunakan Grid untuk layout galeri */
@@ -337,6 +399,7 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
     padding: 10px;
 }
 
+/* Gaya untuk Setiap Gambar di Galeri */
 .user-photos-gallery img {
     display: block;
     width: 100%;
@@ -359,21 +422,20 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
     /* Kursor pointer mengindikasikan interaksi */
 }
 
+/* Gaya untuk Pesan Info (misal: Belum ada foto) */
 .info-message {
     text-align: center;
     font-style: italic;
     color: #555;
     /* Warna teks info */
     width: 100%;
-    /* Pastikan pesan info mengambil lebar penuh grid */
+    /* Pastikan pesan info mengambil lebar penuh */
+    margin-top: 20px;
 }
 
 
-/* --- Media Query untuk Layar Kecil (Penyesuaian Homepage) --- */
+/* --- Media Query untuk Responsivitas Homepage --- */
 @media (max-width: 600px) {
-
-    /* Penyesuaian Body Umum (dari styles.css, bisa ditimpa jika perlu) */
-    /* body { padding: 15px; } */
 
     /* Penyesuaian Spesifik Homepage untuk Mobile */
     body.homepage-body .homepage-header {
@@ -416,7 +478,7 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
         height: 120px;
     }
 
-    /* --- Media Query Khusus untuk Bagian Baru (Unggah & Galeri) di Layar Kecil --- */
+    /* --- Media Query Khusus untuk Bagian Unggah & Galeri di Layar Kecil --- */
     .upload-general-photos-section,
     .user-photos-gallery-section {
         padding: 15px;
@@ -455,4 +517,17 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
         /* Tinggi gambar galeri di mobile */
     }
 
+    .upload-preview-area {
+        gap: 5px;
+        /* Kurangi jarak preview */
+    }
+
+    .upload-preview-item {
+        padding: 5px;
+    }
+
+    .upload-preview-item img {
+        width: 80px;
+        height: 80px;
+    }
 }

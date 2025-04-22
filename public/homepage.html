@@ -4,63 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Homepage </title>
+    <title>Homepage</title>
     <link rel="stylesheet" href="homestyle.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="homepage-body">
+
     <div id="custom-notification" class="custom-notification"></div>
 
     <header class="homepage-header">
         <div class="header-left">
-            <span class="site-title"> DBWeb™ </span>
+            <span class="site-title">Aplikasi Saya</span>
         </div>
         <div class="header-right">
-            <button id="logoutButton" class="header-logout-button"> Logout </button>
+            <button id="logoutButton" class="header-logout-button">Logout</button>
         </div>
     </header>
 
     <main class="homepage-main-content">
         <section class="text-column">
-            <h1 class="welcome-heading"> Selamat datang, <span id="loggedInUsername"> Pengguna! </span>!</h1>
-            <p class="homepage-description"> Ini adalah halaman beranda Anda. </p>
+            <h1 class="welcome-heading">Selamat datang, <span id="loggedInUsername">Pengguna!</span>!</h1>
+            <p class="homepage-description">Ini adalah halaman beranda Anda. Jelajahi fitur aplikasi.</p>
         </section>
+
         <section class="image-column">
             <div class="profile-pic-container">
-                <img id="userProfilePic" class="profile-pic" src="placeholder-profile-pic.png" alt="Foto Profil">
+                <img src="placeholder-profile-pic.png" alt="Foto Profil Pengguna" id="userProfilePic"
+                    class="profile-pic">
+
                 <div id="profileUploadArea" class="upload-area">
-                    <input type="file" id="profilePicInput" class="file-input">
-                    <label for="profilePicInput" class="upload-button"> Pilih Foto Profil </label>
-                    <p class="upload-text"> Unggah Foto Profil </p>
+                    <input type="file" id="profilePicInput" accept="image/*" class="file-input">
+                    <label for="profilePicInput" class="upload-button">Pilih Foto Profil</label>
+                    <p class="upload-text">Unggah Foto Profil</p>
                 </div>
             </div>
         </section>
     </main>
 
     <section class="upload-general-photos-section">
-        <h2> Unggah Foto Lainnya </h2>
+        <h2>Unggah Foto Lainnya</h2>
         <div class="general-upload-area" id="generalUploadArea">
             <input type="file" id="generalPhotoInput" accept="image/*" multiple class="file-input">
-            <label for="generalPhotoInput" class="general-upload-button"> Pilih Foto untuk Diunggah </label>
-            <p class="general-upload-text"> atau seret & lepas file di sini </p>
+            <label for="generalPhotoInput" class="general-upload-button">Pilih Foto untuk Diunggah</label>
+            <p class="general-upload-text">atau seret & lepas file di sini</p>
         </div>
         <div class="upload-preview-area" id="uploadPreviewArea">
+            <p id="noPreviewMessage" class="info-message" style="display: none;">Tidak ada foto menunggu disimpan.</p>
         </div>
+        <button id="saveUploadedPhotosButton" class="general-upload-button"
+            style="display: none; margin: 15px auto; display: block;">Simpan Foto yang Diunggah</button>
     </section>
-
-    <button id="saveUploadedPhotosButton" class="general-upload-button"
-        style="display: none; margin: 15px auto; display: block;"> Simpan Foto yang Diunggah </button>
-
-
     <section class="user-photos-gallery-section">
         <h2>Galeri Foto Anda</h2>
         <div class="user-photos-gallery" id="userPhotosGallery">
-            <p id="noPhotosMessage" class="info-message"> Belum ada foto diunggah. </p>
+            <p id="noPhotosMessage" class="info-message">Belum ada foto diunggah.</p>
         </div>
     </section>
-
     <script src="homepage.js"></script>
+
 </body>
 
 </html>

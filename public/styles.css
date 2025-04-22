@@ -1,350 +1,330 @@
-/* public/styles.css - Gaya untuk Halaman Login/Daftar (Index.html) */
+/* public/styles.css - Gaya Umum untuk halaman login/daftar dan notifikasi */
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #232946;
-    /* Warna latar belakang body */
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
     margin: 0;
-    padding: 20px;
-    /* Padding di tepi viewport */
-    min-height: 100vh;
-    /* Pastikan background menutupi seluruh tinggi viewport */
-    color: #fff;
-    /* Warna teks default untuk body */
-    line-height: 1.6;
-    /* Tingkatkan keterbacaan teks paragraf */
-    box-sizing: border-box;
-    /* Penting agar padding body tidak menambah ukuran */
-
-    /* --- KRITIS untuk Centering Vertikal dan Horizontal Container di Index.html --- */
+    padding: 0;
     display: flex;
-    /* Mengaktifkan Flexbox */
     justify-content: center;
-    /* Menengahkan konten anak (container) secara horizontal */
+    /* Tengahkan konten horizontal */
     align-items: center;
-    /* Menengahkan konten anak (container) secara vertikal */
-    /* height: 100vh; // min-height 100vh lebih fleksibel */
-}
-
-/* Gaya Container (Khusus Index.html) */
-.container {
-    background-color: #fffffe;
-    /* Warna latar belakang container */
-    border-radius: 8px;
-    padding: 20px;
-    /* Padding di dalam container */
-    width: 100%;
-    /* Gunakan lebar penuh yang tersedia */
-    max-width: 500px;
-    /* Tapi tidak lebih lebar dari 500px */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    /* Menambahkan shadow */
-    margin: 0;
-    /* Atur margin menjadi 0 agar flexbox centering bekerja penuh */
-
-    color: #121629;
-    position: relative;
-    /* KRITIS: Penting sebagai acuan untuk absolute positioning anak-anak form */
-    /* Set Minimum Height agar container tidak 'melompat' saat ganti form */
-    /* Sesuaikan nilai ini (px) agar cukup tinggi untuk form Register + padding */
-    min-height: 580px;
-    /* Contoh nilai, sesuaikan jika perlu */
-    overflow: hidden;
-    /* Sembunyikan konten yang mungkin meluap jika min-height kurang pas */
+    /* Tengahkan konten vertikal */
+    min-height: 100vh;
+    /* Pastikan body setinggi viewport */
     box-sizing: border-box;
-    /* Penting agar padding container masuk dalam lebar/tinggi */
+    /* Padding dan border masuk hitungan ukuran */
 }
 
-/* --- Gaya untuk Elemen di Index.html (Form Login/Daftar, Lupa, Reset) --- */
+.container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    /* Lebar maksimum container */
+    text-align: center;
+    /* Tengahkan teks dan elemen inline-block */
+    position: relative;
+    /* Untuk menempatkan notifikasi absolut */
+}
 
 .tabs {
     display: flex;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
 }
 
-.tabs button {
+.tab-button {
     flex: 1;
-    padding: 10px;
-    font-size: 1em;
-    font-weight: bolder;
-    background-color: transparent;
+    /* Setiap tombol mengisi ruang yang tersedia */
+    padding: 15px 0;
     border: none;
-    color: #888;
+    background-color: transparent;
     cursor: pointer;
+    font-size: 1.1em;
+    color: #555;
+    border-bottom: 2px solid transparent;
+    /* Border bawah default */
     transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
-.tabs button.active {
-    color: #eebbc3;
-    border-bottom: 2px solid #eebbc3;
+.tab-button.active {
+    color: #007bff;
+    /* Warna teks tab aktif */
+    border-bottom-color: #007bff;
+    /* Warna border bawah tab aktif */
 }
 
-/* Judul form Login/Daftar/Lupa/Reset */
-#loginForm h2,
-#registerForm h2,
-#forgotPasswordForm h2,
-/* Ditambahkan target untuk form lupa/reset */
-#resetPasswordForm h2
+.tab-button:hover {
+    color: #0056b3;
+}
 
-/* Ditambahkan target untuk form lupa/reset */
-    {
-    color: #121629;
-    margin-bottom: 5px;
+/* Gaya untuk Kontainer Form Utama (loginFormDiv, registerFormDiv) */
+/* Menggunakan class 'hidden' yang diatur oleh JavaScript */
+/* Aturan ini sudah ada di bawah, jadi ruleset kosong di sini dihapus */
+
+.form-container.hidden {
+    display: none;
+    /* Sembunyikan form container */
+}
+
+/* Gaya untuk Konten Form Spesifik (Login/Lupa/Reset/Daftar) */
+/* Menggunakan class 'hidden' yang diatur oleh JavaScript */
+/* Aturan ini sudah ada di bawah, jadi ruleset kosong di sini dihapus */
+
+.form-content h2 {
     margin-top: 0;
-    text-align: center;
-    font-size: 1.5em;
-}
-
-/* Paragraf deskripsi di form Login/Daftar/Lupa/Reset */
-#loginForm p,
-#registerForm p,
-#forgotPasswordForm p,
-/* Ditambahkan target untuk form lupa/reset */
-#resetPasswordForm p
-
-/* Ditambahkan target untuk form lupa/reset */
-    {
-    color: #272343;
-    font-style: italic;
     margin-bottom: 20px;
-    text-align: center;
+    color: #333;
+    font-size: 1.8em;
 }
 
-/* Group input */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    /* Item (input, button) mengisi lebar form */
+}
+
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    text-align: left;
+    /* Teks label dan input align kiri */
 }
 
 .input-group label {
     display: block;
-    color: #121629;
+    /* Label di baris baru */
     margin-bottom: 5px;
     font-weight: bold;
-    font-size: 1em;
+    color: #555;
 }
 
-/* Input teks, email, password, tel */
-.input-group input {
-    width: 95%;
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="tel"] {
+    width: 100%;
+    /* Lebar input 100% dari container */
     padding: 10px;
-    border: 1px solid #d8d8d8;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #fff;
-    color: #001858;
-    box-sizing: border-box;
     font-size: 1em;
+    box-sizing: border-box;
+    /* Padding masuk hitungan ukuran */
 }
 
-/* Checkbox group */
+
+/* Gaya untuk Checkbox Group (Lihat Password) */
 .checkbox-group {
     display: flex;
+    /* Menggunakan flexbox untuk tata letak horizontal */
     align-items: center;
-    margin-bottom: 20px;
+    /* Tengahkan item vertikal */
+    margin-bottom: 15px;
+    text-align: left;
+    /* Pastikan grup align kiri */
+    font-size: 0.9em;
+    color: #555;
 }
 
 .checkbox-group input[type="checkbox"] {
-    margin-right: 5px;
+    margin-right: 8px;
+    /* Ruang antara checkbox dan label */
+    /* Gaya checkbox mungkin berbeda antar browser, bisa ditata lebih lanjut */
 }
 
 .checkbox-group label {
-    color: #888;
     margin-bottom: 0;
+    /* Hapus margin bawah pada label di checkbox group */
     font-weight: normal;
-    font-style: italic;
-    font-size: 0.9em;
+    /* Jangan tebalkan teks label checkbox */
+    cursor: pointer;
+    /* Ubah kursor menjadi pointer */
 }
 
-/* Link Lupa Password */
+
+/* Gaya untuk Link Lupa Password */
 .forgot-password {
-    color: #eebbc3;
-    text-decoration: none;
-    float: right;
+    margin-top: -10px;
+    /* Geser ke atas sedikit */
+    margin-bottom: 15px;
+    text-align: right;
+    /* Posisikan ke kanan */
     font-size: 0.9em;
 }
 
-.forgot-password:hover {
+.forgot-password a,
+.switch-form a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover,
+.switch-form a:hover {
+    color: #0056b3;
     text-decoration: underline;
 }
 
-/* Tombol Submit di semua form */
+
 button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #eebbc3;
-    color: #121629;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
     border: none;
     border-radius: 4px;
-    font-size: 1em;
     cursor: pointer;
+    font-size: 1.1em;
     margin-top: 10px;
+    /* Ruang di atas tombol */
     transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
-    background-color: #f5c2cc;
+    background-color: #0056b3;
 }
 
-/* Teks "Belum punya akun?" / "Sudah punya akun?" */
 .switch-form {
-    text-align: center;
-    color: #121629;
     margin-top: 20px;
     font-size: 0.9em;
+    color: #555;
 }
 
-.switch-form a {
-    color: #eebbc3;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.switch-form a:hover {
-    text-decoration: underline;
-}
-
-/* --- Gaya untuk Form Containers (#loginFormDiv, #registerFormDiv) - Gaya ABSOLUTE POSITIONING --- */
-/* Kontainer utama form Login/Daftar/Lupa/Reset dan Register */
-#loginFormDiv,
-#registerFormDiv {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto;
-
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    bottom: 0;
-    padding: inherit;
-    box-sizing: border-box;
-    overflow-y: auto;
-    z-index: 0;
-
-    transition: opacity 0.5s ease;
-    /* Tambahkan transisi opacity jika form konten spesifik tidak punya */
-}
-
-/* Gaya untuk Form Konten Spesifik di dalam kontainer Login/Daftar */
-/* (Ini adalah div dengan class="form-content" di dalam #loginFormDiv atau #registerFormDiv) */
-.form-content {
-    /* Atur display di sini, akan di-toggle oleh JS */
-    display: block;
-    /* Default display saat tidak hidden */
-    /* transition: opacity 0.5s ease; /* Transisi opacity jika ingin per form spesifik */
-}
-
-/* Gaya untuk Form Saat Disembunyikan Secara Total (digunakan oleh JS via class 'hidden') */
-/* KRITIS: Gunakan display: none; untuk menyembunyikan elemen secara total dari alur dan rendering */
-.hidden {
-    display: none !important;
-    /* Hapus dari alur dokumen, gunakan !important jika perlu menimpa gaya lain */
-    opacity: 0;
-    /* Fallback opacity jika display: none tidak digunakan */
-    visibility: hidden;
-    /* Fallback visibility jika display: none tidak digunakan */
-}
-
-/* --- Gaya untuk Notifikasi Kustom (Tetap di styles.css karena umum) --- */
+/* Gaya untuk Notifikasi Kustom */
 .custom-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    font-size: 1em;
+    position: absolute;
+    top: 0;
+    /* Posisikan di bagian atas container */
+    left: 0;
+    right: 0;
+    padding: 15px;
     text-align: center;
-    min-width: 250px;
-    max-width: 90%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.custom-notification.success {
-    background-color: rgba(40, 167, 69, 0.9);
-}
-
-.custom-notification.error {
-    background-color: rgba(220, 53, 69, 0.9);
-}
-
-.custom-notification.info {
-    background-color: rgba(23, 162, 184, 0.9);
+    color: white;
+    font-size: 1em;
+    z-index: 1000;
+    /* Pastikan di depan elemen lain */
+    opacity: 0;
+    /* Awalnya tidak terlihat */
+    visibility: hidden;
+    /* Sembunyikan total */
+    transform: translateY(-100%);
+    /* Geser ke atas container */
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s ease;
 }
 
 .custom-notification.show {
     opacity: 1;
+    /* Tampilkan */
     visibility: visible;
+    transform: translateY(0);
+    /* Geser ke posisi terlihat */
+    display: block;
+    /* Pastikan display bukan none saat show */
 }
 
 
-/* --- Media Query untuk Layar Kecil (Penyesuaian Umum dan Login/Daftar) --- */
+/* Gaya spesifik berdasarkan tipe notifikasi */
+.custom-notification.info {
+    background-color: #2196F3;
+    /* Biru */
+}
+
+.custom-notification.success {
+    background-color: #4CAF50;
+    /* Hijau */
+}
+
+.custom-notification.error {
+    background-color: #f44336;
+    /* Merah */
+}
+
+.custom-notification.warning {
+    background-color: #ff9800;
+    /* Oranye */
+}
+
+
+/* --- Media Query untuk Layar Kecil (Penyesuaian Umum) --- */
 @media (max-width: 600px) {
-
-    /* Penyesuaian Body Umum untuk Mobile */
     body {
-        padding: 15px;
+        /* Hapus centering vertikal di layar kecil jika konten bisa melebihi viewport */
+        align-items: flex-start;
+        /* Konten mulai dari atas */
+        padding: 20px;
+        /* Beri padding agar konten tidak menempel di pinggir */
     }
 
-    /* Penyesuaian Container Login/Daftar untuk Mobile */
     .container {
-        padding: 15px;
-        margin: 0;
-        min-height: 550px;
-        /* Sesuaikan jika perlu */
+        padding: 20px;
+        /* Kurangi padding container di layar kecil */
+        max-width: 100%;
+        /* Izinkan container mengisi lebar layar */
+        box-shadow: none;
+        /* Hapus bayangan di layar kecil agar tampilan lebih bersih */
     }
 
-    /* Penyesuaian Gaya Elemen di dalam Form Login/Daftar untuk Mobile */
-    .container h1 {
-        font-size: 1.6em;
+    .tabs {
+        margin-bottom: 20px;
+        /* Kurangi margin bawah tab */
     }
 
-    #loginForm h2,
-    #registerForm h2,
-    #forgotPasswordForm h2,
-    #resetPasswordForm h2 {
-        font-size: 1.3em;
-    }
-
-    .container p,
-    #loginForm p,
-    #registerForm p,
-    #forgotPasswordForm p,
-    #resetPasswordForm p,
-    .input-group label,
-    .switch-form,
-    .switch-form a,
-    .forgot-password,
-    .checkbox-group label {
-        font-size: 0.9em;
-    }
-
-    .input-group input,
-    .tabs button,
-    button[type="submit"],
-    .container #logoutButton {
+    .tab-button {
         font-size: 1em;
-        padding: 10px;
+        /* Sesuaikan ukuran font tab */
+        padding: 12px 0;
+        /* Sesuaikan padding tab */
     }
 
-    .custom-notification {
-        padding: 10px 15px;
+    .form-content h2 {
+        font-size: 1.5em;
+        /* Sesuaikan ukuran judul form */
+        margin-bottom: 15px;
+    }
+
+    .input-group {
+        margin-bottom: 12px;
+        /* Kurangi margin bawah input group */
+    }
+
+    .input-group label {
         font-size: 0.9em;
-        min-width: unset;
-        width: 95%;
-        top: 10px;
-        transform: translateX(-50%);
+        /* Sesuaikan ukuran font label */
+        margin-bottom: 3px;
+    }
+
+    .input-group input {
+        padding: 8px;
+        /* Kurangi padding input */
+        font-size: 0.9em;
     }
 
     .checkbox-group {
-        align-items: center;
+        font-size: 0.8em;
+        /* Sesuaikan ukuran font checkbox group */
+        margin-bottom: 12px;
+    }
+
+    .forgot-password,
+    .switch-form {
+        font-size: 0.8em;
+        /* Sesuaikan ukuran font link switch */
+    }
+
+    button[type="submit"] {
+        padding: 10px 15px;
+        /* Kurangi padding tombol submit */
+        font-size: 1em;
+        margin-top: 15px;
+    }
+
+    .custom-notification {
+        padding: 10px;
+        /* Kurangi padding notifikasi */
+        font-size: 0.9em;
     }
 }
