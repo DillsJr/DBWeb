@@ -1,9 +1,10 @@
 // public/script.js - Script untuk halaman login/daftar (Integrasi Supabase Authentication)
 
 // --- KONFIGURASI SUPABASE ---
-// !!! GANTI placeholder berikut dengan URL dan ANON KEY Supabase Project Anda !!!
-const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co'; // Contoh: 'https://abcdefg.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDc5OX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE'; // Contoh: 'eyJhbGciOiJIUzE...'
+// !!! PERINGATAN: Menyimpan URL dan ANON KEY secara langsung di kode klien yang publik
+// TIDAK AMAN untuk aplikasi produksi. Gunakan environment variables atau server-side logic. !!!
+const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDc5OX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE';
 
 // Inisialisasi klien Supabase
 // Pastikan Anda sudah menambahkan tag script Supabase JS Library di index.html HEAD:
@@ -12,26 +13,25 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 // Buat instance client Supabase menggunakan objek global 'supabase' dari library
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-console.log("Supabase client initialized."); // Log untuk verifikasi inisialisasi
+console.log("Supabase client initialized.");
 
 // --- Logika Cek Status Login dengan Supabase saat DOMContentLoaded ---
 supabaseClient.auth.onAuthStateChange((event, session) => {
     console.log('Supabase Auth State Change:', event, session);
 
     // Jika ada sesi aktif (pengguna sudah login), redirect ke homepage
+    // Ini adalah cara standar dan disarankan untuk menangani redirect.
     if (session) {
-        console.log("Sesi Supabase ditemukan, redirect ke homepage.html");
+        console.log("Sesi Supabase ditemukan, redirect ke homepage.html (via onAuthStateChange)");
         window.location.replace('/homepage.html'); // !!! Pastikan '/homepage.html' adalah path homepage Anda !!!
     } else {
         console.log("Tidak ada sesi Supabase, tetap di halaman login/daftar.");
     }
 });
-// --- Akhir Logika Cek Status Login Supabase ---
 
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // --- Mendapatkan elemen-elemen HTML utama ---
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
     const loginFormContainer = document.getElementById('loginForm');
@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const notificationElement = document.getElementById('custom-notification');
 
 
-    // --- Fungsi Notifikasi Kustom ---
     function showNotification(message, type = 'info', duration = 3000) {
         if (!notificationElement) return;
         if (notificationElement.timeoutId) {
@@ -67,7 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-    // --- Logika Ganti Tab ---
     function showLoginTab() {
         if (loginTab) loginTab.classList.add('active');
         if (registerTab) registerTab.classList.remove('active');
@@ -95,10 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         showNotification('');
         if (notificationElement) notificationElement.style.display = 'none';
     }
-    // --- Akhir Logika Ganti Tab ---
 
 
-    // --- Fungsi untuk Mengganti Tampilan Konten Form di Dalam loginFormContainer (#loginForm) ---
     function showFormContent(formToShowId) {
         if (!loginFormContainer) {
             console.error("Login form container not found.");
@@ -123,7 +119,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (registerFormElement) registerFormElement.classList.add('form-content');
 
 
-    // Pasang event listener untuk tab dan link switch form
     if (loginTab) loginTab.addEventListener('click', showLoginTab);
     if (registerTab) registerTab.addEventListener('click', showRegisterTab);
     const switchToRegisterLink = document.getElementById('switchToRegister');
@@ -138,7 +133,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-    // --- Logika Lihat Password ---
     function setupPasswordToggle(checkboxId, passwordInputId) {
         const checkbox = document.getElementById(checkboxId);
         const passwordInput = document.getElementById(passwordInputId);
@@ -157,9 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupPasswordToggle('showConfirmPassword', 'confirmPassword');
 
 
-    // --- ALUR LUPA PASSWORD (Menggunakan Supabase Authentication) ---
-    // Definisi fungsi handler untuk form lupa password
-    const handleForgotPasswordClick = (e) => { // Tidak perlu async di sini
+    const handleForgotPasswordClick = (e) => {
         e.preventDefault();
 
         if (!loginFormContainer) {
@@ -195,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.preventDefault();
                 if (loginFormContainer) {
                     loginFormContainer.innerHTML = originalLoginFormContentHTML;
-                    attachLoginFormListeners(); // Pasang kembali listener
+                    attachLoginFormListeners();
                 }
             });
         }
@@ -247,19 +239,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Fungsi dummy untuk attachResetPasswordFormListener (tidak relevan di index.js)
-    // Karena reset password diselesaikan di halaman lain.
-    // Dibuat kosong agar tidak error jika terpanggil (meski seharusnya tidak).
     function attachResetPasswordFormListener(identifier) {
         console.warn("attachResetPasswordFormListener called in index.js - This function is for the reset password page.");
-        // Logic to handle the reset password form (entering new password)
-        // should be in a separate script on the page specified by redirectTo.
     }
-    // --- Akhir Alur Lupa Password Supabase (Initiasi) ---
 
 
-    // --- Implementasi handleLoginSubmit (Menggunakan Supabase Authentication) ---
-    // Definisi fungsi handler untuk login
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         console.log('Memproses login (menggunakan Supabase Authentication)...');
@@ -306,13 +290,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } else {
             console.log('Login berhasil via Supabase Auth:', data);
-            // Redirect ditangani oleh onAuthStateChange di atas
+            showNotification('Login berhasil!', 'success', 1000); // Tampilkan notifikasi sukses singkat
+
+            // --- MENAMBAHKAN REDIRECT LANGSUNG DI SINI ---
+            // Ini sebagai penjamin atau alternatif jika onAuthStateChange tidak redirect segera
+            window.location.replace('/homepage.html'); // !!! TEMPORARY DIRECT REDIRECT !!!
+            // ---------------------------------------------
         }
     };
 
 
-    // --- Implementasi handleRegisterSubmit (Menggunakan Supabase Authentication) ---
-    // Definisi fungsi handler untuk daftar
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
         console.log('Memproses pendaftaran (menggunakan Supabase Authentication)...');
@@ -395,7 +382,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
 
-    // Fungsi untuk memasang kembali event listener form login setelah konten diubah (atau saat setup awal)
     function attachLoginFormListeners() {
         const loginFormElement = document.getElementById('login');
         const forgotPasswordLink = document.querySelector('#login form .forgot-password');
@@ -408,20 +394,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Login form element with ID 'login' not found in attachLoginFormListeners.");
         }
 
-        // Pasang kembali event listener link "Lupa Password?"
-        // Cek apakah link masih ada di DOM (mungkin hilang jika HTML diganti total oleh forgot password form)
         const currentForgotPasswordLink = document.querySelector('#login form .forgot-password');
-        if (currentForgotPasswordLink) { // Gunakan selector lagi untuk memastikan elemen ada
+        if (currentForgotPasswordLink) {
             currentForgotPasswordLink.removeEventListener('click', handleForgotPasswordClick);
             currentForgotPasswordLink.addEventListener('click', handleForgotPasswordClick);
-        } else {
-            // console.warn("Forgot password link not found when re-attaching listeners."); // Notifikasi ini bisa terlalu sering
         }
     }
 
 
-    // Pasang event listener submit untuk form daftar (Dipasang saat initial load)
-    // Fungsi handleRegisterSubmit sudah didefinisikan di atas
     if (registerFormElement) {
         registerFormElement.removeEventListener('submit', handleRegisterSubmit);
         registerFormElement.addEventListener('submit', handleRegisterSubmit);
@@ -432,7 +412,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-    // --- INITIAL SETUP halaman login/daftar saat DOMContentLoaded ---
     function initializeFormsAndTabs() {
         if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer) {
             console.error("HTML structure for tabs or forms not complete.");
@@ -440,7 +419,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        attachLoginFormListeners(); // Pasang listener untuk form login awal dan link lupa password
+        attachLoginFormListeners();
 
         registerFormContainer.classList.add('hidden');
         loginFormContainer.classList.remove('hidden');
@@ -452,9 +431,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("Halaman login/daftar diinisialisasi.");
     }
 
-    // Panggil inisialisasi form dan tab
-    // onAuthStateChange di atas akan menangani redirect jika ada sesi
-    // Jika tidak ada sesi, eksekusi akan sampai sini dan initializeFormsAndTabs() dipanggil
     initializeFormsAndTabs();
 
 
