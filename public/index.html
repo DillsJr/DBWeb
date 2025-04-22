@@ -4,107 +4,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login dan Daftar </title>
+    <title>Login dan Daftar</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
+
     <div id="custom-notification" class="custom-notification"></div>
 
     <div class="container">
         <div class="tabs">
-            <button id="loginTab" class="active"> Masuk </button>
-            <button id="registerTab"> Daftar </button>
+            <button id="loginTab" class="active">Masuk</button>
+            <button id="registerTab">Daftar</button>
         </div>
 
         <div id="loginForm" class="form">
-            <h2 style="color: #121629;"> Silahkan Login </h2>
-            <p style="color: #272343; font-style: italic;"> Login menggunakan akun yang terdaftar </p>
+            <h2 style="color: #121629;">Silahkan Login</h2>
+            <p style="color: #272343; font-style: italic;">Login menggunakan akun yang terdaftar</p>
             <form id="login">
                 <div class="input-group">
-                    <label for="loginWhatsapp" style="color: #121629;"> Nomor Whatsapp </label>
-                    <input type="tel" id="loginWhatsapp" placeholder="Masukan Nomor Whatsapp" required
-                        autocomplete="tel">
+                    <label for="loginEmail" style="color: #121629;">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Masukan Email" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <label for="loginPassword" style="color: #121629;"> Password </label>
+                    <label for="loginPassword" style="color: #121629;">Password</label>
                     <input type="password" id="loginPassword" placeholder="Masukan Password" required
                         autocomplete="current-password">
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="showLoginPassword">
-                    <label for="showLoginPassword" style="color: #888; font-style: italic;"> Lihat Password </label>
+                    <label for="showLoginPassword" style="color: #888; font-style: italic;">Lihat Password</label>
                 </div>
                 <a href="#" class="forgot-password"
-                    style="color: #eebbc3; text-decoration: none; float: right; font-size: 14px; font-style: italic;">
-                    Lupa Password? </a>
+                    style="color: #eebbc3; text-decoration: none; float: right; font-size: 14px; font-style: italic;">Lupa
+                    Password?</a>
                 <button type="submit"
                     style="width: 100%; padding: 10px; background-color: #eebbc3; color: #121629; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px;">
                     Masuk
                 </button>
-
             </form>
-            <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;"> Belum
+            <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;">Belum
                 punya akun?
-                <a href="#" id="switchToRegister" style="color: #eebbc3; text-decoration: none; font-weight: bold;">
-                    Daftar Sekarang </a>
+                <a href="#" id="switchToRegister"
+                    style="color: #eebbc3; text-decoration: none; font-weight: bold;">Daftar Sekarang</a>
             </p>
         </div>
 
         <div id="registerForm" class="form hidden">
-            <h2 style="color: #121629;"> Silahkan Daftar </h2>
-            <p style="color: #272343; font-style: italic;"> Masukan informasi daftar dengan benar </p>
+            <h2 style="color: #121629;">Silahkan Daftar</h2>
+            <p style="color: #272343; font-style: italic;">Masukan informasi daftar dengan benar</p>
             <form id="register">
                 <div class="input-group">
-                    <label for="fullName" style="color: #121629;"> Nama Lengkap </label>
+                    <label for="fullName" style="color: #121629;">Nama Lengkap</label>
                     <input type="text" id="fullName" placeholder="Masukan Nama Lengkap" required autocomplete="name">
                 </div>
                 <div class="input-group">
-                    <label for="username" style="color: #121629;"> Username </label>
+                    <label for="username" style="color: #121629;">Username</label>
                     <input type="text" id="username" placeholder="Masukan Username" required autocomplete="username">
                 </div>
                 <div class="input-group">
-                    <label for="whatsapp" style="color: #121629;"> Nomor Whatsapp </label>
+                    <label for="whatsapp" style="color: #121629;">Nomor Whatsapp</label>
                     <input type="tel" id="whatsapp" placeholder="Masukan Nomor Whatsapp" required autocomplete="tel">
                 </div>
                 <div class="input-group">
-                    <label for="email" style="color: #121629;"> Email </label>
+                    <label for="email" style="color: #121629;">Email</label>
                     <input type="email" id="email" placeholder="Masukan Email" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <label for="password" style="color: #121629;"> Password </label>
+                    <label for="password" style="color: #121629;">Password</label>
                     <input type="password" id="password" placeholder="Masukan Password" required
                         autocomplete="new-password">
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="showPassword">
-                    <label for="showPassword" style="color: #888; font-style: italic;"> Lihat Password </label>
+                    <label for="showPassword" style="color: #888; font-style: italic;">Lihat Password</label>
                 </div>
                 <div class="input-group">
-                    <label for="confirmPassword" style="color: #121629;"> Konfirmasi Password </label>
+                    <label for="confirmPassword" style="color: #121629;">Konfirmasi Password</label>
                     <input type="password" id="confirmPassword" placeholder="Masukan Konfirmasi Password" required
                         autocomplete="new-password">
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="showConfirmPassword">
-                    <label for="showConfirmPassword" style="color: #888; font-style: italic;"> Lihat Konfirmasi Password
-                    </label>
+                    <label for="showConfirmPassword" style="color: #888; font-style: italic;">Lihat Konfirmasi
+                        Password</label>
                 </div>
                 <button type="submit"
                     style="width: 100%; padding: 10px; background-color: #eebbc3; color: #121629; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px;">
                     Daftar
                 </button>
             </form>
-            <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;"> Sudah
+            <p class="switch-form" style="text-align: center; color: #121629; margin-top: 20px; font-size: 14px;">Sudah
                 punya akun?
-                <a href="#" id="switchToLogin" style="color: #eebbc3; text-decoration: none; font-weight: bold;"> Masuk
-                    Sekarang </a>
+                <a href="#" id="switchToLogin" style="color: #eebbc3; text-decoration: none; font-weight: bold;">Masuk
+                    Sekarang</a>
             </p>
         </div>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 
 </html>

@@ -1,31 +1,29 @@
 // public/script.js - Script untuk halaman login/daftar (Integrasi Supabase Authentication)
 
 // --- KONFIGURASI SUPABASE ---
-// !!! PERINGATAN: Menyimpan URL dan ANON KEY secara langsung di kode klien yang publik
-// TIDAK AMAN untuk aplikasi produksi. Gunakan environment variables atau server-side logic. !!!
 const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDc5OX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE';
 
-// Inisialisasi klien Supabase
-// Pastikan Anda sudah menambahkan tag script Supabase JS Library di index.html HEAD:
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-// Buat instance client Supabase menggunakan objek global 'supabase' dari library
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 console.log("Supabase client initialized.");
 
-// --- Logika Cek Status Login dengan Supabase saat DOMContentLoaded ---
+// --- Logika Cek Status Login dengan Supabase ---
 supabaseClient.auth.onAuthStateChange((event, session) => {
     console.log('Supabase Auth State Change:', event, session);
 
-    // Jika ada sesi aktif (pengguna sudah login), redirect ke homepage
-    // Ini adalah cara standar dan disarankan untuk menangani redirect.
+    // Tangani redirect saat login berhasil atau sesi ditemukan
     if (session) {
         console.log("Sesi Supabase ditemukan, redirect ke homepage.html (via onAuthStateChange)");
         window.location.replace('/homepage.html'); // !!! Pastikan '/homepage.html' adalah path homepage Anda !!!
+    } else if (event === 'SIGNED_OUT') {
+        // Tangani notifikasi saat pengguna logout dan kembali ke halaman ini
+        console.log("Supabase event: SIGNED_OUT. Pengguna telah logout.");
+        // Tampilkan notifikasi logout
+        showNotification('Anda telah berhasil logout.', 'success', 3000);
+        // Tidak perlu showLoginTab() di sini jika redirect SIGNED_OUT memuat ulang halaman ini
     } else {
-        console.log("Tidak ada sesi Supabase, tetap di halaman login/daftar.");
+        console.log("Tidak ada sesi Supabase atau event lain, tetap di halaman login/daftar.");
     }
 });
 
@@ -57,12 +55,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             notificationElement.classList.remove('show');
             notificationElement.addEventListener('transitionend', function handler() {
                 if (!notificationElement.classList.contains('show')) {
+                    // Sembunyikan elemen setelah transisi selesai
                     notificationElement.style.display = 'none';
                     notificationElement.textContent = '';
                 }
                 notificationElement.removeEventListener('transitionend', handler);
             });
         }, duration);
+        // Pastikan elemen terlihat saat class 'show' ditambahkan
+        notificationElement.style.display = ''; // Kembalikan display ke default (atau block/flex)
     }
 
 
@@ -77,8 +78,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const forgotForm = document.getElementById('forgotPasswordForm');
         if (forgotForm) forgotForm.classList.add('hidden');
 
+        // Sembunyikan notifikasi saat ganti tab
         showNotification('');
-        if (notificationElement) notificationElement.style.display = 'none';
+        // if (notificationElement) notificationElement.style.display === 'none'; // DIHAPUS / DIPERBAIKI
     }
 
     function showRegisterTab() {
@@ -90,8 +92,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (registerFormElement) registerFormElement.classList.remove('hidden');
 
+        // Sembunyikan notifikasi saat ganti tab
         showNotification('');
-        if (notificationElement) notificationElement.style.display = 'none';
+        // if (notificationElement) notificationElement.style.display === 'none'; // DIHAPUS / DIPERBAIKI
     }
 
 
@@ -111,8 +114,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             console.error(`Form content with ID "${formToShowId}" not found.`);
         }
+        // Sembunyikan notifikasi saat ganti form
         showNotification('');
-        if (notificationElement) notificationElement.style.display = 'none';
+        // if (notificationElement) notificationElement.style.display === 'none'; // DIHAPUS / DIPERBAIKI
     }
 
     if (loginFormElement) loginFormElement.classList.add('form-content');
@@ -215,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     data,
                     error
                 } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    // !!! GANTI URL INI !!!
+                    // !!! GANTI URL INI dengan URL halaman tempat pengguna akan me-reset password mereka !!!
                     redirectTo: window.location.origin + '/reset-password.html'
                 });
 
@@ -248,7 +252,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         console.log('Memproses login (menggunakan Supabase Authentication)...');
 
-        const emailInput = document.getElementById('loginEmail');
+        // Mengambil nilai input menggunakan ID yang BENAR dari HTML (loginEmail)
+        const emailInput = document.getElementById('loginEmail'); // Diubah dari loginWhatsapp
         const passwordInput = document.getElementById('loginPassword');
 
         if (!emailInput || !passwordInput) {
@@ -261,17 +266,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const password = passwordInput.value;
 
         if (!email || !password) {
-            showNotification('Email dan password harus diisi.', 'error');
+            showNotification('Email dan password harus diisi.', 'error'); // Pesan notifikasi disesuaikan
             return;
         }
 
         showNotification('Memproses login...', 'info');
 
+        // Menggunakan signInWithPassword dengan parameter email dan password
         const {
             data,
             error
         } = await supabaseClient.auth.signInWithPassword({
-            email: email,
+            email: email, // Menggunakan email sebagai identifier
             password: password,
         });
 
@@ -281,21 +287,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (error.message.includes('Email not confirmed')) {
                 errorMessage = 'Email belum dikonfirmasi. Cek inbox Anda.';
             } else if (error.message.includes('Invalid login credentials')) {
-                errorMessage = 'Email atau password salah.';
+                errorMessage = 'Email atau password salah.'; // Pesan notifikasi disesuaikan
             } else {
-                errorMessage += ' ' + error.message;
+                errorMessage = `Login gagal: ${error.message || 'Terjadi kesalahan yang tidak diketahui.'}`;
             }
             showNotification(errorMessage, 'error');
             passwordInput.value = '';
 
         } else {
             console.log('Login berhasil via Supabase Auth:', data);
-            showNotification('Login berhasil!', 'success', 1000); // Tampilkan notifikasi sukses singkat
+            showNotification('Login berhasil!', 'success', 1000);
 
-            // --- MENAMBAHKAN REDIRECT LANGSUNG DI SINI ---
-            // Ini sebagai penjamin atau alternatif jika onAuthStateChange tidak redirect segera
-            window.location.replace('/homepage.html'); // !!! TEMPORARY DIRECT REDIRECT !!!
-            // ---------------------------------------------
+            // Redirect langsung untuk memastikan navigasi segera
+            window.location.replace('/homepage.html'); // !!! PASTIKAN PATH INI BENAR !!!
         }
     };
 
@@ -360,7 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (error.message.includes('already registered')) {
                 errorMessage = 'Email sudah terdaftar.';
             } else {
-                errorMessage += ' ' + error.message;
+                errorMessage = `Pendaftaran gagal: ${error.message || 'Terjadi kesalahan yang tidak diketahui.'}`;
             }
             showNotification(errorMessage, 'error');
 
@@ -368,16 +372,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('Pendaftaran berhasil via Supabase Auth:', data);
 
             if (data && data.user && data.user.identities && data.user.identities.length > 0 && data.user.email_confirmed_at === null) {
-                showNotification('Pendaftaran berhasil! Cek email Anda untuk konfirmasi akun sebelum login.', 'success', 7000);
+                showNotification('Pendaftaran berhasil! Cek email Anda untuk mengaktifkan akun sebelum login.', 'success', 7000);
+                setTimeout(() => {
+                    showLoginTab();
+                    const registerForm = document.getElementById('register');
+                    if (registerForm) registerForm.reset();
+                }, 1500);
+            } else if (data && data.user) {
+                // Skenario jika email confirmation mati (user langsung login)
+                showNotification('Pendaftaran berhasil dan Anda langsung login!', 'success');
+                console.log("User langsung login setelah daftar (email confirmation mati). Redirect akan ditangani.");
+                // Redirect langsung jika user langsung login
+                window.location.replace('/homepage.html'); // !!! OPSIONAL REDIRECT LANGSUNG SETELAH DAFTAR & LANGSUNG LOGIN !!!
             } else {
-                showNotification('Pendaftaran berhasil! Silakan Login.', 'success');
+                showNotification('Pendaftaran berhasil. Silakan coba login.', 'success');
+                setTimeout(() => {
+                    showLoginTab();
+                    const registerForm = document.getElementById('register');
+                    if (registerForm) registerForm.reset();
+                }, 1500);
             }
-
-            setTimeout(() => {
-                showLoginTab();
-                const registerForm = document.getElementById('register');
-                if (registerForm) registerForm.reset();
-            }, 1500);
         }
     };
 
