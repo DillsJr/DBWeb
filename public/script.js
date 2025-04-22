@@ -1,67 +1,51 @@
-// public/script.js - Script untuk halaman login/daftar (Simulasi localStorage sebagai Database Pengguna)
+// public/script.js - Script untuk halaman login/daftar (Integrasi Supabase Authentication)
+
+// --- KONFIGURASI SUPABASE ---
+// !!! GANTI placeholder berikut dengan URL dan ANON KEY Supabase Project Anda !!!
+const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co'; // Contoh: 'https://abcdefg.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDc5OX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE'; // Contoh: 'eyJhbGciOiJIUzI...'
+
+// Inisialisasi klien Supabase
+// Pastikan Anda sudah menambahkan tag script Supabase JS Library di index.html HEAD:
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+console.log("Supabase client initialized."); // Log untuk verifikasi inisialisasi
+
+// --- Logika Cek Status Login dengan Supabase saat DOMContentLoaded ---
+// Menggunakan onAuthStateChange untuk mendeteksi perubahan status login
+supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Supabase Auth State Change:', event, session);
+
+    // Jika ada sesi aktif (pengguna sudah login), redirect ke homepage
+    if (session) {
+        console.log("Sesi Supabase ditemukan, redirect ke homepage.html");
+        // Menggunakan window.location.replace agar tidak bisa kembali pakai tombol back
+        window.location.replace('/homepage.html'); // !!! Pastikan '/homepage.html' adalah path homepage Anda !!!
+        // Tidak perlu return di sini, redirect akan menghentikan eksekusi
+    } else {
+        // Jika tidak ada sesi (pengguna logout atau belum login)
+        console.log("Tidak ada sesi Supabase, tetap di halaman login/daftar.");
+        // Lanjutkan inisialisasi form jika belum login (ini sudah di handle di bawah di luar listener ini)
+        // initializeFormsAndTabs(); // Akan dipanggil setelah listener ini selesai jika tidak ada sesi
+    }
+});
+// --- Akhir Logika Cek Status Login Supabase ---
+
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // --- Logika Cek Status Login Awal saat DOMContentLoaded (Simulasi localStorage) ---
-    // Bagian ini tetap dinonaktifkan agar index.html selalu menjadi entry point
-    // saat pertama kali diakses dari URL utama.
-    // const isLoggedIn = localStorage.getItem('isLoggedIn');
-    // const loggedInUserIdentifier = localStorage.getItem('loggedInUserIdentifier');
-    // if (isLoggedIn === 'true' && loggedInUserIdentifier) {
-    //     console.log("Status login di localStorage ditemukan, redirect ke homepage.html (Simulasi)");
-    //     window.location.replace('/homepage.html');
-    //     return;
-    // }
-    // --- AKHIR Bagian dinonaktifkan ---
-
-
-    // --- Simulasi Database Pengguna dengan localStorage ---
-    const USER_DB_KEY = 'userDatabase'; // Kunci untuk menyimpan database pengguna di localStorage
-
-    // Fungsi untuk mendapatkan database pengguna dari localStorage
-    function getUserDatabase() {
-        const db = localStorage.getItem(USER_DB_KEY);
-        try {
-            // Coba parse sebagai JSON. Jika gagal (misal data kosong atau corrupted), kembalikan array kosong.
-            return db ? JSON.parse(db) : [];
-        } catch (e) {
-            console.error("Gagal membaca user database dari localStorage:", e);
-            return []; // Kembalikan array kosong jika ada error
-        }
-    }
-
-    // Fungsi untuk menyimpan database pengguna ke localStorage
-    function saveUserDatabase(db) {
-        try {
-            localStorage.setItem(USER_DB_KEY, JSON.stringify(db));
-        } catch (e) {
-            console.error("Gagal menyimpan user database ke localStorage:", e);
-            // Tampilkan notifikasi jika penyimpanan gagal (misal: quota penuh)
-            showNotification('Gagal menyimpan data pengguna. Memori penyimpanan browser mungkin penuh.', 'error', 5000);
-        }
-    }
-
-    // Fungsi untuk mencari pengguna berdasarkan identifier (misal: whatsapp atau email atau username)
-    function findUserByIdentifier(identifier) {
-        const db = getUserDatabase();
-        // Cari berdasarkan whatsapp, email, atau username
-        return db.find(user =>
-            user.whatsapp === identifier ||
-            user.email === identifier ||
-            user.username === identifier
-        );
-    }
-    // --- Akhir Simulasi Database Pengguna ---
-
+    // Karena onAuthStateChange sudah menangani redirect jika ada sesi,
+    // sisa dari script ini akan dijalankan HANYA JIKA tidak ada sesi aktif saat DOMContentLoaded.
 
     // --- Mendapatkan elemen-elemen HTML utama ---
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
-    const loginFormContainer = document.getElementById('loginForm');
-    const registerFormContainer = document.getElementById('registerForm');
+    const loginFormContainer = document.getElementById('loginForm'); // Kontainer untuk form login/forgot/reset
+    const registerFormContainer = document.getElementById('registerForm'); // Kontainer untuk form daftar
 
-    const loginFormElement = document.getElementById('login');
-    const registerFormElement = document.getElementById('register');
+    const loginFormElement = document.getElementById('login'); // Form login spesifik
+    const registerFormElement = document.getElementById('register'); // Form daftar spesifik
 
     // Elemen notifikasi
     const notificationElement = document.getElementById('custom-notification');
@@ -98,11 +82,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (registerFormContainer) registerFormContainer.classList.add('hidden');
         if (loginFormContainer) loginFormContainer.classList.remove('hidden');
 
+        // Setelah beralih ke tab login, pastikan form login spesifik terlihat
         if (loginFormElement) loginFormElement.classList.remove('hidden');
-        const forgotForm = document.getElementById('forgotPasswordForm');
-        const resetForm = document.getElementById('resetPasswordForm');
+        // Sembunyikan form forgot/reset jika ada di dalam kontainer login
+        const forgotForm = document.getElementById('forgotPasswordForm'); // Ini adalah div form-content, bukan form tag
+        // const resetForm = document.getElementById('resetPasswordForm'); // Form reset dihilangkan dari innerHTML
         if (forgotForm) forgotForm.classList.add('hidden');
-        if (resetForm) resetForm.classList.add('hidden');
+        // if (resetForm) resetForm.classList.add('hidden');
+
 
         showNotification('');
         if (notificationElement) notificationElement.style.display = 'none';
@@ -115,7 +102,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (loginFormContainer) loginFormContainer.classList.add('hidden');
         if (registerFormContainer) registerFormContainer.classList.remove('hidden');
 
+        // Setelah beralih ke tab register, pastikan form register spesifik terlihat
         if (registerFormElement) registerFormElement.classList.remove('hidden');
+
 
         showNotification('');
         if (notificationElement) notificationElement.style.display = 'none';
@@ -124,26 +113,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     // --- Fungsi untuk Mengganti Tampilan Konten Form di Dalam loginFormContainer (#loginForm) ---
+    // Tetap dipertahankan untuk transisi antara form login utama dan form lupa password
     function showFormContent(formToShowId) {
         if (!loginFormContainer) {
             console.error("Login form container not found.");
             return;
         }
+        // Dapatkan semua div/form dengan class="form-content" di dalam loginFormContainer
         const formContents = loginFormContainer.querySelectorAll('.form-content');
         formContents.forEach(formContent => {
-            formContent.classList.add('hidden');
+            formContent.classList.add('hidden'); // Sembunyikan semua form konten spesifik
         });
 
+        // Dapatkan elemen form konten spesifik yang ingin ditampilkan berdasarkan ID
         const formToShow = document.getElementById(formToShowId);
         if (formToShow) {
-            formToShow.classList.remove('hidden');
+            formToShow.classList.remove('hidden'); // Tampilkan yang diinginkan
         } else {
             console.error(`Form content with ID "${formToShowId}" not found.`);
         }
+        // Sembunyikan notifikasi saat ganti form
         showNotification('');
         if (notificationElement) notificationElement.style.display = 'none';
     }
 
+    // Tambahkan class 'form-content' ke form login dan daftar awal
     if (loginFormElement) loginFormElement.classList.add('form-content');
     if (registerFormElement) registerFormElement.classList.add('form-content');
 
@@ -177,16 +171,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    setupPasswordToggle('showLoginPassword', 'loginPassword');
-    setupPasswordToggle('showPassword', 'password');
-    setupPasswordToggle('showConfirmPassword', 'confirmPassword');
+    // Pasang lihat password untuk form login (input email dan password)
+    setupPasswordToggle('showLoginPassword', 'loginPassword'); // ID password login
+
+    // Pasang lihat password untuk form daftar (input password dan konfirmasi password)
+    setupPasswordToggle('showPassword', 'password'); // ID password daftar
+    setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // ID konfirmasi password daftar
 
 
-    // --- VARIABEL DAN FUNGSI UNTUK ALUR LUPA PASSWORD (Tetap Simulasi dengan innerHTML dan API Palsu) ---
-    // Catatan: Alur lupa password di sini masih menggunakan fetch ke endpoint '/api/forgot-password' dan '/api/reset-password'
-    // Endpoint ini tidak benar-benar ada atau terhubung ke database simulasi localStorage.
-    // Ini hanyalah simulasi respons berhasil/gagal dari server.
-    // Implementasi lupa password yang nyata memerlukan backend dan email/WA service.
+    // --- ALUR LUPA PASSWORD (Menggunakan Supabase Authentication) ---
     const forgotPasswordLink = document.querySelector('#login form .forgot-password');
     if (!forgotPasswordLink) {
         console.warn("Link 'Lupa Password?' (.forgot-password inside form#login) tidak ditemukan di HTML.");
@@ -194,7 +187,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const loginFormElement = document.getElementById('login');
         const originalLoginFormContentHTML = loginFormElement ? loginFormElement.outerHTML : '';
 
-        const handleForgotPasswordClick = async (e) => {
+        // Fungsi handler terpisah untuk klik link "Lupa Password?"
+        const handleForgotPasswordClick = (e) => { // Tidak perlu async di sini
             e.preventDefault();
 
             if (!loginFormContainer) {
@@ -202,342 +196,220 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
+            // Simpan HTML form login awal sebelum diganti
+            // originalLoginFormContentHTML = loginFormElement ? loginFormElement.outerHTML : ''; // Sudah diambil di luar
+
+            // Sembunyikan form login awal
             if (loginFormElement) loginFormElement.classList.add('hidden');
 
-            loginFormContainer.innerHTML += `
+            // Ganti konten kontainer login dengan form lupa password
+            // Pastikan div yang ditambahkan punya class="form-content" dan ID yang unik (#forgotPasswordForm)
+            loginFormContainer.innerHTML = `
                 <div class="form-content" id="forgotPasswordForm">
                     <h2> Lupa Password </h2>
-                    <p style="color: #272343; font-style: italic;"> Masukkan identifier akun Anda (misal: email atau whatsapp) untuk memulai proses reset password. </p>
-                    <form>
-                        <div class="input-group">
-                            <label for="forgotPasswordIdentifier"> Email / Whatsapp </label>
-                            <input type="text" id="forgotPasswordIdentifier" placeholder="Masukan Email atau Whatsapp" required>
+                    <p style="color: #272343; font-style: italic;"> Masukkan Email akun Anda untuk memulai proses reset password. </p>
+                    <form id="forgotPasswordFormElement"> <div class="input-group">
+                            <label for="forgotPasswordEmail"> Email </label> <input type="email" id="forgotPasswordEmail" placeholder="Masukan Email" required>
                         </div>
-                        <button type="submit"> Kirim Kode Reset </button>
-                        <p class="switch-form"> Ingat password? <a href="#" id="switchToLoginFromForgot"> Masuk Sekarang </a></p>
+                        <button type="submit"> Kirim Link Reset </button> <p class="switch-form"> Ingat password? <a href="#" id="switchToLoginFromForgot"> Masuk Sekarang </a></p>
                     </form>
                  </div>
             `;
+            // Catatan: Form reset password (memasukkan kode/password baru) biasanya di handle
+            // DI HALAMAN LAIN yang dituju setelah user klik link di email Supabase.
+            // Kode untuk halaman itu akan menggunakan supabase.auth.updateUser() setelah memverifikasi token di URL.
+            // Jadi, kita tidak membuat form reset di sini.
 
-            const forgotPasswordFormElement = document.querySelector('#forgotPasswordForm form');
 
+            // Dapatkan elemen form lupa password yang baru dibuat
+            const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement'); // Gunakan ID tag form
+
+            // Pasang event listener untuk link "Masuk Sekarang" di form lupa password (setelah HTML diganti)
             const switchToLoginFromForgot = document.getElementById('switchToLoginFromForgot');
             if (switchToLoginFromForgot) {
                 switchToLoginFromForgot.addEventListener('click', (e) => {
                     e.preventDefault();
+                    // Kembalikan ke konten form login awal
                     if (loginFormContainer) {
-                        loginFormContainer.innerHTML = originalLoginFormContentHTML;
-                        attachLoginFormListeners();
+                        loginFormContainer.innerHTML = originalLoginFormContentHTML; // Kembali ke HTML form login awal
+                        // Pasang kembali event listener untuk form login dan link lupa password di dalamnya
+                        attachLoginFormListeners(); // Memasang listener submit form login dan link lupa password
                     }
                 });
             }
 
+            // Pasang event listener untuk submit form lupa password (setelah HTML diganti)
             if (forgotPasswordFormElement) {
-                forgotPasswordFormElement.addEventListener('submit', async (e) => {
+                forgotPasswordFormElement.addEventListener('submit', async (e) => { // Gunakan ID tag form
                     e.preventDefault();
 
-                    const identifierInput = document.getElementById('forgotPasswordIdentifier');
-                    if (!identifierInput) {
-                        console.error("Forgot password identifier input not found.");
+                    const emailInput = document.getElementById('forgotPasswordEmail'); // ID input diubah
+                    if (!emailInput) {
+                        console.error("Forgot password email input not found.");
                         showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
                         return;
                     }
-                    const identifier = identifierInput.value;
+                    const email = emailInput.value;
 
-                    if (!identifier) {
-                        showNotification('Identifier (Email/Whatsapp) harus diisi.', 'error');
+                    if (!email) {
+                        showNotification('Email harus diisi.', 'error');
                         return;
                     }
-                    let forgotPasswordUserIdentifier = identifier;
 
-                    showNotification('Memproses permintaan lupa password (simulasi API)...', 'info');
+                    showNotification('Mengirim link reset password...', 'info');
 
-                    // --- SIMULASI PANGGILAN API LUPA PASSWORD ---
-                    // Tidak benar-benar cek database localStorage di sini, hanya simulasi respons
-                    const response = await fetch('/api/forgot-password', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            identifier: identifier
-                        }),
+                    // --- PANGGILAN SUPABASE UNTUK RESET PASSWORD ---
+                    // Supabase akan mengirim email berisi link reset
+                    const {
+                        data,
+                        error
+                    } = await supabase.auth.resetPasswordForEmail(email, {
+                        redirectTo: window.location.origin + '/reset-password.html' // !!! GANTI URL INI !!!
+                        // Ganti '/reset-password.html' dengan path halaman di mana user akan memasukkan password baru
+                        // Halaman ini harus ada dan mengandung script untuk memanggil supabase.auth.updateUser()
+                        // dengan password baru setelah mengambil token dari URL.
                     });
-                    const data = await response.json();
-                    // --- AKHIR SIMULASI ---
+                    // --- AKHIR PANGGILAN SUPABASE ---
 
-                    if (response.ok) {
-                        showNotification(data.message || 'Jika akun terdaftar (simulasi), instruksi reset akan dikirim.', 'success', 5000);
-                        if (loginFormContainer) {
-                            loginFormContainer.innerHTML = `
-                                <div class="form-content" id="resetPasswordForm">
-                                    <h2> Reset Password </h2>
-                                    <p style="color: #272343; font-style: italic;"> Masukkan kode reset (simulasi: "123456") dan password baru Anda. </p>
-                                    <form>
-                                        <div class="input-group">
-                                            <label for="resetPasswordCode"> Kode Reset </label>
-                                            <input type="text" id="resetPasswordCode" placeholder="Masukan Kode Reset (simulasi: 123456)" required>
-                                        </div>
-                                        <div class="input-group">
-                                            <label for="newPassword"> Password Baru </label>
-                                            <input type="password" id="newPassword" placeholder="Masukan Password Baru" required autocomplete="new-password">
-                                        </div>
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="showNewPassword">
-                                            <label for="showNewPassword"> Lihat Password </label>
-                                        </div>
-                                        <div class="input-group">
-                                            <label for="confirmNewPassword"> Konfirmasi Password Baru </label>
-                                            <input type="password" id="confirmNewPassword" placeholder="Masukan Konfirmasi Password Baru" required autocomplete="new-password">
-                                        </div>
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="showConfirmNewPassword">
-                                            <label for="showConfirmNewPassword"> Lihat Konfirmasi Password </label>
-                                        </div>
-                                        <button type="submit"> Reset Password </button>
-                                        <p class="switch-form"> Ingat password? <a href="#" id="switchToLoginFromReset"> Masuk Sekarang </a></p>
-                                    </form>
-                                 </div>
-                            `;
-                            attachResetPasswordFormListener(forgotPasswordUserIdentifier);
-                            setupPasswordToggle('showNewPassword', 'newPassword');
-                            setupPasswordToggle('showConfirmNewPassword', 'confirmNewPassword');
-
-                            const switchToLoginFromReset = document.getElementById('switchToLoginFromReset');
-                            if (switchToLoginFromReset) {
-                                switchToLoginFromReset.addEventListener('click', (e) => {
-                                    e.preventDefault();
-                                    if (loginFormContainer) {
-                                        loginFormContainer.innerHTML = originalLoginFormContentHTML;
-                                        attachLoginFormListeners();
-                                    }
-                                });
-                            }
-                        } else {
-                            console.error("Element loginFormContainer not found.");
-                        }
+                    if (error) {
+                        console.error('Error reset password Supabase:', error.message);
+                        showNotification(`Gagal mengirim link reset: ${error.message}`, 'error');
                     } else {
-                        let errorMessage = 'Gagal mengirim kode reset (simulasi API).';
-                        if (data && data.message) {
-                            errorMessage += ' ' + data.message;
-                        } else {
-                            errorMessage += ' Mohon coba lagi.';
-                        }
-                        showNotification(errorMessage, 'error');
-                        console.error('Forgot password failed (simulasi API):', response.status, data);
+                        // Supabase mengembalikan data null jika sukses, tapi akan mengirim email
+                        console.log('Link reset password dikirim (cek email).', data);
+                        showNotification('Jika email terdaftar, link reset telah dikirim. Cek inbox Anda.', 'success', 5000);
+                        // Opsional: Kembali ke form login setelah beberapa saat
+                        setTimeout(() => {
+                            const loginFormContainer = document.getElementById('loginForm');
+                            if (loginFormContainer) {
+                                loginFormContainer.innerHTML = originalLoginFormContentHTML;
+                                attachLoginFormListeners();
+                            }
+                        }, 2000); // Delay 2 detik
                     }
                 });
             } else {
                 console.error("Forgot password form element not found after innerHTML replacement.");
             }
-        };
+        }; // Akhir handleForgotPasswordClick
+
+        // Pasang listener ke link "Lupa Password?" di form login awal
+        forgotPasswordLink.addEventListener('click', handleForgotPasswordClick);
     }
-
-    function attachResetPasswordFormListener(identifier) {
-        const resetPasswordFormElement = document.querySelector('#resetPasswordForm form');
-
-        if (resetPasswordFormElement) {
-            resetPasswordFormElement.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const resetCodeInput = document.getElementById('resetPasswordCode');
-                const newPasswordInput = document.getElementById('newPassword');
-                const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
-
-                if (!resetCodeInput || !newPasswordInput || !confirmNewPasswordInput) {
-                    console.error("Reset password form inputs not found after innerHTML replacement.");
-                    showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
-                    return;
-                }
-
-                const resetCode = resetCodeInput.value;
-                const newPassword = newPasswordInput.value;
-                const confirmNewPassword = confirmNewPasswordInput.value;
-
-                // Validasi frontend
-                if (!identifier) {
-                    showNotification('Identifier pengguna tidak ditemukan untuk reset.', 'error');
-                    return;
-                }
-                if (!resetCode || !newPassword || !confirmNewPassword) {
-                    showNotification('Kode reset, password baru, dan konfirmasi harus diisi.', 'error');
-                    return;
-                }
-                if (newPassword !== confirmNewPassword) {
-                    showNotification('Password baru dan konfirmasi password tidak cocok.', 'error');
-                    return;
-                }
-                if (newPassword.length < 6) {
-                    showNotification('Password baru minimal 6 karakter.', 'error');
-                    return;
-                }
-                // Validasi Kode Reset Simulasi
-                if (resetCode !== '123456') { // Kode reset hardcode untuk simulasi
-                    showNotification('Kode reset tidak valid (simulasi).', 'error');
-                    return;
-                }
-
-
-                showNotification('Memproses reset password (simulasi API)...', 'info');
-
-                // --- SIMULASI PANGGILAN API RESET PASSWORD ---
-                // Tidak benar-benar ubah password di database localStorage di sini, hanya simulasi respons
-                const response = await fetch('/api/reset-password-confirm', { // Endpoint simulasi beda
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        identifier: identifier,
-                        token: resetCode,
-                        newPassword: newPassword
-                    }),
-                });
-                const data = await response.json();
-                // --- AKHIR SIMULASI ---
-
-
-                if (response.ok) {
-                    showNotification(data.message || 'Password berhasil direset (simulasi)! Silakan Login.', 'success');
-                    // Kembali ke form login setelah notifikasi muncul sebentar
-                    setTimeout(() => {
-                        const loginFormContainer = document.getElementById('loginForm');
-                        if (loginFormContainer) {
-                            loginFormContainer.innerHTML = originalLoginFormContentHTML;
-                            attachLoginFormListeners();
-                        }
-                    }, 1500);
-                } else {
-                    let errorMessage = 'Gagal reset password (simulasi API).';
-                    if (data && data.message) {
-                        errorMessage += ' ' + data.message;
-                    } else {
-                        errorMessage += ' Mohon coba lagi.';
-                    }
-                    showNotification(errorMessage, 'error');
-                    console.error('Reset password failed (simulasi API):', response.status, data);
-                }
-            });
-
-            setupPasswordToggle('showNewPassword', 'newPassword');
-            setupPasswordToggle('showConfirmNewPassword', 'confirmNewPassword');
-
-        } else {
-            console.error("Reset password form element not found after innerHTML replacement.");
-        }
-    }
-    // --- Akhir Alur Lupa Password Simulasi ---
+    // --- Akhir Alur Lupa Password Supabase (Initiasi) ---
 
 
     // Fungsi untuk memasang kembali event listener form login setelah konten diubah (atau saat setup awal)
     function attachLoginFormListeners() {
+        // Dapatkan kembali elemen form login spesifik (tag <form>) yang ada di HTML
         const loginFormElement = document.getElementById('login');
+        // Dapatkan kembali elemen link "Lupa Password?"
         const forgotPasswordLink = document.querySelector('#login form .forgot-password');
 
+        // Pastikan elemen form login ditemukan
         if (loginFormElement) {
-            loginFormElement.removeEventListener('submit', handleLoginSubmit);
-            loginFormElement.addEventListener('submit', handleLoginSubmit);
-            setupPasswordToggle('showLoginPassword', 'loginPassword');
+            // Pasang event listener submit untuk form login HANYA SATU KALI
+            // Hapus listener sebelumnya jika ada untuk mencegah double-binding
+            loginFormElement.removeEventListener('submit', handleLoginSubmit); // Pastikan handler sama
+            loginFormElement.addEventListener('submit', handleLoginSubmit); // Pasang listener submit form login
+
+            // Pasang kembali event listener lihat password untuk form login
+            // ID input login sekarang adalah 'loginEmail' dan 'loginPassword'
+            setupPasswordToggle('showLoginPassword', 'loginPassword'); // ID password login
         } else {
             console.error("Login form element with ID 'login' not found in attachLoginFormListeners.");
         }
 
+        // Pasang kembali event listener link "Lupa Password?"
         if (forgotPasswordLink) {
-            forgotPasswordLink.removeEventListener('click', handleForgotPasswordClick);
-            forgotPasswordLink.addEventListener('click', handleForgotPasswordClick);
+            forgotPasswordLink.removeEventListener('click', handleForgotPasswordClick); // Pastikan handler sama
+            forgotPasswordLink.addEventListener('click', handleForgotPasswordClick); // Pasang listener link lupa password
         } else {
             console.warn("Forgot password link (.forgot-password inside form#login) not found.");
         }
     }
 
 
+    // Pasang event listener submit untuk form daftar HANYA SATU KALI DI SINI
+    // Menggunakan fungsi handler terpisah.
     if (registerFormElement) {
         registerFormElement.removeEventListener('submit', handleRegisterSubmit); // Hapus listener sebelumnya jika ada
-        registerFormElement.addEventListener('submit', handleRegisterSubmit); // Pasang listener daftar
+        registerFormElement.addEventListener('submit', handleRegisterSubmit); // Gunakan handler terpisah
 
-        setupPasswordToggle('showPassword', 'password');
-        setupPasswordToggle('showConfirmPassword', 'confirmPassword');
+        // Pasang lihat password untuk form daftar
+        setupPasswordToggle('showPassword', 'password'); // ID password daftar
+        setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // ID konfirmasi password daftar
 
     } else {
         console.warn("Register form element with ID 'register' not found on initial load.");
     }
 
 
-    // --- Implementasi handleLoginSubmit (Menggunakan localStorage Database) ---
+    // --- Implementasi handleLoginSubmit (Menggunakan Supabase Authentication) ---
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        console.log('Memproses login (menggunakan localStorage database)...');
+        console.log('Memproses login (menggunakan Supabase Authentication)...');
 
-        const identifierInput = document.getElementById('loginWhatsapp');
+        // ID input login sekarang adalah 'loginEmail' dan 'loginPassword'
+        const emailInput = document.getElementById('loginEmail'); // GANTI ID INPUT
         const passwordInput = document.getElementById('loginPassword');
 
-        if (!identifierInput || !passwordInput) {
-            console.error("Login form inputs not found.");
+        if (!emailInput || !passwordInput) {
+            console.error("Login form inputs not found (Email or Password).");
             showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
             return;
         }
 
-        const identifier = identifierInput.value; // Gunakan Whatsapp sebagai identifier di form login
+        const email = emailInput.value.trim(); // Gunakan email
         const password = passwordInput.value;
 
-        if (!identifier || !password) {
-            showNotification('Nomor Whatsapp dan password harus diisi.', 'error');
+        if (!email || !password) {
+            showNotification('Email dan password harus diisi.', 'error'); // Sesuaikan pesan
             return;
         }
 
-        // --- Cek Pengguna di localStorage Database ---
-        const user = findUserByIdentifier(identifier); // Cari pengguna berdasarkan Whatsapp, Email, atau Username
+        showNotification('Memproses login...', 'info');
 
-        if (!user) {
-            // Pengguna tidak ditemukan
-            showNotification('Login gagal. Pengguna tidak ditemukan.', 'error');
-            console.warn(`Percobaan login gagal: Pengguna dengan identifier "${identifier}" tidak ditemukan.`);
-            // Opsional: kosongkan input password
+        // --- PANGGILAN SUPABASE UNTUK LOGIN ---
+        const {
+            data,
+            error
+        } = await supabase.auth.signInWithPassword({
+            email: email, // Login menggunakan email
+            password: password,
+        });
+        // --- AKHIR PANGGILAN SUPABASE ---
+
+        if (error) {
+            console.error('Error login Supabase:', error.message);
+            let errorMessage = 'Login gagal.';
+            if (error.message.includes('Email not confirmed')) {
+                errorMessage = 'Email belum dikonfirmasi. Cek inbox Anda.';
+            } else if (error.message.includes('Invalid login credentials')) {
+                errorMessage = 'Email atau password salah.';
+            } else {
+                errorMessage += ' ' + error.message;
+            }
+            showNotification(errorMessage, 'error');
+            // Opsional: kosongkan input password jika login gagal
             passwordInput.value = '';
-            return;
-        }
-
-        // Pengguna ditemukan, verifikasi password (dalam simulasi, cek string biasa)
-        if (user.password === password) {
-            // Password cocok - Login Berhasil!
-
-            showNotification(`Login berhasil! Selamat datang, ${user.fullName || user.username || identifier}!`, 'success');
-            console.log("Login berhasil (menggunakan localStorage database) untuk:", user);
-
-            // --- Simpan Status Login dan Identifier Pengguna untuk Homepage (localStorage Simulasi) ---
-            // Simpan identifier yang jelas untuk ditampilkan di homepage
-            const userIdentifierForHomepage = user.username || user.whatsapp || user.email || 'Pengguna'; // Pilih identifier terbaik
-            localStorage.setItem('loggedInUserIdentifier', userIdentifierForHomepage);
-            localStorage.setItem('isLoggedIn', 'true');
-
-            // Hapus kunci lama jika ada
-            localStorage.removeItem('loggedInUsername');
-            localStorage.removeItem('loggedInWhatsapp');
-            localStorage.removeItem('loggedInEmail');
-            // Simpan identifier asli (whatsapp, email, atau username) untuk keperluan lain jika perlu
-            localStorage.setItem('currentUserDataIdentifier', identifier); // Simpan identifier yang digunakan saat login
-
-
-            // Redirect ke homepage setelah notifikasi muncul sebentar
-            setTimeout(() => {
-                window.location.replace('/homepage.html');
-            }, 1500);
 
         } else {
-            // Password tidak cocok - Login Gagal
-            showNotification('Login gagal. Password salah.', 'error');
-            console.warn(`Percobaan login gagal: Password salah untuk identifier "${identifier}".`);
-            // Kosongkan input password
-            passwordInput.value = '';
+            // Login berhasil! Supabase akan menyimpan sesi dan onAuthStateChange akan terpicu
+            console.log('Login berhasil via Supabase Auth:', data);
+            // Redirect akan ditangani oleh onAuthStateChange listener di bagian atas file.
+            // showNotification('Login berhasil!', 'success'); // Notifikasi bisa dihilangkan karena redirect cepat
+            // Redirect otomatis via onAuthStateChange
         }
     };
 
 
-    // --- Implementasi handleRegisterSubmit (Menggunakan localStorage Database) ---
+    // --- Implementasi handleRegisterSubmit (Menggunakan Supabase Authentication) ---
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
-        console.log('Memproses pendaftaran (menggunakan localStorage database)...');
+        console.log('Memproses pendaftaran (menggunakan Supabase Authentication)...');
 
+        // Ambil semua data dari form pendaftaran
         const fullNameInput = document.getElementById('fullName');
         const usernameInput = document.getElementById('username');
         const whatsappInput = document.getElementById('whatsapp');
@@ -551,7 +423,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const fullName = fullNameInput.value.trim(); // Gunakan trim() untuk menghapus spasi di awal/akhir
+        const fullName = fullNameInput.value.trim();
         const username = usernameInput.value.trim();
         const whatsapp = whatsappInput.value.trim();
         const email = emailInput.value.trim();
@@ -567,50 +439,70 @@ document.addEventListener('DOMContentLoaded', async () => {
             showNotification('Password dan konfirmasi password tidak cocok.', 'error');
             return;
         }
-        if (password.length < 6) {
+        if (password.length < 6) { // Supabase mensyaratkan minimal 6 karakter
             showNotification('Password minimal 6 karakter.', 'error');
             return;
         }
         // Tambahkan validasi format email/whatsapp jika perlu
 
-        // --- Cek Duplikasi Pengguna di localStorage Database ---
-        const db = getUserDatabase();
-        const isDuplicate = db.some(user =>
-            user.username === username ||
-            user.whatsapp === whatsapp ||
-            user.email === email
-        );
+        showNotification('Memproses pendaftaran...', 'info');
 
-        if (isDuplicate) {
-            showNotification('Pendaftaran gagal. Username, Whatsapp, atau Email sudah terdaftar.', 'error');
-            console.warn(`Percobaan pendaftaran gagal: Duplikasi data untuk Username: ${username}, Whatsapp: ${whatsapp}, Email: ${email}`);
-            return;
-        }
-
-        // --- Tambahkan Pengguna Baru ke localStorage Database ---
-        const newUser = {
-            id: Date.now(), // ID sederhana berbasis timestamp
-            fullName: fullName,
-            username: username,
-            whatsapp: whatsapp, // Gunakan whatsapp sebagai identifier utama
+        // --- PANGGILAN SUPABASE UNTUK DAFTAR ---
+        // Supabase memerlukan email dan password.
+        // data (fullName, username, whatsapp) bisa disimpan sebagai user_metadata jika diinginkan,
+        // tetapi lebih baik disimpan di tabel 'profiles' setelah pendaftaran/konfirmasi email.
+        const {
+            data,
+            error
+        } = await supabase.auth.signUp({
             email: email,
-            password: password, // Dalam simulasi, simpan plain text password
-            createdAt: new Date().toISOString()
-        };
+            password: password,
+            options: {
+                // Anda bisa menyimpan metadata dasar di sini,
+                // tapi data profil lengkap (username, nama, dll.)
+                // sebaiknya disimpan di tabel database terpisah ('profiles')
+                // setelah pengguna terdaftar dan email dikonfirmasi.
+                data: {
+                    // Contoh menyimpan username atau nama dasar
+                    // username: username // Jika Anda ingin username langsung di objek auth
+                    // fullName: fullName // Jika Anda ingin nama lengkap langsung di objek auth
+                }
+            }
+        });
+        // --- AKHIR PANGGILAN SUPABASE ---
 
-        db.push(newUser); // Tambahkan pengguna baru ke array
-        saveUserDatabase(db); // Simpan array yang diperbarui ke localStorage
+        if (error) {
+            console.error('Error pendaftaran Supabase:', error.message);
+            let errorMessage = 'Pendaftaran gagal.';
+            if (error.message.includes('already registered')) {
+                errorMessage = 'Email atau nomor Whatsapp sudah terdaftar.'; // Sesuaikan pesan tergantung apa yang dicek duplikasi
+            } else {
+                errorMessage += ' ' + error.message;
+            }
+            showNotification(errorMessage, 'error');
 
-        showNotification('Pendaftaran berhasil! Silakan Login.', 'success');
-        console.log("Pengguna baru terdaftar:", newUser);
+        } else {
+            // Pendaftaran berhasil (email terkirim untuk verifikasi jika diaktifkan)
+            console.log('Pendaftaran berhasil via Supabase Auth:', data);
 
-        // Beralih ke form login setelah notifikasi muncul sebentar
-        setTimeout(() => {
-            showLoginTab();
-            // Opsional: kosongkan form pendaftaran setelah berhasil
-            const registerForm = document.getElementById('register');
-            if (registerForm) registerForm.reset();
-        }, 1500);
+            // Periksa apakah Supabase memerlukan konfirmasi email
+            // Supabase secara default memerlukan konfirmasi email.
+            if (data && data.user && data.user.identities && data.user.identities.length > 0 && data.user.email_confirmed_at === null) {
+                showNotification('Pendaftaran berhasil! Cek email Anda untuk konfirmasi akun.', 'success', 5000);
+            } else {
+                // Ini mungkin terjadi jika email confirmation dimatikan di Supabase
+                showNotification('Pendaftaran berhasil! Silakan Login.', 'success');
+            }
+
+
+            // Beralih ke form login setelah notifikasi muncul sebentar
+            setTimeout(() => {
+                showLoginTab();
+                // Opsional: kosongkan form pendaftaran setelah berhasil
+                const registerForm = document.getElementById('register');
+                if (registerForm) registerForm.reset();
+            }, 1500);
+        }
     };
 
 
@@ -620,13 +512,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const forgotPasswordLink = document.querySelector('#login form .forgot-password');
 
         if (loginFormElement) {
+            // Pastikan handler submit form login terpasang
             loginFormElement.removeEventListener('submit', handleLoginSubmit);
             loginFormElement.addEventListener('submit', handleLoginSubmit);
-            setupPasswordToggle('showLoginPassword', 'loginPassword');
+
+            // Pasang kembali listener lihat password untuk input login (Email dan Password)
+            setupPasswordToggle('showLoginPassword', 'loginPassword'); // ID password login
+            // setupPasswordToggle('showLoginEmail', 'loginEmail'); // Tidak perlu toggle untuk email
         } else {
             console.error("Login form element with ID 'login' not found in attachLoginFormListeners.");
         }
 
+        // Pasang kembali event listener link "Lupa Password?"
         if (forgotPasswordLink) {
             forgotPasswordLink.removeEventListener('click', handleForgotPasswordClick);
             forgotPasswordLink.addEventListener('click', handleForgotPasswordClick);
@@ -636,17 +533,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    // Pasang event listener submit untuk form daftar (Dipasang saat initial load)
     if (registerFormElement) {
         registerFormElement.removeEventListener('submit', handleRegisterSubmit); // Hapus listener sebelumnya jika ada
         registerFormElement.addEventListener('submit', handleRegisterSubmit); // Pasang listener daftar
-        setupPasswordToggle('showPassword', 'password');
-        setupPasswordToggle('showConfirmPassword', 'confirmPassword');
+
+        // Pasang lihat password untuk form daftar
+        setupPasswordToggle('showPassword', 'password'); // ID password daftar
+        setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // ID konfirmasi password daftar
+
     } else {
         console.warn("Register form element with ID 'register' not found on initial load.");
     }
 
 
-    // --- INITIAL SETUP halaman login/daftar saat DOMContentLoaded (akan selalu dijalankan) ---
+    // --- INITIAL SETUP halaman login/daftar saat DOMContentLoaded ---
+    // Fungsi ini dijalankan saat DOMContentLoaded HANYA JIKA onAuthStateChange tidak redirect
     function initializeFormsAndTabs() {
         if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer) {
             console.error("HTML structure for tabs or forms not complete.");
@@ -654,7 +556,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        attachLoginFormListeners(); // Pasang listener untuk form login awal
+        // Pasang listener submit form login awal dan link lupa password di dalamnya
+        attachLoginFormListeners(); // Ini akan memasang handleLoginSubmit ke form#login awal
 
         // Atur keadaan awal: sembunyikan form register, tampilkan form login
         registerFormContainer.classList.add('hidden');
@@ -662,15 +565,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Pastikan form konten login spesifik juga terlihat
         if (loginFormElement) loginFormElement.classList.remove('hidden');
+        // Pastikan form lupa password tidak terlihat di awal
         const forgotForm = document.getElementById('forgotPasswordForm');
-        const resetForm = document.getElementById('resetPasswordForm');
         if (forgotForm) forgotForm.classList.add('hidden');
-        if (resetForm) resetForm.classList.add('hidden');
+
 
         console.log("Halaman login/daftar diinisialisasi.");
     }
 
-    // Inisialisasi form dan tab akan selalu dijalankan saat DOMContentLoaded
+    // Karena onAuthStateChange mungkin asinkron, panggil inisialisasi ini setelah
+    // event listener onAuthStateChange selesai dievaluasi (ini adalah pendekatan sederhana).
+    // Atau, panggil setelah onAuthStateChange mendeteksi 'SIGNED_OUT'.
+    // Untuk menyederhanakan, kita panggil inisialisasi ini langsung.
+    // Jika onAuthStateChange me-redirect, kode setelah redirect tidak akan jalan.
+    // Jika tidak me-redirect (karena tidak ada sesi), inisialisasi akan berjalan.
     initializeFormsAndTabs();
 
 

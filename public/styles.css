@@ -367,7 +367,4 @@ button[type="submit"]:hover {
         align-items: center;
     }
 
-    /* Penyesuaian Spesifik Homepage untuk Mobile (di dalam media query) */
-    /* Gaya-gaya ini seharusnya ada di homestyle.css, dihapus dari sini */
-
 }
