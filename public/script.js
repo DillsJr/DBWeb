@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
 
     // Dapatkan elemen form spesifik di dalam kontainer (ID pada tag <form>)
     const loginFormElement = document.getElementById('login'); // Form login spesifik
-    // DEKLARASI registerFormElement DI SINI (seperti baris ~107 di kode sebelumnya)
+    // DEKLARASI registerFormElement DI SINI (di luar fungsi manapun)
     const registerFormElement = document.getElementById('register'); // Form daftar spesifik
 
 
@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
         // Kita berasumsi form login awal memiliki ID 'login'
         if (loginFormElement) loginFormElement.classList.remove('hidden');
         // Sembunyikan form forgot/reset jika ada di dalam kontainer login
-        const forgotForm = document.getElementById('forgotPasswordForm');
-        const resetForm = document.getElementById('resetPasswordForm');
+        const forgotForm = document.getElementById('forgotPasswordForm'); // Ini adalah div form-content, bukan form tag
+        const resetForm = document.getElementById('resetPasswordForm'); // Ini adalah div form-content, bukan form tag
         if (forgotForm) forgotForm.classList.add('hidden');
         if (resetForm) resetForm.classList.add('hidden');
 
@@ -147,9 +147,11 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
 
     // Tambahkan class 'form-content' ke form login dan daftar awal di HTML
     // Ini perlu dilakukan di HTML atau JS jika belum ada.
-    // Karena Anda sudah menambahkannya di HTML yang diberikan, baris ini tidak diperlukan:
-    // if (loginFormElement) loginFormElement.classList.add('form-content');
-    // if (registerFormElement) registerFormElement.classList.add('form-content');
+    // Berdasarkan index.html Anda, div dengan ID #loginForm dan #registerForm sudah punya class="form"
+    // Dan form tag di dalamnya punya ID. Alur lupa/reset menambahkan div with class="form-content" dan ID
+    // Mari kita pastikan form#login dan form#register punya class form-content juga agar konsisten dengan selector showFormContent
+    if (loginFormElement) loginFormElement.classList.add('form-content');
+    if (registerFormElement) registerFormElement.classList.add('form-content');
 
 
     // Pasang event listener untuk tab dan link switch form
@@ -222,6 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
             if (loginFormElement) loginFormElement.classList.add('hidden');
 
             // Tambahkan form lupa password ke kontainer login
+            // Pastikan div yang ditambahkan punya class="form-content" dan ID yang unik (#forgotPasswordForm)
             loginFormContainer.innerHTML += `
                 <div class="form-content" id="forgotPasswordForm">
                     <h2> Lupa Password </h2>
@@ -349,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
                                 console.error("Element loginFormContainer not found.");
                             }
 
-                        } else { // Status kode 400-599 (Gagal Mengirim Kode Simulasi)
+                        } else { // Status kode 400-500an (Gagal Mengirim Kode Simulasi)
                             let errorMessage = 'Gagal mengirim kode reset (simulasi).';
                             if (data && data.message) {
                                 errorMessage += ' ' + data.message;
@@ -357,214 +360,399 @@ document.addEventListener('DOMContentLoaded', async () => { // Menjadikan async 
                                 errorMessage += ' Mohon coba lagi.';
                             }
                             showNotification(errorMessage, 'error');
-                            console.error('Forgot password failed (simulasi):', response.status, data);
+                            console.error('Reset password failed (simulasi):', response.status, data);
                         }
                     } catch (error) {
-                        console.error('Error saat memanggil API forgot password (simulasi):', error);
+                        console.error('Error saat memanggil API reset password (simulasi):', error);
                         showNotification('Terjadi kesalahan saat memproses lupa password (simulasi).', 'error');
                     }
                 });
             } else {
-                console.error("Forgot password form element not found after innerHTML replacement.");
+                console.error("Reset password form element not found after innerHTML replacement.");
             }
         }; // Akhir handleForgotPasswordClick
 
-        // Pasang listener ke link "Lupa Password?" di form login awal (setelah DOMContentLoaded)
-        // Listener ini dipasang di attachLoginFormListeners karena form login awal bisa diganti via innerHTML
-        // forgotPasswordLink.addEventListener('click', handleForgotPasswordClick);
-    }
 
+        // Fungsi untuk memasang event listener form reset password (Simulasi API Calls dengan innerHTML)
+        // Dipanggil setelah form reset password ditambahkan ke DOM via innerHTML
+        function attachResetPasswordFormListener(identifier) {
+            // Dapatkan elemen form reset password yang baru ditambahkan
+            const resetPasswordFormElement = document.querySelector('#resetPasswordForm form');
 
-    // Fungsi untuk memasang event listener form reset password (Simulasi API Calls dengan innerHTML)
-    // Dipanggil setelah form reset password ditambahkan ke DOM via innerHTML
-    function attachResetPasswordFormListener(identifier) {
-        // Dapatkan elemen form reset password yang baru ditambahkan
-        const resetPasswordFormElement = document.querySelector('#resetPasswordForm form');
+            if (resetPasswordFormElement) {
+                resetPasswordFormElement.addEventListener('submit', async (e) => { // Listener di form element
+                    e.preventDefault(); // Mencegah submit form bawaan
 
-        if (resetPasswordFormElement) {
-            resetPasswordFormElement.addEventListener('submit', async (e) => { // Listener di form element
-                e.preventDefault(); // Mencegah submit form bawaan
+                    // Identifier (Email/Whatsapp) diambil dari parameter
+                    const resetCodeInput = document.getElementById('resetPasswordCode');
+                    const newPasswordInput = document.getElementById('newPassword');
+                    const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
 
-                // Identifier (Email/Whatsapp) diambil dari parameter
-                const resetCodeInput = document.getElementById('resetPasswordCode');
-                const newPasswordInput = document.getElementById('newPassword');
-                const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
-
-                if (!resetCodeInput || !newPasswordInput || !confirmNewPasswordInput) {
-                    console.error("Reset password form inputs not found after innerHTML replacement.");
-                    showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
-                    return;
-                }
-
-                const resetCode = resetCodeInput.value;
-                const newPassword = newPasswordInput.value;
-                const confirmNewPassword = confirmNewPasswordInput.value;
-
-
-                // Validasi frontend
-                if (!identifier) {
-                    showNotification('Identifier pengguna tidak ditemukan untuk reset.', 'error');
-                    return;
-                }
-                if (!resetCode || !newPassword || !confirmNewPassword) {
-                    showNotification('Kode reset, password baru, dan konfirmasi harus diisi.', 'error');
-                    return;
-                }
-                if (newPassword !== confirmNewPassword) {
-                    showNotification('Password baru dan konfirmasi password tidak cocok.', 'error');
-                    return;
-                }
-                if (newPassword.length < 6) {
-                    showNotification('Password baru minimal 6 karakter.', 'error');
-                    return;
-                }
-
-                showNotification('Memproses reset password (simulasi)...', 'info');
-
-                try {
-                    // --- SIMULASI PANGGILAN API RESET PASSWORD ---
-                    const response = await fetch('/api/reset-password', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            identifier: identifier,
-                            token: resetCode,
-                            newPassword: newPassword
-                        }),
-                    });
-                    const data = await response.json();
-                    // --- AKHIR SIMULASI ---
-
-                    if (response.ok) { // Status kode 200-299 (Reset Berhasil Simulasi)
-                        showNotification(data.message || 'Password berhasil direset! Silakan Login.', 'success');
-                        // Kembali ke form login setelah notifikasi muncul sebentar
-                        setTimeout(() => {
-                            const loginFormContainer = document.getElementById('loginForm'); // Menggunakan ID kontainer utama #loginForm
-                            if (loginFormContainer) {
-                                loginFormContainer.innerHTML = originalLoginFormContentHTML; // Kembali ke HTML form login awal
-                                attachLoginFormListeners(); // Pasang kembali listener form login
-                            }
-                        }, 1500); // Delay 1.5 detik
-                    } else { // Status kode 400-599 (Reset Gagal Simulasi)
-                        let errorMessage = 'Gagal reset password (simulasi).';
-                        if (data && data.message) {
-                            errorMessage += ' ' + data.message;
-                        } else {
-                            errorMessage += ' Mohon coba lagi.';
-                        }
-                        showNotification(errorMessage, 'error');
-                        console.error('Reset password failed (simulasi):', response.status, data);
+                    if (!resetCodeInput || !newPasswordInput || !confirmNewPasswordInput) {
+                        console.error("Reset password form inputs not found after innerHTML replacement.");
+                        showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+                        return;
                     }
-                } catch (error) {
-                    console.error('Error saat memanggil API reset password (simulasi):', error);
-                    showNotification('Terjadi kesalahan saat mereset password (simulasi).', 'error');
+
+                    const resetCode = resetCodeInput.value;
+                    const newPassword = newPasswordInput.value;
+                    const confirmNewPassword = confirmNewPasswordInput.value;
+
+
+                    // Validasi frontend
+                    if (!identifier) {
+                        showNotification('Identifier pengguna tidak ditemukan untuk reset.', 'error');
+                        return;
+                    }
+                    if (!resetCode || !newPassword || !confirmNewPassword) {
+                        showNotification('Kode reset, password baru, dan konfirmasi harus diisi.', 'error');
+                        return;
+                    }
+                    if (newPassword !== confirmNewPassword) {
+                        showNotification('Password baru dan konfirmasi password tidak cocok.', 'error');
+                        return;
+                    }
+                    if (newPassword.length < 6) {
+                        showNotification('Password baru minimal 6 karakter.', 'error');
+                        return;
+                    }
+
+                    showNotification('Memproses reset password (simulasi)...', 'info');
+
+                    try {
+                        // --- SIMULASI PANGGILAN API RESET PASSWORD ---
+                        const response = await fetch('/api/reset-password', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                identifier: identifier,
+                                token: resetCode,
+                                newPassword: newPassword
+                            }),
+                        });
+                        const data = await response.json();
+                        // --- AKHIR SIMULASI ---
+
+                        if (response.ok) { // Status kode 200-299 (Reset Berhasil Simulasi)
+                            showNotification(data.message || 'Password berhasil direset! Silakan Login.', 'success');
+                            // Kembali ke form login setelah notifikasi muncul sebentar
+                            setTimeout(() => {
+                                const loginFormContainer = document.getElementById('loginForm'); // Menggunakan ID kontainer utama #loginForm
+                                if (loginFormContainer) {
+                                    loginFormContainer.innerHTML = originalLoginFormContentHTML; // Kembali ke HTML form login awal
+                                    attachLoginFormListeners(); // Pasang kembali listener form login
+                                }
+                            }, 1500); // Delay 1.5 detik
+                        } else { // Status kode 400-500an (Reset Gagal Simulasi)
+                            let errorMessage = 'Gagal reset password (simulasi).';
+                            if (data && data.message) {
+                                errorMessage += ' ' + data.message;
+                            } else {
+                                errorMessage += ' Mohon coba lagi.';
+                            }
+                            showNotification(errorMessage, 'error');
+                            console.error('Reset password failed (simulasi):', response.status, data);
+                        }
+                    } catch (error) {
+                        console.error('Error saat memanggil API reset password (simulasi):', error);
+                        showNotification('Terjadi kesalahan saat mereset password (simulasi).', 'error');
+                    }
+                });
+
+                // Pasang listener lihat password untuk input di form reset (setelah HTML diganti)
+                setupPasswordToggle('showNewPassword', 'newPassword');
+                setupPasswordToggle('showConfirmNewPassword', 'confirmNewPassword');
+
+                // Link "Masuk Sekarang" di form reset sudah punya listener yang dipasang saat HTML dibuat.
+            } else {
+                console.error("Reset password form element not found after innerHTML replacement.");
+            }
+        }
+
+
+        // Fungsi handler terpisah untuk SUBMIT form login (Simulasi API Call)
+        const handleLoginSubmit = async (e) => {
+            e.preventDefault(); // Mencegah submit form bawaan browser
+            console.log('preventDefault executed for login form. Attempting fetch...'); // Log untuk debugging
+
+            // Dapatkan nilai input sesuai form login simulasi Anda (gunakan ID dari HTML yang Anda berikan)
+            const identifierInput = document.getElementById('loginWhatsapp'); // Menggunakan ID 'loginWhatsapp' sesuai HTML Anda
+            const passwordInput = document.getElementById('loginPassword'); // Menggunakan ID 'loginPassword' sesuai HTML Anda
+
+            // Pastikan elemen ditemukan
+            if (!identifierInput || !passwordInput) {
+                console.error("Login form inputs not found.");
+                showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+                return;
+            }
+
+            const identifier = identifierInput.value; // Menggunakan nilai dari input Whatsapp
+            const password = passwordInput.value;
+
+            // Validasi dasar di frontend
+            if (!identifier || !password) {
+                showNotification('Nomor Whatsapp dan password harus diisi.', 'error'); // Sesuaikan pesan validasi
+                return;
+            }
+
+            showNotification('Memproses login (simulasi)...', 'info'); // Tampilkan pesan loading
+
+            try {
+                // --- SIMULASI PANGGILAN API LOGIN ---
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        identifier: identifier,
+                        password: password
+                    }), // Kirim identifier (Whatsapp) dan password
+                });
+                const data = await response.json();
+                // --- AKHIR SIMULASI ---
+
+                if (response.ok) { // Cek status code 200-299 (Login Berhasil Simulasi)
+                    showNotification(data.message || 'Login berhasil!', 'success');
+                    console.log("Data dari server setelah login (simulasi):", data);
+
+                    // --- Simpan Status Login dan Identifier Pengguna untuk Homepage (localStorage Simulasi) ---
+                    let userIdentifierToSave = identifier; // Default menggunakan identifier yang diinput (Whatsapp)
+                    // Sesuaikan dengan struktur respons API backend Anda jika mengembalikan identifier lain
+                    if (data.user && data.user.username) { // Contoh jika API mengembalikan user.username
+                        userIdentifierToSave = data.user.username;
+                    } else if (data.user && data.user.fullName) { // Contoh jika API mengembalikan user.fullName
+                        userIdentifierToSave = data.user.fullName;
+                    } else if (data.user && data.user.email) { // Contoh jika API mengembalikan user.email
+                        userIdentifierToSave = data.user.email;
+                    } else if (data.user && data.user.whatsapp) { // Contoh jika API mengembalikan user.whatsapp
+                        userIdentifierToSave = data.user.whatsapp; // Simpan whatsapp jika dikembalikan
+                    } else {
+                        // Jika tidak ada identifier yang jelas dari API, gunakan identifier yang diinput
+                        userIdentifierToSave = identifier; // Gunakan Whatsapp yang diinput
+                    }
+
+
+                    // Setel kunci di localStorage yang akan dibaca homepage.js (localStorage simulasi)
+                    if (userIdentifierToSave) {
+                        localStorage.setItem('loggedInUserIdentifier', userIdentifierToSave); // Kunci utama konsisten
+                        localStorage.setItem('isLoggedIn', 'true'); // Set flag status login
+                        // Opsional: Bersihkan kunci lama jika pernah pakai
+                        localStorage.removeItem('loggedInUsername');
+                        localStorage.removeItem('loggedInWhatsapp');
+                        localStorage.removeItem('loggedInEmail'); // Hapus jika email sebelumnya disimpan dengan kunci beda
+
+                    } else {
+                        console.warn("Login berhasil (simulasi) tapi tidak dapat menentukan identifier pengguna. Status login diset.");
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.removeItem('loggedInUserIdentifier'); // Pastikan kunci kosong jika tidak ada identifier
+                    }
+                    // --- Akhir Simpan Status Login (localStorage Simulasi) ---
+
+
+                    // Redirect ke homepage setelah notifikasi muncul sebentar
+                    setTimeout(() => {
+                        // Menggunakan window.location.replace agar tidak bisa kembali ke halaman login pakai tombol back
+                        window.location.replace('/homepage.html'); // !!! Pastikan '/homepage.html' adalah path homepage Anda !!!
+                    }, 1500); // Delay 1.5 detik
+
+                } else { // Status code 400-500an (Login Gagal Simulasi)
+                    let errorMessage = 'Login gagal (simulasi).';
+                    // Tangani pesan error dari backend
+                    if (data && data.message) {
+                        errorMessage += ' ' + data.message;
+                    } else {
+                        errorMessage += ' Mohon coba lagi.';
+                    }
+                    showNotification(errorMessage, 'error');
+                    console.error('Login failed (simulasi):', response.status, data);
+                    // Opsional: reset form password jika login gagal
+                    const loginPasswordInput = document.getElementById('loginPassword');
+                    if (loginPasswordInput) loginPasswordInput.value = '';
                 }
-            });
+            } catch (error) {
+                console.error('Error saat memanggil API login (simulasi):', error);
+                showNotification('Terjadi kesalahan saat login (simulasi).', 'error');
+            }
+        }; // Akhir handleLoginSubmit
 
-            // Pasang listener lihat password untuk input di form reset (setelah HTML diganti)
-            setupPasswordToggle('showNewPassword', 'newPassword');
-            setupPasswordToggle('showConfirmNewPassword', 'confirmNewPassword');
 
-            // Link "Masuk Sekarang" di form reset sudah punya listener yang dipasang saat HTML dibuat.
+        // Fungsi handler terpisah untuk SUBMIT form daftar (Simulasi API Call)
+        const handleRegisterSubmit = async (e) => {
+            e.preventDefault(); // Mencegah submit form bawaan browser
+            console.log('preventDefault executed for register form. Attempting fetch...'); // Log untuk debugging
+
+            // Dapatkan nilai input sesuai form daftar simulasi Anda (gunakan ID dari HTML yang Anda berikan)
+            const fullNameInput = document.getElementById('fullName');
+            const usernameInput = document.getElementById('username');
+            const whatsappInput = document.getElementById('whatsapp');
+            const emailInput = document.getElementById('email'); // Menggunakan ID 'email' sesuai HTML Anda
+            const passwordInput = document.getElementById('password'); // Menggunakan ID 'password' sesuai HTML Anda
+            const confirmPasswordInput = document.getElementById('confirmPassword'); // Menggunakan ID 'confirmPassword' sesuai HTML Anda
+
+            // Pastikan elemen ditemukan
+            if (!fullNameInput || !usernameInput || !whatsappInput || !emailInput || !passwordInput || !confirmPasswordInput) {
+                console.error("Register form inputs not found.");
+                showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+                return;
+            }
+
+            const fullName = fullNameInput.value;
+            const username = usernameInput.value;
+            const whatsapp = whatsappInput.value;
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+
+            // Validasi di frontend
+            if (password !== confirmPassword) {
+                showNotification('Password dan konfirmasi password tidak cocok', 'error');
+                return;
+            }
+            // Tambahkan validasi minimal panjang password (sesuaikan jika perlu)
+            if (password.length < 6) { // Contoh validasi minimal 6 karakter
+                showNotification('Password minimal 6 karakter.', 'error');
+                return;
+            }
+            // Tambahkan validasi untuk input lain jika diperlukan (misal: format email/whatsapp)
+
+            showNotification('Memproses pendaftaran (simulasi)...', 'info'); // Pesan loading
+
+            try {
+                // --- SIMULASI PANGGILAN API DAFTAR ---
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullName, // Sesuaikan key sesuai API Anda
+                        username,
+                        whatsapp,
+                        email,
+                        password
+                    }),
+                });
+                const data = await response.json();
+                // --- AKHIR SIMULASI ---
+
+                if (response.ok) { // Status kode 200-299 (Daftar Berhasil Simulasi)
+                    showNotification(data.message || 'Pendaftaran berhasil! Silakan Login.', 'success');
+                    // Beralih ke form login setelah notifikasi muncul sebentar
+                    setTimeout(() => {
+                        showLoginTab(); // Beralih ke tab/form login
+                        // Opsional: kosongkan form pendaftaran
+                        const registerForm = document.getElementById('register');
+                        if (registerForm) registerForm.reset();
+                    }, 1500); // Delay 1.5 detik
+                } else { // Status code 400-500an (Daftar Gagal Simulasi)
+                    let errorMessage = 'Pendaftaran gagal (simulasi).';
+                    // Tangani penanganan khusus error dari backend (misal: sudah terdaftar)
+                    if (data && data.message) {
+                        errorMessage += ' ' + data.message;
+                    } else {
+                        errorMessage += ' Mohon coba lagi.';
+                    }
+                    showNotification(errorMessage, 'error');
+                    console.error('Registration failed (simulasi):', response.status, data);
+                }
+            } catch (error) {
+                console.error('Error saat memanggil API daftar (simulasi):', error);
+                showNotification('Terjadi kesalahan saat mendaftar (simulasi).', 'error');
+            }
+        }; // Akhir handleRegisterSubmit
+
+
+        // Fungsi untuk memasang kembali event listener form login setelah konten diubah (atau saat setup awal)
+        // Dipanggil saat kembali dari form lupa password/reset password ke form login awal
+        // dan saat halaman pertama kali dimuat
+        function attachLoginFormListeners() {
+            // Dapatkan kembali elemen form login spesifik (tag <form>) yang ada di HTML
+            const loginFormElement = document.getElementById('login');
+            // Dapatkan kembali elemen link "Lupa Password?"
+            const forgotPasswordLink = document.querySelector('#login form .forgot-password'); // Cari link dengan class 'forgot-password' di dalam form#login
+
+            // Pastikan elemen form login ditemukan
+            if (loginFormElement) {
+                // Pasang event listener submit untuk form login HANYA SATU KALI
+                // Hapus listener sebelumnya jika ada untuk mencegah double-binding
+                loginFormElement.removeEventListener('submit', handleLoginSubmit); // Pastikan handler sama
+                loginFormElement.addEventListener('submit', handleLoginSubmit); // Pasang listener submit form login
+
+                // Pasang kembali event listener lihat password untuk form login
+                setupPasswordToggle('showLoginPassword', 'loginPassword');
+            } else {
+                console.error("Login form element with ID 'login' not found in attachLoginFormListeners.");
+            }
+
+            // Pasang kembali event listener link "Lupa Password?"
+            if (forgotPasswordLink) {
+                // Hapus listener sebelumnya jika ada
+                forgotPasswordLink.removeEventListener('click', handleForgotPasswordClick); // Pastikan handler sama
+                forgotPasswordLink.addEventListener('click', handleForgotPasswordClick); // Pasang listener link lupa password
+            } else {
+                console.warn("Forgot password link (.forgot-password inside form#login) not found.");
+            }
+        }
+
+
+        // Fungsi handler terpisah untuk SUBMIT form daftar (Dipasang saat initial load)
+        // Dapatkan elemen form daftar spesifik (tag <form>) saat DOMContentLoaded
+        // Variabel registerFormElement dideklarasikan di awal DOMContentLoaded.
+        if (registerFormElement) { // Menggunakan variabel yang dideklarasikan di atas
+            // Pasang event listener submit untuk form daftar HANYA SATU KALI DI SINI
+            // Menggunakan fungsi handler terpisah.
+            registerFormElement.removeEventListener('submit', handleRegisterSubmit); // Hapus listener sebelumnya jika ada
+            registerFormElement.addEventListener('submit', handleRegisterSubmit); // Gunakan handler terpisah
+
+            // Pasang lihat password untuk form daftar (input awal)
+            // Menggunakan ID sesuai HTML Anda
+            setupPasswordToggle('showPassword', 'password'); // Password daftar
+            setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // Konfirmasi password daftar
+
         } else {
-            console.error("Reset password form element not found after innerHTML replacement.");
-        }
-    }
-    // --- Akhir Alur Lupa Password Simulasi ---
-
-
-    // Fungsi untuk memasang kembali event listener form login setelah konten diubah (atau saat setup awal)
-    // Dipanggil saat kembali dari form lupa password/reset password ke form login awal
-    // dan saat halaman pertama kali dimuat
-    function attachLoginFormListeners() {
-        // Dapatkan kembali elemen form login spesifik (tag <form>) yang ada di HTML
-        const loginFormElement = document.getElementById('login');
-        // Dapatkan kembali elemen link "Lupa Password?"
-        const forgotPasswordLink = document.querySelector('#login form .forgot-password'); // Cari link dengan class 'forgot-password' di dalam form#login
-
-
-        // Pastikan elemen form login ditemukan
-        if (loginFormElement) {
-            // Pasang event listener submit untuk form login HANYA SATU KALI
-            // Hapus listener sebelumnya jika ada untuk mencegah double-binding
-            loginFormElement.removeEventListener('submit', handleLoginSubmit); // Pastikan handler sama
-            loginFormElement.addEventListener('submit', handleLoginSubmit); // Pasang listener submit form login
-
-            // Pasang kembali event listener lihat password untuk form login
-            setupPasswordToggle('showLoginPassword', 'loginPassword');
-        } else {
-            console.error("Login form element with ID 'login' not found in attachLoginFormListeners.");
+            console.warn("Register form element with ID 'register' not found on initial load.");
         }
 
-        // Pasang kembali event listener link "Lupa Password?"
-        if (forgotPasswordLink) {
-            // Hapus listener sebelumnya jika ada
-            forgotPasswordLink.removeEventListener('click', handleForgotPasswordClick); // Pastikan handler sama
-            forgotPasswordLink.addEventListener('click', handleForgotPasswordClick); // Pasang listener link lupa password
-        } else {
-            console.warn("Forgot password link (.forgot-password inside form#login) not found.");
-        }
-    }
 
+        // --- INITIAL SETUP halaman login/daftar saat DOMContentLoaded JIKA BELUM LOGIN ---
+        // Fungsi ini dijalankan saat DOMContentLoaded, HANYA JIKA cek sesi di awal tidak menemukan sesi aktif
+        function initializeFormsAndTabs() {
+            // Pastikan elemen tab dan kontainer form ada
+            if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer) { // Menggunakan ID kontainer utama
+                console.error("HTML structure for tabs or forms not complete.");
+                // Tampilkan notifikasi atau pesan error di UI jika elemen penting tidak ditemukan
+                showNotification('Error: Struktur halaman tidak lengkap.', 'error');
+                return;
+            }
 
-    // Fungsi handler terpisah untuk SUBMIT form daftar (Dipasang saat initial load)
-    // Dapatkan elemen form daftar spesifik (tag <form>) saat DOMContentLoaded
-    // Variabel registerFormElement dideklarasikan di awal DOMContentLoaded.
-    if (registerFormElement) { // Menggunakan variabel yang dideklarasikan di atas
-        // Pasang event listener submit untuk form daftar HANYA SATU KALI DI SINI
-        // Menggunakan fungsi handler terpisah.
-        registerFormElement.removeEventListener('submit', handleRegisterSubmit); // Hapus listener sebelumnya jika ada
-        registerFormElement.addEventListener('submit', handleRegisterSubmit); // Gunakan handler terpisah
+            // Pasang listener submit form login awal dan link lupa password di dalamnya
+            // Panggil ini di sini untuk memasang listener saat halaman pertama dimuat JIKA BELUM LOGIN
+            attachLoginFormListeners(); // Ini akan memasang handleLoginSubmit ke form#login awal
 
-        // Pasang lihat password untuk form daftar (input awal)
-        // Menggunakan ID sesuai HTML Anda
-        setupPasswordToggle('showPassword', 'password'); // Password daftar
-        setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // Konfirmasi password daftar
+            // --- PENTING: Atur keadaan awal saat halaman dimuat JIKA BELUM LOGIN ---
+            // Sembunyikan kontainer form register dan tampilkan kontainer form login menggunakan class 'hidden'
+            // Menggunakan ID kontainer div utama (#loginForm, #registerForm)
+            registerFormContainer.classList.add('hidden');
+            loginFormContainer.classList.remove('hidden');
 
-    } else {
-        console.warn("Register form element with ID 'register' not found on initial load.");
-    }
+            // Pastikan form konten login spesifik juga terlihat (form#login)
+            if (loginFormElement) loginFormElement.classList.remove('hidden'); // Pastikan form login awal terlihat
+            // Sembunyikan form forgot/reset jika ada (seharusnya belum ada saat load awal)
+            const forgotForm = document.getElementById('forgotPasswordForm'); // Ini adalah div form-content, bukan form tag
+            const resetForm = document.getElementById('resetPasswordForm'); // Ini adalah div form-content, bukan form tag
+            if (forgotForm) forgotForm.classList.add('hidden');
+            if (resetForm) resetForm.classList.add('hidden');
 
-
-    // --- INITIAL SETUP halaman login/daftar saat DOMContentLoaded JIKA BELUM LOGIN ---
-    // Fungsi ini dijalankan saat DOMContentLoaded, HANYA JIKA cek sesi di awal tidak menemukan sesi aktif
-    function initializeFormsAndTabs() {
-        // Pastikan elemen tab dan kontainer form ada
-        if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer) { // Menggunakan ID kontainer utama
-            console.error("HTML structure for tabs or forms not complete.");
-            // Tampilkan notifikasi atau pesan error di UI jika elemen penting tidak ditemukan
-            showNotification('Error: Struktur halaman tidak lengkap.', 'error');
-            return;
+            console.log("Halaman login/daftar diinisialisasi.");
         }
 
-        // Pasang listener submit form login awal dan link lupa password di dalamnya
-        // Panggil ini di sini untuk memasang listener saat halaman pertama dimuat JIKA BELUM LOGIN
-        attachLoginFormListeners(); // Ini akan memasang handleLoginSubmit ke form#login awal
-
-        // --- PENTING: Atur keadaan awal saat halaman dimuat JIKA BELUM LOGIN ---
-        // Sembunyikan kontainer form register dan tampilkan kontainer form login menggunakan class 'hidden'
-        // Menggunakan ID kontainer div utama (#loginForm, #registerForm)
-        registerFormContainer.classList.add('hidden');
-        loginFormContainer.classList.remove('hidden');
-
-        // Pastikan form konten login spesifik juga terlihat (form#login)
-        if (loginFormElement) loginFormElement.classList.remove('hidden'); // Pastikan form login awal terlihat
-        // Sembunyikan form forgot/reset jika ada (seharusnya belum ada saat load awal)
-        const forgotForm = document.getElementById('forgotPasswordForm');
-        const resetForm = document.getElementById('resetPasswordForm');
-        if (forgotForm) forgotForm.classList.add('hidden');
-        if (resetForm) resetForm.classList.add('hidden');
-
-
-        console.log("Halaman login/daftar diinisialisasi.");
+        // Panggil fungsi inisialisasi form dan tab HANYA JIKA tidak ada sesi aktif
+        if (!(isLoggedIn === 'true' && loggedInUserIdentifier)) {
+            initializeFormsAndTabs();
+        }
     }
-
-    // Panggil fungsi inisialisasi form dan tab HANYA JIKA tidak ada sesi aktif
-    if (!(isLoggedIn === 'true' && loggedInUserIdentifier)) { // Cek kebalikan dari kondisi redirect di awal
-        initializeFormsAndTabs();
-    }
-
-
 }); // Akhir DOMContentLoaded
