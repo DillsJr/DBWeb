@@ -35,10 +35,7 @@ async function uploadProfilePicture(file, userId) {
     console.log(`Uploading file "${file.name}" to path "${filePath}"...`);
 
     // Panggil fungsi upload dari Supabase Storage
-    const {
-        data,
-        error
-    } = await supabaseClient.storage
+    const { data, error } = await supabaseClient.storage
         .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda (misal: 'profile-pictures')
         .upload(filePath, file, {
             cacheControl: '3600', // Cache selama 1 jam
@@ -53,10 +50,7 @@ async function uploadProfilePicture(file, userId) {
         console.log('Upload profile picture successful:', data);
         alert('Foto profil berhasil diunggah!');
         // Setelah berhasil diunggah, dapatkan URL publik untuk menampilkannya
-        // Supabase Storage v2 membutuhkan getPublicUrl secara terpisah setelah upload
-        const {
-            data: publicData
-        } = supabaseClient.storage
+        const { data: publicData } = supabaseClient.storage
             .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
             .getPublicUrl(filePath); // Dapatkan URL publik file yang baru diunggah
 
@@ -64,9 +58,9 @@ async function uploadProfilePicture(file, userId) {
             console.log('Public URL:', publicData.publicUrl);
             return publicData.publicUrl; // Kembalikan URL publik
         } else {
-            console.error('Failed to get public URL after upload.');
-            alert('Foto profil berhasil diunggah, tetapi gagal mendapatkan URL untuk menampilkannya.');
-            return null;
+             console.error('Failed to get public URL after upload.');
+             alert('Foto profil berhasil diunggah, tetapi gagal mendapatkan URL untuk menampilkannya.');
+             return null;
         }
     }
 }
@@ -93,35 +87,30 @@ async function loadProfilePicture(userId) {
     for (const ext of possibleExtensions) {
         const filePath = `${userId}/avatar.${ext}`; // Coba path dengan ekstensi ini
 
-        // Coba dapatkan daftar file di folder pengguna di bucket storage
-        // Ini untuk mengecek apakah ada file avatar di sana sebelum mencoba getPublicUrl
-        const {
-            data: files,
-            error: listError
-        } = await supabaseClient.storage
+         // Coba dapatkan daftar file di folder pengguna di bucket storage
+         // Ini untuk mengecek apakah ada file avatar di sana sebelum mencoba getPublicUrl
+        const { data: files, error: listError } = await supabaseClient.storage
             .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
             .list(userId + '/', {
                 search: `avatar.${ext}` // Cari file dengan nama 'avatar.<ext>' di folder user
             });
 
         if (listError) {
-            console.error(`Error listing file ${filePath}:`, listError.message);
-            continue; // Coba ekstensi berikutnya
+             console.error(`Error listing file ${filePath}:`, listError.message);
+             continue; // Coba ekstensi berikutnya
         }
 
         if (files && files.length > 0) {
-            // File ditemukan, ambil URL publiknya
-            const {
-                data: publicData
-            } = supabaseClient.storage
+             // File ditemukan, ambil URL publiknya
+             const { data: publicData } = supabaseClient.storage
                 .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
                 .getPublicUrl(filePath);
 
-            if (publicData && publicData.publicUrl) {
-                foundImageUrl = publicData.publicUrl;
-                console.log('Profile picture found and loading from URL:', foundImageUrl);
-                break; // Hentikan loop setelah menemukan URL
-            }
+             if(publicData && publicData.publicUrl) {
+                 foundImageUrl = publicData.publicUrl;
+                 console.log('Profile picture found and loading from URL:', foundImageUrl);
+                 break; // Hentikan loop setelah menemukan URL
+             }
         }
     }
 
@@ -139,10 +128,7 @@ async function loadProfilePicture(userId) {
 // --- Logika Utama: Cek Status Login, Tampilkan Info Pengguna, dan Setup Listener ---
 async function checkLoginStatusAndLoadUser() {
     // Coba dapatkan sesi pengguna saat ini
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getSession();
+    const { data, error } = await supabaseClient.auth.getSession();
     console.log('Supabase getSession result on homepage:', data, error);
 
     const loggedInUsernameElement = document.getElementById('loggedInUsername');
@@ -182,10 +168,10 @@ async function checkLoginStatusAndLoadUser() {
         } else if (userMetadata.username) {
             displayName = userMetadata.username;
         } else if (user.email) {
-            displayName = user.email.split('@')[0]; // Ambil bagian email sebelum '@'
+             displayName = user.email.split('@')[0]; // Ambil bagian email sebelum '@'
         }
     } else if (user.email) {
-        displayName = user.email.split('@')[0]; // Jika tidak ada metadata, pakai bagian email
+         displayName = user.email.split('@')[0]; // Jika tidak ada metadata, pakai bagian email
     }
 
 
@@ -196,13 +182,35 @@ async function checkLoginStatusAndLoadUser() {
         console.warn("Element with ID 'loggedInUsername' not found.");
     }
 
+    // --- Logika Logout ---
+    // BARIS-BARIS INI SEBELUMNYA HILANG DARI KODE ANDA
+    if (logoutButton) { // Memastikan tombol ditemukan
+        console.log("Logout button found. Attaching listener."); // Tambahkan log ini untuk verifikasi
+        logoutButton.addEventListener('click', async () => { // Listener klik
+            console.log('Attempting to log out...'); // Log saat tombol diklik
+            const { error: logoutError } = await supabaseClient.auth.signOut(); // Memanggil logout
+
+            if (logoutError) {
+                console.error('Error logging out:', logoutError.message); // Log error logout
+                alert('Gagal logout: ' + logoutError.message); // Alert error logout
+            } else {
+                console.log('Logout successful.'); // Log sukses logout
+                redirectToLogin(); // Redirect
+            }
+        });
+    } else {
+        console.warn("Logout button with ID 'logoutButton' not found."); // Peringatan jika tombol TIDAK ditemukan
+    }
+    // --- AKHIR LOGIKA LOGOUT ---
+
+
     // --- Logika FOTO PROFIL (Implemented) ---
     // Muat foto profil saat halaman dimuat
     if (user) {
-        loadProfilePicture(user.id); // Panggil fungsi untuk memuat foto profil
+       loadProfilePicture(user.id); // Panggil fungsi untuk memuat foto profil
     } else {
         console.warn("User object not available to load profile picture.");
-        if (userProfilePicElement) userProfilePicElement.src = 'placeholder-profile-pic.png';
+         if (userProfilePicElement) userProfilePicElement.src = 'placeholder-profile-pic.png';
     }
 
     // Tambahkan listener untuk input file foto profil
@@ -223,16 +231,16 @@ async function checkLoginStatusAndLoadUser() {
         const user = (await supabaseClient.auth.getSession()).data.session?.user;
 
         if (!file) {
-            console.log("Tidak ada file yang dipilih untuk foto profil.");
-            return;
+             console.log("Tidak ada file yang dipilih untuk foto profil.");
+             return;
         }
         console.log("File dipilih untuk foto profil:", file);
 
         if (!user) {
-            console.error("User not found for profile picture upload.");
-            alert("Gagal mengunggah foto: Pengguna tidak dikenali.");
-            e.target.value = null; // Reset input file
-            return;
+             console.error("User not found for profile picture upload.");
+             alert("Gagal mengunggah foto: Pengguna tidak dikenali.");
+             e.target.value = null; // Reset input file
+             return;
         }
 
         // Panggil fungsi untuk mengunggah file
@@ -240,7 +248,7 @@ async function checkLoginStatusAndLoadUser() {
 
         // Jika upload berhasil dan mendapatkan URL publik, tampilkan foto baru
         if (publicUrl && userProfilePicElement) {
-            userProfilePicElement.src = publicUrl;
+             userProfilePicElement.src = publicUrl;
         }
 
         // Reset input file agar event 'change' terpicu lagi meskipun file yang sama dipilih
