@@ -21,10 +21,10 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 
     // Tangani redirect saat login berhasil atau sesi ditemukan
     // Ini adalah cara standar dan disarankan untuk menangani redirect
-    if (event === 'SIGNED_IN' && session) {
+    if (event === 'SIGNED_IN' && session) { // Memeriksa event SIGNED_IN
         console.log("Supabase event: SIGNED_IN. Redirect ke homepage.html");
         // Pastikan '/homepage.html' adalah path homepage Anda yang benar
-        window.location.replace('/homepage.html');
+        window.location.replace('/homepage.html'); // Ini baris yang melakukan redireksi
     } else if (event === 'SIGNED_OUT') {
         // Tangani notifikasi saat pengguna logout dan kembali ke halaman ini
         console.log("Supabase event: SIGNED_OUT. Pengguna telah logout.");
