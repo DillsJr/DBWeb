@@ -52,8 +52,8 @@ body {
     /* --- Penyesuaian untuk Konsistensi Tinggi Form (dengan absolute positioning) --- */
     /* Atur tinggi minimum container agar cukup untuk area form setelah tab */
     /* Anda mungkin perlu menyesuaikan nilai 60px (tinggi tab) dan min-height total jika perlu */
-    min-height: calc(60px + 450px);
-    /* Estimasi: tinggi tab + tinggi form terpanjang */
+    min-height: calc(60px + 480px);
+    /* Estimasi: tinggi tab + tinggi form terpanjang (daftar) */
 
     /* --- Centering Form di dalam Container (Tidak perlu display flex/align-items di container
        untuk menengahkan form saat position absolute, cukup pada body) --- */
@@ -75,7 +75,7 @@ body {
 #loginForm,
 #registerForm,
 #forgotPasswordForm {
-    /* Tambahkan #forgotPasswordForm */
+    /* Termasuk container utama lupa password */
     position: absolute;
     /* Posisikan secara absolut di dalam container (yang punya position: relative) */
     top: 60px;
@@ -96,36 +96,38 @@ body {
     /* Pastikan form berada di belakang tab */
 
     /* Properti visual saat terlihat (akan diatur display: block oleh JS via remove class hidden-abs) */
-    /* Gunakan ini jika ingin transisi saat beralih form */
-    /* opacity: 1; */
-    /* HAPUS atau komentari jika tidak pakai transisi opacity */
-    /* visibility: visible; */
-    /* HAPUS atau komentari jika tidak pakai transisi visibility */
-    /* transform: translateY(0); */
-    /* HAPUS atau komentari jika tidak pakai transisi transform */
     pointer-events: auto;
     /* Izinkan interaksi saat terlihat */
 
     /* Atur display default ke none, akan di-override oleh JS saat remove hidden-abs */
     display: none;
     /* Atur display default ke none */
+
+    /* Tambahkan display flex dan align-items: center untuk menengahkan konten di dalam container form */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* Konten mulai dari atas */
 }
 
 
 /* Gaya untuk Elemen FORM di dalam container form (misal: #login, #register) */
-/* Ini adalah elemen <form> itu sendiri */
+/* Ini adalah elemen <form> itu sendiri ATAU SUB-CONTAINER seperti #resetPasswordFormContainer */
 #loginForm form,
 #registerForm form,
-#forgotPasswordForm form {
-    /* Tambahkan form lupa password */
+#forgotPasswordForm form
+
+/* Targetkan form email lupa password */
+    {
     display: flex;
-    /* Gunakan flexbox untuk menata konten di dalam form */
+    /* Gunakan flexbox untuk menata konten di dalamnya */
     flex-direction: column;
     /* Susun item vertikal */
     /* align-items: center; */
     /* HAPUS jika ingin input group rata kiri */
     width: 100%;
-    /* Pastikan form element mengisi lebar container form */
+    /* Pastikan elemen mengisi lebar container form utama */
     box-sizing: border-box;
 }
 
@@ -147,7 +149,6 @@ body {
 }
 
 /* Gaya Grup Input (Label + Input) */
-/* Kita perlu pastikan grup input mengambil lebar penuh di dalam form */
 .input-group {
     margin-bottom: 15px;
     /* Jarak antar grup input */
@@ -312,7 +313,6 @@ button[type="submit"]:hover {
     border-bottom: 2px solid #ccc;
     /* Garis bawah tab */
     width: 100%;
-    /* Pastikan tabs mengambil lebar penuh container */
     box-sizing: border-box;
     /* Penting */
     position: relative;
@@ -410,19 +410,12 @@ button[type="submit"]:hover {
 }
 
 
-/* --- BAGIAN 5: Gaya Utility (Untuk JavaScript) --- */
+/* --- BAGIAN 5: Gaya Utility (Paraffin JavaScript) --- */
 
 /* Kelas untuk menyembunyikan elemen dengan absolute positioning */
-/* Menggantikan .hidden saat pakai absolute positioning */
 .hidden-abs {
-    display: none;
-    /* Sembunyikan elemen sepenuhnya */
-    /* Jika ingin transisi, gunakan: */
-    /* opacity: 0; */
-    /* visibility: hidden; */
-    /* pointer-events: none; */
-    /* transform: translateY(10px); */
-    /* Geser sedikit untuk animasi */
+    display: none !important;
+    /* Gunakan !important untuk memastikan override */
 }
 
 
@@ -442,14 +435,11 @@ button[type="submit"]:hover {
         /* Kurangi padding container */
         margin: 0;
         /* Atur margin menjadi 0 */
-        min-height: calc(60px + 450px);
+        min-height: calc(60px + 480px);
         /* Sesuaikan min-height agar cukup di mobile */
     }
 
     /* Penyesuaian Gaya Elemen di dalam Form Login/Daftar untuk Mobile */
-    /* Tidak ada .container h1 di index.html Anda, gaya ini mungkin tidak perlu */
-    /* .container h1 { font-size: 1.6em; } */
-
     .form h2 {
         font-size: 1.3em;
     }
@@ -465,10 +455,7 @@ button[type="submit"]:hover {
 
     .input-group input,
     .tabs button,
-    button[type="submit"]
-
-    /* .container #logoutButton, -- ini untuk homepage, dihapus */
-        {
+    button[type="submit"] {
         font-size: 1em;
         padding: 10px;
     }
