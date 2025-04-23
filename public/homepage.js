@@ -5,7 +5,7 @@
 // !!! PERINGATAN KRITIS: Menyimpan URL dan ANON KEY secara langsung di kode klien yang publik
 // TIDAK AMAN untuk aplikasi produksi. Gunakan environment variables atau server-side logic.
 const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co'; // GANTI dengan URL Supabase Anda
-const supabaseKey = 'GANTI_DENGAN_ANON_KEY_SUPABASE_ANDA'; // !!! GANTI DENGAN ANON KEY SUPABASE YANG BENAR !!!
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDc5OX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE'; // !!! GANTI DENGAN ANON KEY SUPABASE YANG BENAR !!!
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
