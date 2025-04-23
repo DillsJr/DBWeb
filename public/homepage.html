@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title> Homepage </title>
 
     <link rel="stylesheet" href="styles.css">
 
@@ -22,10 +22,11 @@
 
     <header class="homepage-header">
         <div class="header-left">
-            <span class="site-title">DBWeb™</span>
+            <span class="site-title"> DBWeb™ </span>
         </div>
         <div class="header-right">
-            <button id="logoutButton" class="header-logout-button">Logout</button>
+            <span id="profileIcon" class="header-profile-icon"> 😊 </span> <button id="logoutButton"
+                class="header-logout-button"> Logout </button>
         </div>
     </header>
 
@@ -33,7 +34,7 @@
         <section class="text-column">
             <h1 class="welcome-heading">
                 Selamat datang,
-                <span id="loggedInUsername">Pengguna!</span>!
+                <span id="loggedInUsername"> Pengguna! </span>!
             </h1>
             <p class="homepage-description">
                 Ini adalah halaman beranda Anda. Jelajahi fitur aplikasi.
@@ -47,13 +48,29 @@
 
                 <div id="profileUploadArea" class="upload-area">
                     <input type="file" id="profilePicInput" accept="image/*" class="file-input">
-                    <label for="profilePicInput" class="upload-button">Pilih Foto</label>
-                    <p class="upload-text">Unggah Foto Profil</p>
+                    <label for="profilePicInput" class="upload-button"> Pilih Foto </label>
+                    <p class="upload-text"> Unggah Foto Profil </p>
                 </div>
             </div>
         </section>
-
     </main>
+
+    <section class="upload-general-photos-section">
+        <h2> Unggah Foto Umum </h2>
+        <div id="generalPhotoUploadArea" class="general-upload-area">
+            <input type="file" id="generalPhotoInput" accept="image/*" multiple class="file-input">
+            <label for="generalPhotoInput" class="general-upload-button"> Pilih Foto </label>
+            <p class="general-upload-text"> Seret & Lepas atau Klik untuk Unggah Foto Lainnya </p>
+        </div>
+    </section>
+
+    <section class="user-photos-gallery-section">
+        <h2> Galeri Foto Anda </h2>
+        <div id="userPhotosGallery" class="user-photos-gallery">
+            <p> Galeri foto belum tersedia. Unggah foto pertama Anda! </p>
+        </div>
+    </section>
+
 
     <script src="homepage.js"></script>
 

@@ -12,470 +12,522 @@ body.homepage-body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    display: block;
-    justify-content: unset;
-    align-items: unset;
+    /* Pastikan background menutupi seluruh tinggi viewport */
     box-sizing: border-box;
+
+    /* KRITIS: Menggunakan Flexbox untuk menata anak-anaknya secara vertikal */
+    display: flex;
+    flex-direction: column;
+    /* Susun anak-anak (header, main, sections) secara vertikal */
+    /* align-items: center; */
+    /* HAPUS align-items: center dari body agar header tidak ikut terpusat */
+    /* justify-content: flex-start; */
+    /* Biarkan konten dimulai dari atas */
 }
 
-/* Gaya untuk Header Homepage */
+/* Gaya untuk Header Homepage (Navbar) */
 body.homepage-body .homepage-header {
     display: flex;
+    /* Menggunakan Flexbox */
     justify-content: space-between;
+    /* Item kiri di kiri, item kanan di kanan */
     align-items: center;
+    /* Pusatkan item secara vertikal */
     background-color: #22444d;
-    /* Contoh background transparan */
+    /* Contoh background transparan gelap */
     padding: 15px 40px;
     /* Sesuaikan padding header */
     color: #fff;
     /* Warna teks header */
     box-sizing: border-box;
     /* Pastikan padding masuk hitungan */
+    width: 100%;
+    /* KRITIS: Pastikan header mengambil lebar penuh */
+    /* max-width: 800px; */
+    /* HAPUS max-width dari header */
+    margin: 0 auto;
+    /* Tambahkan margin auto untuk menengahkan header jika body punya width > 100% atau padding */
+    /* Meskipun dengan width: 100%, margin auto bisa membantu konsistensi */
 }
 
+/* Gaya Judul Situs di Header Kiri */
 body.homepage-body .homepage-header .site-title {
     font-size: 1.5em;
     font-weight: bold;
-    color: #a5c9b1;
-    /* Contoh warna judul situs */
+    /* Font tebal untuk judul situs */
+    color: #eebbc3;
+    /* Warna judul yang menonjol */
 }
 
-/* Gaya untuk Tombol Logout di Header Homepage */
+/* Container untuk elemen di Header Kanan (Profil & Logout) */
+body.homepage-body .homepage-header .header-right {
+    display: flex;
+    /* Menggunakan Flexbox */
+    align-items: center;
+    /* Pusatkan item (profil dan logout) secara vertikal */
+    gap: 20px;
+    /* Jarak antara ikon profil dan tombol logout */
+}
+
+/* Gaya Placeholder Ikon Profil */
+body.homepage-body .homepage-header .header-profile-icon {
+    font-size: 1.8em;
+    /* Ukuran ikon/emoji */
+    cursor: pointer;
+    /* Menunjukkan bisa diklik */
+    color: #fff;
+    /* Warna ikon/emoji (jika bukan gambar) */
+    /* Anda bisa menambahkan border, background, dll. untuk styling lebih lanjut */
+    transition: color 0.2s ease;
+    /* Efek hover */
+}
+
+body.homepage-body .homepage-header .header-profile-icon:hover {
+    color: #eebbc3;
+    /* Warna saat hover */
+}
+
+
+/* Gaya Tombol Logout di Header Kanan */
 body.homepage-body .homepage-header .header-logout-button {
-    padding: 8px 15px;
-    background-color: #a5c9b1;
-    /* Contoh warna tombol logout */
-    color: #001e1d;
-    /* Warna teks tombol */
+    padding: 10px 15px;
+    /* Padding tombol logout */
+    background-color: #eebbc3;
+    /* Warna background seperti referensi kuning/pink */
+    color: #121629;
+    /* Warna teks tombol (disesuaikan agar kontras) */
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    /* Sudut membulat */
     font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    /* Efek transisi */
 }
 
 body.homepage-body .homepage-header .header-logout-button:hover {
-    background-color: #b0d4bd;
+    background-color: #d48c9a;
+    /* Warna saat hover */
+    opacity: 0.9;
+    /* Sedikit transparansi saat hover */
 }
 
 
-/* Gaya untuk Konten Utama Homepage (Dua Kolom Layout) */
+/* Gaya untuk Konten Utama Homepage (Main) */
 body.homepage-body .homepage-main-content {
     display: flex;
-    /* Aktifkan Flexbox untuk layout kolom */
-    justify-content: center;
-    /* Mengganti space-between ke center agar konten di tengah */
-    align-items: flex-start;
-    /* Tengahkan item (kolom) secara vertikal di dalam container Flex */
-    flex-direction: row;
-    /* Atur arah Flex menjadi baris (kolom) */
-    padding: 40px;
-    /* Padding di dalam area konten utama */
-    gap: 40px;
-    /* Jarak antar kolom */
     flex-wrap: wrap;
-    /* Biarkan kolom wrap ke bawah di layar kecil */
-    max-width: 1200px;
-    /* Batasi lebar maksimum konten utama */
-    margin: 20px auto;
-    /* Pusatkan blok main */
+    /* Wrap konten jika layar sempit */
+    padding: 20px 40px;
+    /* Padding konten utama */
+    gap: 40px;
+    /* Jarak antar kolom/section */
+    justify-content: center;
+    /* Tengah item di dalam main secara horizontal */
+    align-items: center;
+    /* Tengah item di dalam main secara vertikal */
     box-sizing: border-box;
+    width: 100%;
+    /* Ambil lebar penuh container yang tersedia */
+    max-width: 800px;
+    /* KRITIS: Batasi lebar maksimum main content */
+    margin: 20px auto;
+    /* KRITIS: Gunakan margin auto untuk menengahkan blok main */
 }
 
-/* Gaya untuk Kolom Teks di Homepage */
+/* Gaya Kolom Teks (Info Selamat Datang) */
 body.homepage-body .homepage-main-content .text-column {
     flex: 1;
-    /* Biarkan kolom mengisi ruang */
+    /* Mengambil ruang yang tersedia */
     min-width: 280px;
-    /* Lebar minimum sebelum wrap */
-    max-width: 500px;
-    /* Lebar maksimum kolom teks */
-    color: #001e1d;
-    /* Warna teks di kolom teks - Disesuaikan dengan warna teks body */
+    /* Lebar minimum kolom teks */
+    /* align-self: flex-start; */
+    /* Sesuaikan jika ingin kolom teks rata atas */
 }
 
-/* Gaya untuk Judul Selamat Datang di Homepage */
+/* Gaya Judul Selamat Datang */
 body.homepage-body .homepage-main-content .welcome-heading {
-    font-size: 2.5em;
-    /* Ukuran judul selamat datang */
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #0f4c5c;
-    /* Contoh warna judul - Disesuaikan */
+    color: #121629;
+    /* Warna judul */
+    margin-bottom: 10px;
 }
 
-body.homepage-body .homepage-main-content .welcome-heading span {
-    color: #001e1d;
-    /* Contoh warna nama pengguna - Disesuaikan */
+/* Gaya Username di Judul Selamat Datang */
+body.homepage-body .homepage-main-content .welcome-heading #loggedInUsername {
+    color: #b8c1ec;
+    /* Warna username yang menonjol */
     font-weight: bold;
 }
 
-/* Gaya untuk Paragraf Deskripsi di Homepage */
+/* Gaya Deskripsi Homepage */
 body.homepage-body .homepage-main-content .homepage-description {
-    font-size: 1.1em;
-    margin-bottom: 20px;
-    color: #001e1d;
-    /* Contoh warna teks deskripsi - Disesuaikan */
+    color: #272343;
+    /* Warna teks deskripsi */
+    font-style: italic;
 }
 
-/* Gaya untuk Kolom Gambar di Homepage */
+
+/* Gaya Kolom Gambar (Foto Profil) */
 body.homepage-body .homepage-main-content .image-column {
-    flex-shrink: 0;
-    /* Jangan biarkan menyusut */
-    width: 200px;
-    /* Berikan lebar tetap agar tidak terlalu kecil */
+    flex: 0 0 300px;
+    /* Fleksibilitas nol, lebar dasar 300px */
+    min-width: 280px;
+    /* Lebar minimum kolom gambar */
     display: flex;
     flex-direction: column;
-    /* Tata vertikal jika ada elemen lain di kolom ini */
     align-items: center;
-    /* Pusatkan gambar di kolom gambar */
+    /* Tengah item di kolom gambar */
+    /* align-self: flex-start; */
+    /* Sesuaikan jika ingin kolom gambar rata atas */
 }
 
-/* Gaya untuk Container Gambar Profil */
+
+/* Gaya Container Foto Profil */
 body.homepage-body .homepage-main-content .profile-pic-container {
-    width: 150px;
-    /* Ukuran container gambar - Sesuai permintaan */
-    height: 150px;
-    /* Ukuran container gambar - Sesuai permintaan */
-    border-radius: 50%;
-    /* Bentuk bulat */
-    overflow: hidden;
-    /* Sembunyikan bagian gambar di luar lingkaran */
-    border: 3px solid #0f4c5c;
-    /* Contoh border - Disesuaikan */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
-    /* Penting untuk menempatkan upload area di atas */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #333;
-    /* Warna latar container saat belum ada foto */
-    transition: box-shadow 0.3s ease;
-    cursor: pointer;
-    /* Kursor pointer pada container untuk mengindikasikan bisa diklik */
+    /* Diperlukan untuk absolute positioning upload area */
+    width: 150px;
+    /* Ukuran container foto profil */
+    height: 150px;
+    border-radius: 50%;
+    /* Bentuk lingkaran */
+    overflow: hidden;
+    /* Sembunyikan bagian gambar yang meluap */
     margin-bottom: 20px;
-    /* Ruang di bawah foto profil */
+    border: 3px solid #eebbc3;
+    /* Border sekitar foto profil */
+    background-color: #fff;
+    /* Latar belakang putih fallback */
 }
 
-/* Gaya untuk Tag Img Foto Profil */
+/* Gaya Gambar Foto Profil */
 body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     display: block;
+    /* Menghilangkan spasi bawah gambar */
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 1;
+    /* Pastikan gambar mengisi area tanpa distorsi */
 }
 
-/* --- Gaya Efek Bayangan Saat Hover --- */
-body.homepage-body .homepage-main-content .profile-pic-container:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    /* Contoh bayangan yang sedikit lebih jelas */
-}
 
-/* Gaya untuk Area Upload */
-body.homepage-body .homepage-main-content .upload-area {
+/* Gaya Area Upload Foto Profil (Overlay) */
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area {
     position: absolute;
+    /* Posisikan absolut di atas container */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Overlay semi-transparan */
+    color: #fff;
+    /* Warna teks di overlay */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    text-align: center;
-    cursor: pointer;
-    z-index: 2;
-    font-size: 0.9em;
-    padding: 10px;
-    box-sizing: border-box;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-/* Sembunyikan area upload saat foto profil ditampilkan */
-body.homepage-body .homepage-main-content .profile-pic-container .profile-pic:not([src="placeholder-profile-pic.png"]):not([src=""]):not([src^="data:image"])+.upload-area {
-    display: none !important;
     opacity: 0;
-    pointer-events: none;
+    /* Awalnya tidak terlihat */
+    transition: opacity 0.3s ease;
+    /* Efek fade in/out */
+    cursor: pointer;
+    /* Menunjukkan bisa diklik/drop */
 }
 
-/* Gaya hover untuk area upload */
-body.homepage-body .homepage-main-content .upload-area:hover {
-    background-color: rgba(0, 0, 0, 0.6);
+/* Gaya Area Upload Foto Profil saat Hover */
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area:hover {
+    opacity: 1;
+    /* Terlihat saat hover */
 }
 
-/* Sembunyikan input file yang sebenarnya */
-body.homepage-body .homepage-main-content .upload-area .file-input {
+/* Sembunyikan input file asli, gunakan label sebagai tombol */
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area .file-input {
     display: none;
 }
 
-/* Gaya untuk Label yang bertindak sebagai tombol */
-body.homepage-body .homepage-main-content .upload-area .upload-button {
-    display: block;
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    background-color: #a5c9b1;
-    color: #22444d;
+/* Gaya Tombol Unggah Foto Profil (Label) */
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-button {
+    background-color: #eebbc3;
+    /* Warna tombol */
+    color: #121629;
+    /* Warna teks */
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
+    margin-bottom: 5px;
     font-size: 0.9em;
     transition: background-color 0.3s ease;
 }
 
-body.homepage-body .homepage-main-content .upload-area .upload-button:hover {
-    background-color: #b0d4bd;
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-button:hover {
+    background-color: #d48c9a;
+    /* Warna saat hover */
 }
 
-body.homepage-body .homepage-main-content .upload-area .upload-text {
+
+/* Gaya Teks Unggah Foto Profil */
+body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-text {
     font-size: 0.8em;
-    margin-top: 0;
-    color: #ccc;
+    text-align: center;
+    padding: 0 10px;
+    /* Sedikit padding horizontal */
 }
 
 
-/* --- BAGIAN GAYA BARU: Antarmuka Unggah Foto Konten Umum & Galeri --- */
+/* --- Gaya untuk Bagian Unggah Foto Umum & Galeri --- */
 
 .upload-general-photos-section,
 .user-photos-gallery-section {
-    max-width: 1200px;
-    /* Sama dengan max-width main content */
-    margin: 20px auto;
-    /* Pusatkan dan beri ruang */
-    padding: 20px;
-    background-color: #e8e4e6;
-    /* Latar belakang kontras */
-    color: #001e1d;
-    /* Warna teks kontras */
+    background-color: #fffffe;
+    /* Latar belakang putih untuk bagian ini */
+    color: #121629;
+    /* Warna teks hitam gelap */
+    padding: 20px 40px;
+    /* Padding di dalam section */
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Sudut membulat */
+    /* margin: 20px auto; */
+    /* Hapus margin auto di sini */
+    max-width: 800px;
+    /* Batasi lebar maksimum section agar sejajar dengan main content */
+    width: 100%;
     box-sizing: border-box;
+    margin: 20px auto;
+    /* KRITIS: Tambahkan margin auto di sini untuk menengahkan blok sections */
 }
 
 .upload-general-photos-section h2,
 .user-photos-gallery-section h2 {
-    color: #0f4c5c;
-    /* Warna judul - Disesuaikan */
-    margin-top: 0;
-    margin-bottom: 20px;
     text-align: center;
+    margin-bottom: 20px;
+    color: #22444d;
+    /* Warna judul bagian */
 }
 
+
+/* Gaya Area Unggah Foto Umum */
 .general-upload-area {
-    border: 2px dashed #0f4c5c;
-    /* Garis putus-putus */
+    border: 2px dashed #b8c1ec;
+    /* Border dashed */
     border-radius: 8px;
+    /* Sudut membulat */
     padding: 30px;
+    /* Padding area */
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     min-height: 150px;
-    /* Tinggi minimum area drop */
-    background-color: rgba(15, 76, 92, 0.1);
-    /* Sedikit latar belakang */
+    /* Tinggi minimum area upload */
+    display: flex;
+    /* Menggunakan flexbox untuk menata konten di dalamnya */
+    flex-direction: column;
+    /* Susun item vertikal */
+    justify-content: center;
+    /* Pusatkan secara vertikal */
+    align-items: center;
+    /* Pusatkan secara horizontal */
 }
 
-.general-upload-area:hover,
-.general-upload-area.dragover {
-    /* Class dragover akan ditambahkan di JS */
-    background-color: rgba(15, 76, 92, 0.2);
-    /* Lebih gelap saat hover/drag */
-    border-color: #001e1d;
+.general-upload-area:hover {
+    background-color: #eef1f6;
+    /* Latar saat hover */
+    border-color: #a7b9de;
+    /* Warna border saat hover */
 }
 
-/* Gaya untuk label yang bertindak sebagai tombol di area upload umum */
+/* Sembunyikan input file asli di area umum */
+.general-upload-area .file-input {
+    display: none;
+}
+
+/* Gaya Tombol Unggah Foto Umum (Label) */
 .general-upload-button {
-    display: inline-block;
-    /* Tampilkan sebagai blok inline */
+    background-color: #eebbc3;
+    /* Warna tombol */
+    color: #121629;
+    /* Warna teks */
     padding: 10px 20px;
-    background-color: #0f4c5c;
-    /* Warna tombol - Disesuaikan */
-    color: #e8e4e6;
-    /* Warna teks tombol */
-    border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+    margin-bottom: 10px;
     font-size: 1em;
     transition: background-color 0.3s ease;
-    margin-bottom: 10px;
-    /* Ruang di bawah tombol */
 }
 
 .general-upload-button:hover {
-    background-color: #22444d;
-    /* Warna hover tombol */
+    background-color: #d48c9a;
+    /* Warna saat hover */
 }
 
+
+/* Gaya Teks Unggah Foto Umum */
 .general-upload-text {
     font-size: 0.9em;
-    color: #001e1d;
-    /* Warna teks */
+    color: #555;
 }
 
-.upload-preview-area {
+/* Gaya Container Galeri Foto */
+.user-photos-gallery {
+    display: grid;
+    /* Menggunakan Grid untuk layout galeri */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /* Kolom otomatis, minimal 150px */
+    gap: 15px;
+    /* Jarak antar item galeri */
     margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    /* Biarkan preview wrap ke baris baru */
-    gap: 10px;
-    /* Jarak antar preview */
-    align-items: center;
-    /* Tengahkan item secara vertikal */
-    /* Tambahkan border atau background jika ingin area preview terlihat jelas saat kosong */
-    /* border: 1px solid #eee; */
-    /* min-height: 50px; */
-    /* padding: 10px; */
-    /* background-color: #f9f9f9; */
-    /* border-radius: 4px; */
+    /* Jarak dari judul */
+    /* Tambahkan border, background, dll. jika perlu container galeri */
 }
 
-/* Gaya untuk setiap item preview (div kontainer) */
-.upload-preview-item {
-    display: flex;
-    align-items: center;
-    /* Tengahkan vertikal */
-    background-color: #fff;
-    border: 1px solid #ccc;
+/* Gaya Item Foto di Galeri (misal: div atau figure) */
+/* Anda perlu menambahkan elemen wrapper di homepage.html untuk setiap foto */
+.gallery-item {
+    position: relative;
+    /* Jika perlu overlay delete atau info */
+    overflow: hidden;
+    /* Pastikan gambar di dalam pas */
     border-radius: 4px;
-    padding: 5px 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    font-size: 0.9em;
-    color: #333;
-}
-
-.upload-preview-item img {
-    margin-right: 10px;
-    border-radius: 3px;
-    border: 1px solid #eee;
-}
-
-.upload-preview-item span {
-    flex-grow: 1;
-    /* Beri nama file ruang */
-    margin-right: 10px;
-    word-break: break-all;
-    /* Paksa break jika nama file terlalu panjang */
-}
-
-.upload-preview-item .remove-preview-button {
-    background-color: #dc3545;
-    /* Merah */
-    color: white;
-    border: none;
-    border-radius: 50%;
-    /* Bentuk bulat */
-    width: 20px;
-    height: 20px;
-    font-size: 0.8em;
-    cursor: pointer;
+    /* Sudut membulat untuk item galeri */
+    background-color: #eef1f6;
+    /* Latar belakang fallback */
+    aspect-ratio: 1 / 1;
+    /* Rasio aspek 1:1 (persegi) */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;
-    flex-shrink: 0;
-    /* Jangan biarkan menyusut */
-}
-
-.upload-preview-item .remove-preview-button:hover {
-    background-color: #c82333;
+    /* Pusatkan gambar/konten di item */
 }
 
 
-/* Gaya untuk Kontainer Galeri Foto */
-.user-photos-gallery {
-    display: grid;
-    /* Gunakan Grid untuk layout galeri */
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    /* Kolom responsif */
-    gap: 15px;
-    /* Jarak antar gambar di grid */
-    padding: 10px;
-}
-
-/* Gaya untuk Setiap Gambar di Galeri */
-.user-photos-gallery img {
+/* Gaya Gambar di Galeri */
+.gallery-item img {
     display: block;
     width: 100%;
-    /* Gambar mengisi lebar kolom grid */
-    height: 150px;
-    /* Tinggi tetap atau auto */
+    height: 100%;
     object-fit: cover;
-    /* Pastikan gambar menutupi area tanpa distorsi */
+    /* Pastikan gambar mengisi area tanpa distorsi */
+}
+
+
+/* --- Gaya Notifikasi Kustom (Salin dari styles.css) --- */
+/* Notifikasi ini digunakan di homepage juga */
+.custom-notification {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px 20px;
     border-radius: 4px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    /* Transisi saat hover */
-}
-
-.user-photos-gallery img:hover {
-    transform: scale(1.05);
-    /* Sedikit membesar saat hover */
-    cursor: pointer;
-    /* Kursor pointer mengindikasikan interaksi */
-}
-
-/* Gaya untuk Pesan Info (misal: Belum ada foto) */
-.info-message {
     text-align: center;
-    font-style: italic;
-    color: #555;
-    /* Warna teks info */
-    width: 100%;
-    /* Pastikan pesan info mengambil lebar penuh */
-    margin-top: 20px;
+    font-weight: bold;
+    min-width: 200px;
+    max-width: 80%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #fffffe;
+    color: #121629;
+}
+
+.custom-notification.success {
+    background-color: #a5c9b1;
+    color: #004d40;
+}
+
+.custom-notification.error {
+    background-color: #ffb3ba;
+    color: #c62828;
+}
+
+.custom-notification.info {
+    background-color: #bbd0ff;
+    color: #0056b3;
 }
 
 
-/* --- Media Query untuk Responsivitas Homepage --- */
-@media (max-width: 600px) {
+/* --- Media Queries untuk Responsivitas Homepage --- */
 
-    /* Penyesuaian Spesifik Homepage untuk Mobile */
+@media (max-width: 768px) {
     body.homepage-body .homepage-header {
-        flex-direction: column;
-        padding: 10px 20px;
-        gap: 10px;
+        padding: 15px 20px;
+        /* Kurangi padding header di mobile */
+        max-width: 100%;
+        /* Pastikan header mengambil lebar penuh di mobile */
+        margin: 0;
+        /* Hapus margin auto di mobile */
     }
 
-    body.homepage-body .homepage-header .header-left,
     body.homepage-body .homepage-header .header-right {
-        width: 100%;
-        text-align: center;
+        gap: 15px;
+        /* Kurangi jarak ikon/tombol di mobile */
     }
+
+    body.homepage-body .homepage-header .site-title {
+        font-size: 1.3em;
+    }
+
+    body.homepage-body .homepage-header .header-profile-icon {
+        font-size: 1.5em;
+        /* Kurangi ukuran ikon profil */
+    }
+
+    body.homepage-body .homepage-header .header-logout-button {
+        padding: 8px 12px;
+        /* Kurangi padding tombol logout */
+        font-size: 0.9em;
+    }
+
 
     body.homepage-body .homepage-main-content {
         flex-direction: column;
+        /* Kolom menjadi tumpukan vertikal di mobile */
         padding: 20px;
-        /* Kurangi padding */
-        gap: 20px;
-        /* Kurangi jarak */
+        /* Kurangi padding konten utama */
+        gap: 30px;
+        /* Kurangi jarak antar section */
+        align-items: center;
+        /* Pastikan item di dalam main tetap center di mobile */
+        max-width: 100%;
+        /* Biarkan main content mengambil lebar penuh di mobile */
+        margin: 15px auto;
+        /* Sesuaikan margin di mobile */
     }
 
     body.homepage-body .homepage-main-content .text-column {
-        max-width: 100%;
+        width: 100%;
+        /* Ambil lebar penuh di mobile */
+        min-width: unset;
+        /* Hapus min-width */
         text-align: center;
+        /* Tengah teks di mobile */
+        align-self: center;
+        /* Tengah kolom teks */
     }
 
     body.homepage-body .homepage-main-content .welcome-heading {
-        font-size: 2em;
+        font-size: 1.8em;
+        /* Sesuaikan ukuran heading */
     }
+
+    body.homepage-body .homepage-main-content .homepage-description {
+        font-size: 0.9em;
+        /* Sesuaikan ukuran teks */
+    }
+
 
     body.homepage-body .homepage-main-content .image-column {
         min-width: unset;
         width: 100%;
         /* Ambil lebar penuh di mobile */
+        align-items: center;
+        /* Tengah item di kolom gambar */
     }
 
     body.homepage-body .homepage-main-content .profile-pic-container {
         width: 120px;
         height: 120px;
+        /* Ukuran foto profil lebih kecil di mobile */
     }
 
     /* --- Media Query Khusus untuk Bagian Unggah & Galeri di Layar Kecil --- */
@@ -483,51 +535,152 @@ body.homepage-body .homepage-main-content .upload-area .upload-text {
     .user-photos-gallery-section {
         padding: 15px;
         /* Kurangi padding section */
+        /* margin: 15px auto; */
+        /* Hapus margin auto di mobile */
+        width: calc(100% - 30px);
+        /* Sesuaikan lebar dengan padding */
+        max-width: 100%;
+        /* Hapus max-width di mobile agar mengisi lebar */
         margin: 15px auto;
-        /* Kurangi margin */
+        /* Tambahkan margin auto di mobile */
     }
+
+    .upload-general-photos-section h2,
+    .user-photos-gallery-section h2 {
+        font-size: 1.2em;
+        /* Sesuaikan ukuran judul bagian */
+    }
+
 
     .general-upload-area {
         padding: 20px;
         /* Kurangi padding area upload */
-        min-height: 120px;
-        /* Kurangi min-height */
+        min-height: 150px;
+        /* Tinggi minimum area upload */
+        display: flex;
+        /* Menggunakan flexbox untuk menata konten di dalamnya */
+        flex-direction: column;
+        /* Susun item vertikal */
+        justify-content: center;
+        /* Pusatkan secara vertikal */
+        align-items: center;
+        /* Pusatkan secara horizontal */
     }
 
+    .general-upload-area:hover {
+        background-color: #eef1f6;
+        /* Latar saat hover */
+        border-color: #a7b9de;
+        /* Warna border saat hover */
+    }
+
+    /* Sembunyikan input file asli di area umum */
+    .general-upload-area .file-input {
+        display: none;
+    }
+
+    /* Gaya Tombol Unggah Foto Umum (Label) */
     .general-upload-button {
-        padding: 8px 15px;
-        /* Kurangi padding tombol */
-        font-size: 0.9em;
+        background-color: #eebbc3;
+        /* Warna tombol */
+        color: #121629;
+        /* Warna teks */
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
     }
 
+    .general-upload-button:hover {
+        background-color: #d48c9a;
+        /* Warna saat hover */
+    }
+
+
+    /* Gaya Teks Unggah Foto Umum */
     .general-upload-text {
-        font-size: 0.8em;
+        font-size: 0.9em;
+        color: #555;
     }
 
+    /* Gaya Container Galeri Foto */
     .user-photos-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        /* Kolom lebih kecil di mobile */
-        gap: 10px;
-        /* Kurangi jarak gambar */
-        padding: 5px;
+        display: grid;
+        /* Menggunakan Grid untuk layout galeri */
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        /* Kolom otomatis, minimal 150px */
+        gap: 15px;
+        /* Jarak antar item galeri */
+        margin-top: 20px;
+        /* Jarak dari judul */
+        /* Tambahkan border, background, dll. jika perlu container galeri */
     }
 
-    .user-photos-gallery img {
-        height: 100px;
-        /* Tinggi gambar galeri di mobile */
+    /* Gaya Item Foto di Galeri (misal: div atau figure) */
+    /* Anda perlu menambahkan elemen wrapper di homepage.html untuk setiap foto */
+    .gallery-item {
+        position: relative;
+        /* Jika perlu overlay delete atau info */
+        overflow: hidden;
+        /* Pastikan gambar di dalam pas */
+        border-radius: 4px;
+        /* Sudut membulat untuk item galeri */
+        background-color: #eef1f6;
+        /* Latar belakang fallback */
+        aspect-ratio: 1 / 1;
+        /* Rasio aspek 1:1 (persegi) */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* Pusatkan gambar/konten di item */
     }
 
-    .upload-preview-area {
-        gap: 5px;
-        /* Kurangi jarak preview */
+
+    /* Gaya Gambar di Galeri */
+    .gallery-item img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Pastikan gambar mengisi area tanpa distorsi */
     }
 
-    .upload-preview-item {
-        padding: 5px;
+
+    /* --- Gaya Notifikasi Kustom (Salin dari styles.css) --- */
+    /* Notifikasi ini digunakan di homepage juga */
+    .custom-notification {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+        min-width: 200px;
+        max-width: 80%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        background-color: #fffffe;
+        color: #121629;
     }
 
-    .upload-preview-item img {
-        width: 80px;
-        height: 80px;
+    .custom-notification.success {
+        background-color: #a5c9b1;
+        color: #004d40;
     }
+
+    .custom-notification.error {
+        background-color: #ffb3ba;
+        color: #c62828;
+    }
+
+    .custom-notification.info {
+        background-color: #bbd0ff;
+        color: #0056b3;
+    }
+
 }
