@@ -45,9 +45,20 @@ body.homepage-body .homepage-header {
     /* KRITIS: Pastikan header mengambil lebar penuh */
     /* max-width: 800px; */
     /* HAPUS max-width dari header */
-    margin: 0 auto;
-    /* Tambahkan margin auto untuk menengahkan header jika body punya width > 100% atau padding */
-    /* Meskipun dengan width: 100%, margin auto bisa membantu konsistensi */
+    /* margin: 0 auto; */
+    /* HAPUS margin auto dari header (dengan width 100% ini tidak perlu dan bisa menyebabkan isu) */
+
+    /* KRITIS: Gaya untuk membuat header fix di posisi atas */
+    position: fixed;
+    /* Membuat elemen tetap di viewport */
+    top: 0;
+    /* Posisikan di bagian atas viewport */
+    left: 0;
+    /* Posisikan di bagian kiri viewport */
+    z-index: 99;
+    /* Pastikan header di atas konten lain (tapi di bawah notifikasi: z-index 1000, overlay profil: z-index 100) */
+    height: 60px;
+    /* Tentukan tinggi tetap untuk header */
 }
 
 /* Gaya Judul Situs di Header Kiri */
@@ -133,6 +144,10 @@ body.homepage-body .homepage-main-content {
     /* KRITIS: Batasi lebar maksimum main content */
     margin: 20px auto;
     /* KRITIS: Gunakan margin auto untuk menengahkan blok main */
+
+    /* KRITIS: Tambahkan margin-top untuk menggeser konten ke bawah agar tidak tertutup fixed header */
+    margin-top: 80px;
+    /* Sesuaikan dengan tinggi header (60px) + margin-top asli elemen main (20px) */
 }
 
 /* Gaya Kolom Teks (Info Selamat Datang) */
@@ -277,7 +292,8 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
 
 /* --- Gaya untuk Bagian Unggah Foto Umum & Galeri --- */
 
-.upload-general-photos-section,
+/* Menghapus gaya untuk .upload-general-photos-section */
+/* .upload-general-photos-section, */
 .user-photos-gallery-section {
     background-color: #fffffe;
     /* Latar belakang putih untuk bagian ini */
@@ -297,7 +313,8 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
     /* KRITIS: Tambahkan margin auto di sini untuk menengahkan blok sections */
 }
 
-.upload-general-photos-section h2,
+/* Menghapus gaya untuk h2 di .upload-general-photos-section */
+/* .upload-general-photos-section h2, */
 .user-photos-gallery-section h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -305,48 +322,34 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
     /* Warna judul bagian */
 }
 
-
-/* Gaya Area Unggah Foto Umum */
+/* Menghapus gaya untuk Area Unggah Foto Umum */
+/*
 .general-upload-area {
     border: 2px dashed #b8c1ec;
-    /* Border dashed */
     border-radius: 8px;
-    /* Sudut membulat */
     padding: 30px;
-    /* Padding area */
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
     min-height: 150px;
-    /* Tinggi minimum area upload */
     display: flex;
-    /* Menggunakan flexbox untuk menata konten di dalamnya */
     flex-direction: column;
-    /* Susun item vertikal */
     justify-content: center;
-    /* Pusatkan secara vertikal */
     align-items: center;
-    /* Pusatkan secara horizontal */
 }
 
 .general-upload-area:hover {
     background-color: #eef1f6;
-    /* Latar saat hover */
     border-color: #a7b9de;
-    /* Warna border saat hover */
 }
 
-/* Sembunyikan input file asli di area umum */
 .general-upload-area .file-input {
-    display: none;
+     display: none;
 }
 
-/* Gaya Tombol Unggah Foto Umum (Label) */
 .general-upload-button {
     background-color: #eebbc3;
-    /* Warna tombol */
     color: #121629;
-    /* Warna teks */
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -356,16 +359,15 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
 }
 
 .general-upload-button:hover {
-    background-color: #d48c9a;
-    /* Warna saat hover */
+     background-color: #d48c9a;
 }
 
-
-/* Gaya Teks Unggah Foto Umum */
 .general-upload-text {
     font-size: 0.9em;
     color: #555;
 }
+*/
+
 
 /* Gaya Container Galeri Foto */
 .user-photos-gallery {
@@ -446,6 +448,164 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
 }
 
 
+/* --- Gaya untuk Overlay dan Section Profil --- */
+
+/* Gaya Overlay (latar belakang gelap di belakang modal/section) */
+.overlay {
+    position: fixed;
+    /* Posisi tetap di viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Latar belakang gelap semi-transparan */
+    z-index: 100;
+    /* Di atas konten utama, tapi di bawah notifikasi */
+    display: flex;
+    /* Menggunakan flexbox untuk menengahkan section profil */
+    justify-content: center;
+    /* Tengah horizontal */
+    align-items: center;
+    /* Tengah vertikal */
+    backdrop-filter: blur(5px);
+    /* Efek blur pada konten di belakang overlay */
+    -webkit-backdrop-filter: blur(5px);
+    /* Kompatibilitas Safari */
+}
+
+/* Kelas utilitas untuk menyembunyikan overlay */
+.hidden-overlay {
+    display: none;
+    /* Sembunyikan overlay */
+}
+
+/* Gaya Section / Modal Profil */
+.profile-section {
+    background-color: #fffffe;
+    /* Latar belakang putih */
+    color: #121629;
+    /* Warna teks gelap */
+    padding: 30px;
+    /* Padding di dalam section */
+    border-radius: 8px;
+    /* Sudut membulat */
+    max-width: 400px;
+    /* Lebar maksimum */
+    width: 90%;
+    /* Lebar responsif */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    /* Bayangan */
+    position: relative;
+    /* Untuk positioning tombol tutup */
+    overflow-y: auto;
+    /* Tambahkan scroll jika konten melebihi tinggi */
+    max-height: 90vh;
+    /* Tinggi maksimum agar tidak melebihi viewport */
+}
+
+/* Gaya Tombol Tutup di Section Profil */
+.profile-section .close-button {
+    position: absolute;
+    /* Posisikan absolut */
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #aaa;
+    /* Warna abu-abu */
+    transition: color 0.2s ease;
+}
+
+.profile-section .close-button:hover {
+    color: #777;
+    /* Warna abu-abu lebih gelap saat hover */
+}
+
+/* Gaya Header (H2 dan P) di Section Profil */
+.profile-section h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #121629;
+}
+
+.profile-section p {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #272343;
+    font-style: italic;
+}
+
+/* Gaya Form di Section Profil (gunakan gaya input-group dari styles.css atau salin di sini) */
+/* Karena Anda sudah menautkan styles.css, input-group, label, input akan mewarisi gaya dasar */
+/* Jika perlu gaya spesifik untuk input di form profil, tambahkan di sini */
+.profile-section form .input-group label {
+    color: #121629;
+    /* Pastikan warna label di form profil benar */
+}
+
+.profile-section form small {
+    display: block;
+    /* Teks kecil di baris baru */
+    margin-top: 5px;
+    color: #555;
+    /* Warna teks kecil */
+    font-size: 0.8em;
+    font-style: normal;
+    text-align: left;
+    /* Rata kiri */
+}
+
+
+/* Gaya Tombol Simpan di Section Profil */
+.profile-section form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #eebbc3;
+    /* Warna tombol Save */
+    color: #121629;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    /* Jarak dari input terakhir */
+    transition: background-color 0.3s ease;
+}
+
+.profile-section form button[type="submit"]:hover {
+    background-color: #d48c9a;
+    /* Warna saat hover */
+}
+
+/* Gaya Link Kembali (jika ada di form profil) */
+.profile-section .switch-form {
+    text-align: center;
+    color: #121629;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.profile-section .switch-form a {
+    color: #eebbc3;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.profile-section .switch-form a:hover {
+    color: #d48c9a;
+}
+
+/* Gaya untuk mencegah scrolling body saat overlay aktif */
+body.no-scroll {
+    overflow: hidden;
+}
+
+
 /* --- Media Queries untuk Responsivitas Homepage --- */
 
 @media (max-width: 768px) {
@@ -456,6 +616,8 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
         /* Pastikan header mengambil lebar penuh di mobile */
         margin: 0;
         /* Hapus margin auto di mobile */
+        height: 60px;
+        /* Pertahankan tinggi yang sama di mobile */
     }
 
     body.homepage-body .homepage-header .header-right {
@@ -491,7 +653,10 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
         max-width: 100%;
         /* Biarkan main content mengambil lebar penuh di mobile */
         margin: 15px auto;
-        /* Sesuaikan margin di mobile */
+
+        /* KRITIS: Sesuaikan margin-top di mobile */
+        margin-top: 75px;
+        /* Misal 60px header + 15px margin atas bawaan main di mobile */
     }
 
     body.homepage-body .homepage-main-content .text-column {
@@ -531,7 +696,10 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
     }
 
     /* --- Media Query Khusus untuk Bagian Unggah & Galeri di Layar Kecil --- */
+    /* Menghapus gaya media query untuk .upload-general-photos-section */
+    /*
     .upload-general-photos-section,
+    */
     .user-photos-gallery-section {
         padding: 15px;
         /* Kurangi padding section */
@@ -545,142 +713,56 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
         /* Tambahkan margin auto di mobile */
     }
 
+    /* Menghapus gaya media query untuk h2 di .upload-general-photos-section */
+    /*
     .upload-general-photos-section h2,
+    */
     .user-photos-gallery-section h2 {
         font-size: 1.2em;
         /* Sesuaikan ukuran judul bagian */
     }
 
 
+    /* Menghapus gaya media query untuk general upload area */
+    /*
     .general-upload-area {
         padding: 20px;
-        /* Kurangi padding area upload */
         min-height: 150px;
-        /* Tinggi minimum area upload */
         display: flex;
-        /* Menggunakan flexbox untuk menata konten di dalamnya */
         flex-direction: column;
-        /* Susun item vertikal */
         justify-content: center;
-        /* Pusatkan secara vertikal */
         align-items: center;
-        /* Pusatkan secara horizontal */
     }
 
     .general-upload-area:hover {
         background-color: #eef1f6;
-        /* Latar saat hover */
         border-color: #a7b9de;
-        /* Warna border saat hover */
     }
 
-    /* Sembunyikan input file asli di area umum */
     .general-upload-area .file-input {
-        display: none;
+         display: none;
     }
 
-    /* Gaya Tombol Unggah Foto Umum (Label) */
     .general-upload-button {
-        background-color: #eebbc3;
-        /* Warna tombol */
-        color: #121629;
-        /* Warna teks */
         padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-bottom: 10px;
         font-size: 1em;
-        transition: background-color 0.3s ease;
     }
 
     .general-upload-button:hover {
-        background-color: #d48c9a;
-        /* Warna saat hover */
+         background-color: #d48c9a;
     }
 
-
-    /* Gaya Teks Unggah Foto Umum */
     .general-upload-text {
         font-size: 0.9em;
-        color: #555;
     }
+    */
 
-    /* Gaya Container Galeri Foto */
+
+    /* Gaya Container Galeri Foto di Mobile */
     .user-photos-gallery {
-        display: grid;
-        /* Menggunakan Grid untuk layout galeri */
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        /* Kolom otomatis, minimal 150px */
-        gap: 15px;
-        /* Jarak antar item galeri */
-        margin-top: 20px;
-        /* Jarak dari judul */
-        /* Tambahkan border, background, dll. jika perlu container galeri */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        /* Kolom lebih kecil di mobile */
+        gap: 10px;
+        /* Kurangi jarak */
     }
-
-    /* Gaya Item Foto di Galeri (misal: div atau figure) */
-    /* Anda perlu menambahkan elemen wrapper di homepage.html untuk setiap foto */
-    .gallery-item {
-        position: relative;
-        /* Jika perlu overlay delete atau info */
-        overflow: hidden;
-        /* Pastikan gambar di dalam pas */
-        border-radius: 4px;
-        /* Sudut membulat untuk item galeri */
-        background-color: #eef1f6;
-        /* Latar belakang fallback */
-        aspect-ratio: 1 / 1;
-        /* Rasio aspek 1:1 (persegi) */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* Pusatkan gambar/konten di item */
-    }
-
-
-    /* Gaya Gambar di Galeri */
-    .gallery-item img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        /* Pastikan gambar mengisi area tanpa distorsi */
-    }
-
-
-    /* --- Gaya Notifikasi Kustom (Salin dari styles.css) --- */
-    /* Notifikasi ini digunakan di homepage juga */
-    .custom-notification {
-        display: none;
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-        padding: 10px 20px;
-        border-radius: 4px;
-        text-align: center;
-        font-weight: bold;
-        min-width: 200px;
-        max-width: 80%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        background-color: #fffffe;
-        color: #121629;
-    }
-
-    .custom-notification.success {
-        background-color: #a5c9b1;
-        color: #004d40;
-    }
-
-    .custom-notification.error {
-        background-color: #ffb3ba;
-        color: #c62828;
-    }
-
-    .custom-notification.info {
-        background-color: #bbd0ff;
-        color: #0056b3;
-    }
-
 }

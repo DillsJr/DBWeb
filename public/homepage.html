@@ -7,10 +7,7 @@
     <title> Homepage </title>
 
     <link rel="stylesheet" href="styles.css">
-
     <link rel="stylesheet" href="homestyle.css">
-
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
@@ -19,13 +16,45 @@
 
     <div id="custom-notification" class="custom-notification"></div>
 
+    <div id="profileOverlay" class="overlay hidden-overlay">
+        <div id="profileSection" class="profile-section">
+            <button id="closeProfile" class="close-button">×</button>
+            <h2> Profil Pengguna </h2>
+            <p> Lihat dan perbarui data profil Anda. </p>
+
+            <form id="profileForm">
+                <div class="input-group">
+                    <label for="profileFullName"> Nama Lengkap </label>
+                    <input type="text" id="profileFullName" placeholder="Nama Lengkap" autocomplete="name">
+                </div>
+                <div class="input-group">
+                    <label for="profileUsername"> Username </label>
+                    <input type="text" id="profileUsername" placeholder="Username" autocomplete="username">
+                    <small>Username unik.</small> </div>
+                <div class="input-group">
+                    <label for="profileWhatsapp"> Nomor Whatsapp </label>
+                    <input type="tel" id="profileWhatsapp" placeholder="Nomor Whatsapp" autocomplete="tel">
+                </div>
+
+                <div class="input-group">
+                    <label for="profileEmail"> Email (Tidak Bisa Diubah) </label>
+                    <input type="email" id="profileEmail" placeholder="Email" disabled autocomplete="email">
+                </div>
+
+
+                <button type="submit" id="saveProfileButton"> Simpan Perubahan </button>
+            </form>
+
+        </div>
+    </div>
+
 
     <header class="homepage-header">
         <div class="header-left">
             <span class="site-title"> DBWeb™ </span>
         </div>
         <div class="header-right">
-            <span id="profileIcon" class="header-profile-icon"> 😊 </span> <button id="logoutButton"
+            <span id="profileIcon" class="header-profile-icon">😊</span> <button id="logoutButton"
                 class="header-logout-button"> Logout </button>
         </div>
     </header>
@@ -54,15 +83,6 @@
             </div>
         </section>
     </main>
-
-    <section class="upload-general-photos-section">
-        <h2> Unggah Foto Umum </h2>
-        <div id="generalPhotoUploadArea" class="general-upload-area">
-            <input type="file" id="generalPhotoInput" accept="image/*" multiple class="file-input">
-            <label for="generalPhotoInput" class="general-upload-button"> Pilih Foto </label>
-            <p class="general-upload-text"> Seret & Lepas atau Klik untuk Unggah Foto Lainnya </p>
-        </div>
-    </section>
 
     <section class="user-photos-gallery-section">
         <h2> Galeri Foto Anda </h2>
