@@ -1,166 +1,111 @@
-// public/homepage.js - Script untuk halaman homepage (dengan logika foto profil dasar)
+// public/homepage.js - Script untuk halaman homepage
 
-document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
-    const usernameSpan = document.getElementById('loggedInUsername');
-    const logoutButton = document.getElementById('logoutButton');
-    const profilePicElement = document.getElementById('userProfilePic');
-    const profileUploadArea = document.getElementById('profileUploadArea');
-    const profilePicInput = document.getElementById('profilePicInput');
-    const notificationElement = document.getElementById('custom-notification'); // Asumsi elemen notifikasi ada
+// --- KONFIGURASI SUPABASE ---
+// Gunakan konfigurasi yang sama seperti di script.js
+// !!! PERINGATAN: Menyimpan URL dan ANON KEY secara langsung di kode klien yang publik
+// TIDAK AMAN untuk aplikasi produksi. Gunakan environment variables atau server-side logic. !!!
+const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksZXhwIjoyMDYwODIwMjk5fQ.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE'; // Gunakan Anon Key Anda
 
-    // --- Data Pengguna ---
-    const loggedInUsername = localStorage.getItem('loggedInUserIdentifier');
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
+// Pastikan Anda juga menambahkan tag script Library Supabase JS di <head> homepage.html!
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // --- Logika Redirect jika Belum Login ---
-    if (!isLoggedIn || isLoggedIn !== 'true' || !loggedInUsername) {
-        console.log("Belum login atau username tidak ditemukan, redirect ke index.html");
-        window.location.replace('/index.html'); // !!! Pastikan '/index.html' adalah path halaman login/daftar Anda !!!
-        return; // Hentikan eksekusi script jika belum login
-    }
-    // --- Akhir Logika Redirect ---
+console.log("Homepage Supabase client initialized.");
 
-    // Tampilkan username di halaman
-    if (usernameSpan) {
-        usernameSpan.textContent = loggedInUsername;
+// --- Elemen DOM ---
+const loggedInUsernameElement = document.getElementById('loggedInUsername');
+const logoutButton = document.getElementById('logoutButton');
+// Elemen-elemen untuk foto profil (akan diimplementasikan nanti)
+// const userProfilePic = document.getElementById('userProfilePic');
+// const profilePicInput = document.getElementById('profilePicInput');
+// const profileUploadArea = document.getElementById('profileUploadArea');
+
+
+// --- Fungsi Redirect ke Login ---
+function redirectToLogin() {
+    console.log("Tidak ada sesi, mengalihkan ke halaman login.");
+    // Menggunakan replace agar tidak bisa kembali pakai tombol back
+    window.location.replace('/index.html'); // !!! Pastikan '/index.html' adalah path halaman login Anda !!!
+}
+
+// --- Fungsi untuk Mendapatkan dan Menampilkan Data Pengguna ---
+async function fetchAndDisplayUser() {
+    console.log("Mengambil sesi pengguna...");
+    // Mendapatkan sesi aktif saat ini
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+    // --- Perbaikan Syntax Error di Sini ---
+    if (error || !session) {
+        // Jika ada error atau tidak ada sesi, alihkan ke halaman login
+        console.error("Error fetching session:", error?.message || "No active session ditemukan."); // Perbaiki penulisan dan penempatan }
+        redirectToLogin();
     } else {
-        console.warn("Elemen span untuk username (ID 'loggedInUsername') tidak ditemukan di homepage.");
-    }
+        // Jika sesi aktif ditemukan
+        console.log("Sesi aktif ditemukan:", session);
+        const user = session.user;
 
-    // --- Logika Tombol Logout ---
-    if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
-            // Hapus status login dan data pengguna dari localStorage
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('loggedInUserIdentifier');
-            // Hapus juga foto profil dari localStorage saat logout
-            localStorage.removeItem('profilePic_' + loggedInUsername);
-            // Opsional: Hapus kunci login lama jika pernah pakai
-            localStorage.removeItem('loggedInUsername');
-            localStorage.removeItem('loggedInWhatsapp');
-
-
-            // Redirect kembali ke halaman login/daftar
-            console.log("Logout berhasil, redirect ke index.html");
-            window.location.replace('/index.html'); // !!! Pastikan '/index.html' adalah path halaman login/daftar Anda !!!
-        });
-    } else {
-        console.warn("Tombol logout (ID 'logoutButton') tidak ditemukan di homepage.");
-    }
-    // --- Akhir Logika Tombol Logout ---
-
-
-    // --- Logika Foto Profil dan Upload (Menggunakan localStorage) ---
-
-    // Fungsi untuk menampilkan notifikasi kustom
-    function showNotification(message, type = 'info') {
-        if (!notificationElement) return;
-        notificationElement.textContent = message;
-        notificationElement.className = 'custom-notification ' + type;
-        notificationElement.classList.add('show');
-        setTimeout(() => {
-            notificationElement.classList.remove('show');
-        }, 3000); // Notifikasi hilang setelah 3 detik
-    }
-
-
-    // Fungsi untuk memuat dan menampilkan foto profil
-    function loadProfilePicture(username) {
-        const savedPicUrl = localStorage.getItem('profilePic_' + username);
-
-        if (savedPicUrl && profilePicElement && profileUploadArea) {
-            // Jika ada foto di localStorage, tampilkan foto dan sembunyikan area upload
-            profilePicElement.src = savedPicUrl;
-            profilePicElement.style.display = 'block'; // Atau atur via class CSS
-            profileUploadArea.style.display = 'none'; // Atau atur via class CSS
-        } else if (profilePicElement && profileUploadArea) {
-            // Jika tidak ada foto, sembunyikan img dan tampilkan area upload
-            profilePicElement.style.display = 'none'; // Atau atur via class CSS
-            profileUploadArea.style.display = 'flex'; // Atau atur via class CSS
-            profilePicElement.src = 'placeholder-profile-pic.png'; // Set placeholder default jika img terlihat
+        // Tampilkan nama pengguna di elemen dengan ID 'loggedInUsername'
+        // Coba ambil nama dari user_metadata (jika disimpan saat daftar), fallback ke username, lalu email, atau 'Pengguna'
+        // --- Perbaikan Syntax Error di Sini ---
+        const userName = user.user_metadata?.full_name || user.user_metadata?.username || user.email || 'Pengguna'; // Pastikan syntax dan semicolon benar
+        if (loggedInUsernameElement) {
+            loggedInUsernameElement.textContent = userName;
+            console.log("Nama pengguna ditampilkan:", userName); // Perbaiki penulisan
         } else {
-            console.warn("Elemen foto profil atau area upload tidak ditemukan.");
+            console.warn("Element dengan ID 'loggedInUsername' tidak ditemukan di homepage.html."); // Perbaiki penulisan
         }
+
+        // TODO: Tambahkan logika untuk menampilkan foto profil dari Supabase Storage
+        // TODO: Tambahkan logika untuk mengunggah foto profil baru
+    }
+}
+
+// --- Fungsi Logout ---
+async function handleLogout() {
+    console.log("Melakukan logout...");
+    // Memanggil fungsi signOut dari Supabase Auth
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        console.error("Error logging out:", error.message);
+        // Tampilkan notifikasi error logout di homepage jika ada elemen notifikasi
+        alert(`Gagal logout: ${error.message}`); // Menggunakan alert sementara
+    } else {
+        console.log("Logout berhasil.");
+        // Redirect ke halaman login setelah logout berhasil
+        // onAuthStateChange di index.js akan menampilkan notifikasi "Anda telah logout" setelah redirect
+        redirectToLogin();
+    }
+}
+
+
+// --- Setup saat DOMContentLoaded ---
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Homepage DOM fully loaded. Memeriksa sesi..."); // Perbaiki penulisan
+
+    // Periksa sesi dan tampilkan data pengguna saat halaman dimuat
+    fetchAndDisplayUser();
+
+    // Pasang event listener untuk tombol logout
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+        console.log("Event listener tombol logout terpasang."); // Perbaiki penulisan
+    } else {
+        console.warn("Element dengan ID 'logoutButton' tidak ditemukan di homepage.html."); // Perbaiki penulisan
     }
 
-    // Muat foto profil saat halaman pertama kali dimuat
-    loadProfilePicture(loggedInUsername);
+    // TODO: Setup event listener untuk tombol pilih foto/upload
+});
 
-
-    // Event listener saat file dipilih di input file
-    if (profilePicInput) {
-        profilePicInput.addEventListener('change', (event) => {
-            const file = event.target.files[0]; // Ambil file yang dipilih
-
-            if (file) {
-                // --- Validasi File (Opsional tapi disarankan) ---
-                if (!file.type.startsWith('image/')) {
-                    showNotification("Pilih file gambar!", "error");
-                    return; // Hentikan jika bukan gambar
-                }
-                // Anda bisa tambahkan cek ukuran file di sini
-                // if (file.size > 1024 * 1024) { // Contoh 1MB
-                //      showNotification("Ukuran foto terlalu besar (maks 1MB).", "error");
-                //      return;
-                // }
-                // --- Akhir Validasi ---
-
-                const reader = new FileReader(); // Buat objek FileReader
-
-                reader.onloadend = () => {
-                    // reader.result berisi Data URL setelah file dibaca
-                    const dataUrl = reader.result;
-
-                    // --- Simpan Data URL ke localStorage ---
-                    // !!! PENTING: Ingat batasan ukuran localStorage dan Data URL !!!
-                    try {
-                        localStorage.setItem('profilePic_' + loggedInUsername, dataUrl);
-
-                        // Tampilkan foto baru dan sembunyikan area upload
-                        if (profilePicElement && profileUploadArea) {
-                            profilePicElement.src = dataUrl; // Set src img ke Data URL
-                            profilePicElement.style.display = 'block'; // Tampilkan img
-                            profileUploadArea.style.display = 'none'; // Sembunyikan area upload
-                            showNotification("Foto profil berhasil diunggah!", "success");
-                        }
-
-                    } catch (e) {
-                        console.error("Gagal menyimpan foto ke localStorage:", e);
-                        showNotification("Gagal menyimpan foto profil. Ukuran mungkin terlalu besar.", "error");
-                        // Reset tampilan ke tanpa foto jika gagal
-                        if (profilePicElement && profileUploadArea) {
-                            profilePicElement.style.display = 'none';
-                            profileUploadArea.style.display = 'flex';
-                        }
-                    }
-                    // --- Akhir Simpan ---
-                };
-
-                // Baca file sebagai Data URL
-                reader.readAsDataURL(file);
-
-            } // Akhir if file
-        }); // Akhir listener 'change'
-    } // Akhir if profilePicInput
-
-    // Jika area upload diklik, picu klik pada input file yang tersembunyi
-    // Ini membuat seluruh area upload bisa diklik untuk memilih file
-    if (profileUploadArea && profilePicInput) {
-        profileUploadArea.addEventListener('click', () => {
-            profilePicInput.click();
-        });
-        // Hentikan event propagation dari input file agar tidak double click
-        profilePicInput.addEventListener('click', (event) => {
-            event.stopPropagation();
-        });
+// --- Opsional: Listener onAuthStateChange untuk real-time session changes di homepage ---
+// Berguna jika sesi bisa berakhir (misalnya, dari tab lain atau di dashboard Supabase)
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    console.log('Homepage Auth State Change:', event, session);
+    if (event === 'SIGNED_OUT') {
+        console.log("Sesi berakhir saat berada di homepage, mengalihkan ke login."); // Perbaiki penulisan
+        redirectToLogin(); // Redirect jika sesi berakhir
     }
-
-
-    // --- Akhir Logika Foto Profil ---
-
-
-    // --- Logika Lain untuk Homepage ---
-    // Tambahkan skrip lain yang spesifik untuk fitur homepage di sini
-
-}); // Akhir DOMContentLoaded
+    // Event lain seperti 'SIGNED_IN' atau 'USER_UPDATED' bisa ditangani di sini jika perlu
+    // Misalnya, panggil fetchAndDisplayUser() lagi jika event === 'USER_UPDATED'
+});
