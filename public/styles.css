@@ -37,185 +37,47 @@ body {
     padding: 20px;
     /* Padding di dalam container */
     width: 100%;
-    /* Gunakan lebar penuh yang tersedia */
-    max-width: 500px;
-    /* Tapi tidak lebih lebar dari 500px */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    /* Menambahkan shadow */
-    margin: 0;
-    /* Atur margin menjadi 0 agar flexbox centering bekerja penuh */
-
-    color: #121629;
+    /* Lebar container */
+    max-width: 400px;
+    /* Lebar maksimum container */
+    text-align: left;
+    /* Teks rata kiri dalam container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Bayangan pada container */
     position: relative;
-    /* KRITIS: Penting sebagai acuan untuk absolute positioning anak-anak form */
-    /* Set Minimum Height agar container tidak 'melompat' saat ganti form */
-    /* Sesuaikan nilai ini (px) agar cukup tinggi untuk form Register + padding */
-    min-height: 580px;
-    /* Contoh nilai, sesuaikan jika perlu */
+    /* KRITIS: Diperlukan untuk absolute positioning anak-anaknya (#loginForm, #registerForm, dll) */
     overflow: hidden;
-    /* Sembunyikan konten yang mungkin meluap jika min-height kurang pas */
-    box-sizing: border-box;
-    /* Penting agar padding container masuk dalam hitungan width/height */
+    /* Sembunyikan konten yang meluap, penting untuk absolute positioning */
+
+    /* --- Penyesuaian untuk Konsistensi Tinggi Form (dengan absolute positioning) --- */
+    /* Atur tinggi minimum container agar cukup untuk area form setelah tab */
+    /* Anda mungkin perlu menyesuaikan nilai 60px (tinggi tab) dan min-height total jika perlu */
+    min-height: calc(60px + 450px);
+    /* Estimasi: tinggi tab + tinggi form terpanjang */
+
+    /* --- Centering Form di dalam Container (Tidak perlu display flex/align-items di container
+       untuk menengahkan form saat position absolute, cukup pada body) --- */
+    /* display: flex; */
+    /* HAPUS */
+    /* flex-direction: column; */
+    /* HAPUS */
+    /* align-items: center; */
+    /* HAPUS */
+    /* justify-content: center; */
+    /* HAPUS */
 }
 
 
-/* --- Gaya untuk Elemen di Index.html (Form Login/Daftar) --- */
-/* Gaya-gaya untuk elemen form Login/Daftar */
+/* --- BAGIAN 2: Gaya untuk Form dan Elemen Form --- */
 
-.tabs {
-    display: flex;
-    margin-bottom: 20px;
-    /* Memberikan jarak di bawah tab area */
-    position: relative;
-    /* Memberikan stacking context agar di atas form yg absolute */
-    z-index: 1;
-    /* Memastikan tab berada di depan form yg absolute di bawahnya */
-}
-
-.tabs button {
-    flex: 1;
-    padding: 10px;
-    font-size: 1em;
-    font-weight: bolder;
-    background-color: transparent;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    transition: color 0.3s ease, border-bottom-color 0.3s ease;
-}
-
-.tabs button.active {
-    color: #eebbc3;
-    border-bottom: 2px solid #eebbc3;
-}
-
-/* Judul form Login/Daftar - Menghapus margin-top tambahan, akan diganti oleh posisi 'top' form div */
-#loginForm h2,
-#registerForm h2,
-#loginForm form h2,
-/* Menargetkan h2 di form lupa/reset juga */
-#registerForm form h2 {
-    color: #121629;
-    margin-bottom: 5px;
-    margin-top: 0;
-    /* KRITIS: Kembalikan margin-top ke 0 atau nilai kecil jika perlu */
-    text-align: center;
-    font-size: 1.5em;
-}
-
-/* Paragraf deskripsi di form Login/Daftar */
-#loginForm p,
-#registerForm p,
-#loginForm form p,
-/* Menargetkan p di form lupa/reset juga */
-#registerForm form p {
-    color: #272343;
-    font-style: italic;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Group input Login/Daftar - Menambah jarak bawah */
-.input-group {
-    margin-bottom: 20px;
-    /* Disesuaikan dari 15px */
-}
-
-.input-group label {
-    display: block;
-    color: #121629;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 1em;
-}
-
-/* Input teks, email, password, tel Login/Daftar */
-.input-group input {
-    width: 95%;
-    padding: 10px;
-    border: 1px solid #d8d8d8;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #001858;
-    box-sizing: border-box;
-    font-size: 1em;
-}
-
-/* Checkbox group Login/Daftar - Menambah jarak bawah */
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    /* Disesuaikan dari 15px */
-}
-
-.checkbox-group input[type="checkbox"] {
-    margin-right: 5px;
-}
-
-.checkbox-group label {
-    color: #888;
-    margin-bottom: 0;
-    font-weight: normal;
-    font-style: italic;
-    font-size: 0.9em;
-}
-
-/* Link Lupa Password Login/Daftar */
-.forgot-password {
-    color: #eebbc3;
-    text-decoration: none;
-    float: right;
-    font-size: 0.9em;
-}
-
-.forgot-password:hover {
-    text-decoration: underline;
-}
-
-/* Tombol Submit di semua form Login/Daftar */
-button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #eebbc3;
-    color: #121629;
-    border: none;
-    border-radius: 4px;
-    font-size: 1em;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #f5c2cc;
-}
-
-/* Teks "Belum punya akun?" / "Sudah punya akun?" Login/Daftar */
-.switch-form {
-    text-align: center;
-    color: #121629;
-    margin-top: 20px;
-    font-size: 0.9em;
-}
-
-.switch-form a {
-    color: #eebbc3;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.switch-form a:hover {
-    text-decoration: underline;
-}
-
-/* --- Gaya untuk Form Containers (#loginForm, #registerForm) - Ini adalah gaya ABSOLUTE POSITIONING Login/Daftar --- */
-/* KRITIS: Posisi absolute agar form bertumpuk di dalam container */
-/* KRITIS: Atur 'top' agar form dimulai di bawah area tab */
+/* Gaya Umum untuk Form (Login, Register, Lupa Password) - CONTAINER LUAR form */
+/* Gaya ini sekarang mengelola position absolute */
 #loginForm,
-#registerForm {
+#registerForm,
+#forgotPasswordForm {
+    /* Tambahkan #forgotPasswordForm */
     position: absolute;
-    /* Posisikan secara absolut di dalam container */
+    /* Posisikan secara absolut di dalam container (yang punya position: relative) */
     top: 60px;
     /* KRITIS: Geser form ke bawah agar dimulai di bawah area tab (sesuaikan nilai jika perlu) */
     left: 0;
@@ -225,87 +87,352 @@ button[type="submit"]:hover {
     bottom: 0;
     /* KRITIS: Buat tinggi form mengisi ruang dari 'top' hingga dasar kontainer */
     padding: inherit;
-    /* Warisi padding dari container */
+    /* Warisi padding (20px) dari container */
     box-sizing: border-box;
     /* Pastikan padding masuk dalam hitungan width/height */
     overflow-y: auto;
     /* Tambahkan scroll vertikal jika konten form melebihi tinggi container */
     z-index: 0;
     /* Pastikan form berada di belakang tab */
-    /* Properti visual saat terlihat (akan diatur display: block oleh JS via remove class hidden) */
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    /* Posisi normal */
+
+    /* Properti visual saat terlihat (akan diatur display: block oleh JS via remove class hidden-abs) */
+    /* Gunakan ini jika ingin transisi saat beralih form */
+    /* opacity: 1; */
+    /* HAPUS atau komentari jika tidak pakai transisi opacity */
+    /* visibility: visible; */
+    /* HAPUS atau komentari jika tidak pakai transisi visibility */
+    /* transform: translateY(0); */
+    /* HAPUS atau komentari jika tidak pakai transisi transform */
     pointer-events: auto;
     /* Izinkan interaksi saat terlihat */
+
+    /* Atur display default ke none, akan di-override oleh JS saat remove hidden-abs */
+    display: none;
+    /* Atur display default ke none */
 }
 
 
-/* Gaya untuk Form Saat Disembunyikan Secara Total (digunakan oleh JS via class 'hidden') */
-/* KRITIS: Gunakan display: none; untuk menyembunyikan elemen secara total dari alur dan rendering */
-.hidden {
-    display: none !important;
-    /* KRITIS: Hapus dari alur dokumen, gunakan !important untuk menimpa display: flex/block */
-    opacity: 0;
-    /* Sembunyikan secara visual */
-    visibility: hidden;
-    /* Sembunyikan dari screen readers dll. */
-    pointer-events: none;
-    /* Nonaktifkan interaksi */
-    transform: translateY(20px);
-    /* Contoh: geser sedikit saat disembunyikan (jika mau animasi) */
+/* Gaya untuk Elemen FORM di dalam container form (misal: #login, #register) */
+/* Ini adalah elemen <form> itu sendiri */
+#loginForm form,
+#registerForm form,
+#forgotPasswordForm form {
+    /* Tambahkan form lupa password */
+    display: flex;
+    /* Gunakan flexbox untuk menata konten di dalam form */
+    flex-direction: column;
+    /* Susun item vertikal */
+    /* align-items: center; */
+    /* HAPUS jika ingin input group rata kiri */
+    width: 100%;
+    /* Pastikan form element mengisi lebar container form */
+    box-sizing: border-box;
 }
 
 
-/* --- Gaya untuk Notifikasi Kustom --- */
-/* Tetap pertahankan gaya notifikasi dengan transisi show/hide */
-.custom-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    opacity: 0;
-    /* Tetap gunakan opacity untuk transisi show/hide notifikasi */
-    visibility: hidden;
-    /* Tetap gunakan visibility untuk transisi show/hide notifikasi */
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    /* Transisi notifikasi tetap OK */
-    font-size: 1em;
+/* Gaya untuk Form Header (H2 dan Paragraph di awal form) */
+.form h2 {
     text-align: center;
-    min-width: 250px;
-    max-width: 90%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 5px;
+    color: #121629;
+    /* Warna judul form */
 }
 
+.form p {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #272343;
+    /* Warna teks deskripsi form */
+    font-style: italic;
+}
+
+/* Gaya Grup Input (Label + Input) */
+/* Kita perlu pastikan grup input mengambil lebar penuh di dalam form */
+.input-group {
+    margin-bottom: 15px;
+    /* Jarak antar grup input */
+    width: 100%;
+    /* Pastikan grup input mengambil lebar penuh form */
+    box-sizing: border-box;
+    /* Penting */
+}
+
+.input-group label {
+    display: block;
+    /* Label di baris terpisah */
+    margin-bottom: 5px;
+    /* Jarak antara label dan input */
+    color: #121629;
+    /* Warna label */
+    font-weight: bold;
+}
+
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="text"],
+.input-group input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* Pastikan padding masuk hitungan ukuran input */
+    font-size: 1em;
+    color: #121629;
+    /* Warna teks input */
+    background-color: #fffffe;
+    /* Warna latar input */
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #eebbc3;
+    /* Warna border saat fokus */
+    box-shadow: 0 0 5px rgba(238, 187, 195, 0.5);
+    /* Bayangan saat fokus */
+}
+
+
+/* Gaya Checkbox Group */
+.checkbox-group {
+    margin-bottom: 15px;
+    /* Jarak bawah checkbox group */
+    display: flex;
+    /* Menggunakan flexbox untuk sejajarkan checkbox dan label */
+    align-items: center;
+    /* Pusatkan secara vertikal */
+    width: 100%;
+    /* Pastikan checkbox group mengambil lebar penuh form */
+    box-sizing: border-box;
+    /* Penting */
+    justify-content: flex-start;
+    /* Rata kiri di dalam form */
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+    /* Jarak antara checkbox dan label */
+    /* Sesuaikan ukuran checkbox jika perlu */
+    width: auto;
+    /* Reset width agar tidak 100% */
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    /* Hapus margin bawah label */
+    font-weight: normal;
+    /* Reset font weight */
+    color: #888;
+    /* Warna teks label checkbox */
+    font-style: italic;
+}
+
+
+/* Gaya Tombol Submit */
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #eebbc3;
+    /* Warna background tombol */
+    color: #121629;
+    /* Warna teks tombol */
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #e2a3b0;
+    /* Warna background saat hover */
+}
+
+
+/* Gaya Link Lupa Password */
+.forgot-password {
+    /* Menargetkan paragraph yang membungkus link */
+    text-align: center;
+    /* Tengah teks di dalam paragraph */
+    margin-top: 15px;
+    width: 100%;
+    /* Pastikan paragraph mengambil lebar penuh form */
+}
+
+.forgot-password a {
+    color: #eebbc3;
+    /* Warna link */
+    text-decoration: none;
+    /* Hilangkan garis bawah */
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: #d48c9a;
+    /* Warna link saat hover */
+}
+
+
+/* Gaya Link Beralih Form (Sudah punya akun? / Belum punya akun?) */
+.switch-form {
+    text-align: center;
+    color: #121629;
+    margin-top: 20px;
+    font-size: 14px;
+    width: 100%;
+    /* Pastikan paragraph mengambil lebar penuh form */
+}
+
+.switch-form a {
+    color: #eebbc3;
+    /* Warna link */
+    text-decoration: none;
+    /* Hilangkan garis bawah */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.switch-form a:hover {
+    color: #d48c9a;
+    /* Warna link saat hover */
+}
+
+/* --- BAGIAN 3: Gaya untuk Tab --- */
+
+.tabs {
+    display: flex;
+    /* Menggunakan flexbox untuk layout horizontal */
+    justify-content: center;
+    /* Tengah horizontal */
+    margin-bottom: 0px;
+    /* Hapus margin bawah agar form absolute bisa pas di bawah */
+    border-bottom: 2px solid #ccc;
+    /* Garis bawah tab */
+    width: 100%;
+    /* Pastikan tabs mengambil lebar penuh container */
+    box-sizing: border-box;
+    /* Penting */
+    position: relative;
+    /* Atau z-index tinggi jika perlu di atas form */
+    z-index: 1;
+    /* Pastikan tab di depan form */
+}
+
+.tabs button {
+    flex-grow: 1;
+    /* Tombol mengisi ruang yang tersedia */
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    /* Latar transparan default */
+    color: #121629;
+    /* Warna teks default */
+    cursor: pointer;
+    font-size: 1em;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    text-align: center;
+}
+
+.tabs button.active {
+    color: #eebbc3;
+    /* Warna teks tombol aktif */
+    border-bottom: 2px solid #eebbc3;
+    /* Garis bawah tombol aktif */
+    font-weight: bold;
+}
+
+/* --- BAGIAN 4: Gaya untuk Notifikasi Kustom --- */
+
+/* Gaya Umum untuk Elemen Notifikasi Kustom */
+/* HAPUS opacity: 0 dan top: -50px dari sini agar terlihat saat display: block */
+.custom-notification {
+    display: none;
+    /* Awalnya sembunyikan */
+    position: fixed;
+    /* Tetapkan posisi di viewport */
+    top: 20px;
+    /* Jarak dari atas viewport */
+    left: 50%;
+    /* Tengah horizontal */
+    transform: translateX(-50%);
+    /* Geser ke kiri 50% lebarnya sendiri */
+    z-index: 1000;
+    /* Pastikan di atas elemen lain */
+    padding: 10px 20px;
+    /* Padding di dalam notifikasi */
+    border-radius: 4px;
+    /* Sudut membulat */
+    text-align: center;
+    /* Teks di tengah */
+    font-weight: bold;
+    /* Teks tebal */
+    min-width: 200px;
+    /* Lebar minimum */
+    max-width: 80%;
+    /* Lebar maksimum */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Bayangan */
+    /* transition: opacity 0.3s ease-in-out, top 0.3s ease-in-out; */
+    /* Animasi bisa diaktifkan jika script juga mengontrol opacity/top */
+
+    /* Tambahkan warna background dan teks default */
+    background-color: #fffffe;
+    /* Warna latar default (putih) */
+    color: #121629;
+    /* Warna teks default (hitam gelap) */
+}
+
+/* Gaya Notifikasi Sukses */
 .custom-notification.success {
-    background-color: rgba(40, 167, 69, 0.9);
+    background-color: #a5c9b1;
+    /* Contoh hijau muda */
+    color: #004d40;
+    /* Contoh hijau tua */
 }
 
+/* Gaya Notifikasi Error */
 .custom-notification.error {
-    background-color: rgba(220, 53, 69, 0.9);
+    background-color: #ffb3ba;
+    /* Contoh merah muda */
+    color: #c62828;
+    /* Contoh merah tua */
 }
 
+/* Gaya Notifikasi Info */
 .custom-notification.info {
-    background-color: rgba(23, 162, 184, 0.9);
+    background-color: #bbd0ff;
+    /* Contoh biru muda */
+    color: #0056b3;
+    /* Contoh biru tua */
 }
 
-.custom-notification.show {
-    opacity: 1;
-    visibility: visible;
+
+/* --- BAGIAN 5: Gaya Utility (Untuk JavaScript) --- */
+
+/* Kelas untuk menyembunyikan elemen dengan absolute positioning */
+/* Menggantikan .hidden saat pakai absolute positioning */
+.hidden-abs {
+    display: none;
+    /* Sembunyikan elemen sepenuhnya */
+    /* Jika ingin transisi, gunakan: */
+    /* opacity: 0; */
+    /* visibility: hidden; */
+    /* pointer-events: none; */
+    /* transform: translateY(10px); */
+    /* Geser sedikit untuk animasi */
 }
 
-/* --- Media Query untuk Layar Kecil (Penyesuaian Umum dan Login/Daftar) --- */
+
+/* --- BAGIAN 6: Media Queries untuk Responsivitas --- */
+
+/* Contoh: Penyesuaian untuk layar dengan lebar maksimum 600px */
 @media (max-width: 600px) {
 
-    /* Penyesuaian Body Umum untuk Mobile */
     body {
-        padding: 15px;
+        padding: 10px;
         /* Kurangi padding body */
     }
 
@@ -315,27 +442,19 @@ button[type="submit"]:hover {
         /* Kurangi padding container */
         margin: 0;
         /* Atur margin menjadi 0 */
-        min-height: 550px;
-        /* Sesuaikan min-height untuk mobile jika perlu */
+        min-height: calc(60px + 450px);
+        /* Sesuaikan min-height agar cukup di mobile */
     }
 
     /* Penyesuaian Gaya Elemen di dalam Form Login/Daftar untuk Mobile */
     /* Tidak ada .container h1 di index.html Anda, gaya ini mungkin tidak perlu */
     /* .container h1 { font-size: 1.6em; } */
 
-    #loginForm h2,
-    #registerForm h2,
-    #loginForm form h2,
-    #registerForm form h2 {
+    .form h2 {
         font-size: 1.3em;
     }
 
-    .container p,
-    /* Ini menargetkan p di luar form di container, tidak ada di index.html Anda */
-    #loginForm p,
-    #registerForm p,
-    #loginForm form p,
-    #registerForm form p,
+    .form p,
     .input-group label,
     .switch-form,
     .switch-form a,
@@ -354,17 +473,13 @@ button[type="submit"]:hover {
         padding: 10px;
     }
 
+    /* Penyesuaian untuk Notifikasi di Layar Kecil */
     .custom-notification {
-        padding: 10px 15px;
-        font-size: 0.9em;
-        min-width: unset;
-        width: 95%;
         top: 10px;
-        transform: translateX(-50%);
+        /* Kurangi jarak dari atas */
+        padding: 8px 15px;
+        /* Kurangi padding */
+        font-size: 0.9em;
+        /* Kurangi ukuran font */
     }
-
-    .checkbox-group {
-        align-items: center;
-    }
-
 }

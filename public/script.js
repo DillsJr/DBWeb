@@ -20,19 +20,33 @@ console.log("Supabase client initialized with DEFAULT (persistent) session.");
 const notification = document.getElementById('custom-notification');
 const loginTab = document.getElementById('loginTab');
 const registerTab = document.getElementById('registerTab');
-const loginFormContainer = document.getElementById('loginForm');
-const registerFormContainer = document.getElementById('registerForm');
-const loginFormElement = document.getElementById('login'); // Form dengan ID 'login'
-const registerFormElement = document.getElementById('register'); // Form dengan ID 'register'
+const loginFormContainer = document.getElementById('loginForm'); // Container form login
+const registerFormContainer = document.getElementById('registerForm'); // Container form register
+// const loginFormElement = document.getElementById('login'); // Form elemen <form> login
+// const registerFormElement = document.getElementById('register'); // Form elemen <form> register
 const forgotPasswordLink = document.getElementById('forgotPasswordLink'); // Link "Lupa Password?"
-const forgotPasswordFormElement = document.getElementById('forgotPasswordForm'); // Form Lupa Password dengan ID 'forgotPasswordForm'
+const forgotPasswordFormContainer = document.getElementById('forgotPasswordForm'); // Container form Lupa Password
+const switchToLoginFromForgotLink = document.getElementById('switchToLoginFromForgot'); // Link Kembali ke Login dari form Lupa Password
+const switchToLoginLink = document.getElementById('switchToLogin'); // Link Kembali ke Login dari form Register
+const switchToRegisterLink = document.getElementById('switchToRegister'); // Link Daftar Sekarang dari form Login
 
 
 // --- Fungsi Notifikasi ---
 function showNotification(message, type = 'info') {
+    // Pastikan elemen notifikasi ditemukan sebelum digunakan
+    if (!notification) {
+        console.error("Notification element with ID 'custom-notification' not found.");
+        // Fallback ke alert jika elemen tidak ada (opsional)
+        // alert(message);
+        return;
+    }
     notification.textContent = message;
     notification.className = 'custom-notification ' + type; // Tambahkan kelas 'info', 'success', atau 'error'
-    notification.style.display = 'block';
+    notification.style.display = 'block'; // Penting: Menampilkan elemen notifikasi
+    // Jika Anda ingin animasi fade-in/slide-down, di sini Anda akan menambah/menghapus kelas CSS
+    // yang mengontrol opacity dan top (misal: notification.classList.add('show');)
+    // Tapi dengan perubahan CSS di styles.css, display: block sudah cukup untuk membuatnya terlihat.
+
 
     // Sembunyikan notifikasi setelah beberapa detik
     setTimeout(() => {
@@ -41,13 +55,33 @@ function showNotification(message, type = 'info') {
 }
 
 function hideNotification() {
-    notification.style.display = 'none';
+    // Pastikan elemen notifikasi ditemukan sebelum digunakan
+    if (!notification) {
+        console.warn("Notification element with ID 'custom-notification' not found for hiding.");
+        return;
+    }
+    notification.style.display = 'none'; // Penting: Menyembunyikan elemen notifikasi
+    // Jika Anda menggunakan kelas CSS untuk animasi, di sini Anda akan menghapus kelas tersebut
+    // (misal: notification.classList.remove('show');)
+}
+
+
+// --- Fungsi Redirect ke Halaman Login/Homepage (Digunakan di berbagai handler) ---
+function redirectToLogin() {
+    console.log("Redirecting to login page...");
+    window.location.replace('/index.html'); // Ganti dengan path halaman login Anda
+}
+
+function redirectToHomepage() {
+    console.log("Redirecting to homepage...");
+    window.location.replace('/homepage.html'); // Ganti dengan path halaman homepage Anda
 }
 
 
 // --- Logika Cek Status Login Awal (Saat Halaman Dimuat) ---
 // Listener onAuthStateChange tetap ada, tetapi TIDAK akan melakukan redirect otomatis
-// saat event SIGNED_IN ditemukan secara pasif di halaman login.
+// saat event SIGNED_IN ditemukan secara pasif di halaman login (index.html).
+// Redireksi HANYA terjadi setelah submit form login/daftar berhasil.
 supabaseClient.auth.onAuthStateChange((event, session) => {
     console.log('Supabase Auth State Change:', event, session);
 
@@ -59,7 +93,7 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
         if (window.location.pathname !== '/index.html') { // Hanya redirect jika tidak di index.html
             console.log('Redirecting back to index.html after SIGNED_OUT event.');
             // Gunakan window.location.replace agar tidak bisa kembali ke homepage via tombol back
-            window.location.replace('/index.html');
+            redirectToLogin();
         }
     }
 });
@@ -71,10 +105,7 @@ function setupPasswordToggle(checkboxId, passwordInputId) {
     const passwordInput = document.getElementById(passwordInputId);
 
     if (checkbox && passwordInput) {
-        // Hapus listener lama jika ada
-        // checkbox.removeEventListener('change', handleToggleChange); // Tidak perlu remove jika hanya dipasang sekali
-        // Tambahkan listener baru
-        checkbox.addEventListener('change', () => { // Pakai arrow function agar 'this' tidak berubah
+        checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 passwordInput.type = 'text';
             } else {
@@ -126,7 +157,10 @@ async function handleLoginSubmit(event) {
             // REDIREKSI EKSPLISIT SETELAH LOGIN BERHASIL
             // Ini menggantikan redireksi otomatis di onAuthStateChange di halaman login
             console.log("Login berhasil. Redirect ke homepage.html");
-            window.location.replace('/homepage.html');
+            // Beri sedikit delay agar notifikasi sukses sempat terlihat (opsional)
+            setTimeout(() => {
+                redirectToHomepage(); // Panggil fungsi redirect ke homepage
+            }, 50); // Delay 50ms
         }
     } catch (e) {
         console.error('Error tidak terduga saat login:', e);
@@ -198,18 +232,22 @@ async function handleRegisterSubmit(event) {
             showNotification('Pendaftaran berhasil! Silahkan cek email/nomor Anda untuk verifikasi jika diperlukan.', 'success');
 
             // OPSIONAL: REDIREKSI SETELAH DAFTAR BERHASIL
-            // Jika Anda ingin langsung mengalihkan ke homepage atau halaman lain setelah daftar:
-            // console.log("Pendaftaran berhasil. Redirect ke homepage.html");
-            // window.location.replace('/homepage.html');
-
-            // Jika email confirmation aktif, biarkan pengguna di halaman ini dan
-            // instruksikan mereka untuk cek email.
+            // Saat ini tidak redirect otomatis setelah daftar. Biarkan user baca notifikasi.
+            // Anda bisa aktifkan baris di bawah jika ingin langsung redirect:
+            /*
+            console.log("Pendaftaran berhasil. Redirect ke homepage.html");
+             setTimeout(() => { // Beri sedikit delay agar notifikasi sempat terlihat (opsional)
+                 redirectToHomepage(); // Panggil fungsi redirect ke homepage
+             }, 50); // Delay 50ms
+             */
 
             // Reset form setelah berhasil
+            const registerFormElement = document.getElementById('register'); // Ambil elemen form
             if (registerFormElement) registerFormElement.reset();
-            hideNotification(); // Sembunyikan notifikasi "Memproses pendaftaran"
+            // hideNotification(); // Jangan sembunyikan notifikasi sukses secara instan
+
             // Opsional: alihkan kembali ke tab login
-            // switchToLoginTab(); // Asumsi ada fungsi switchToLoginTab
+            // switchFormView('login'); // Asumsi ada fungsi switchFormView
         }
     } catch (e) {
         console.error('Error tidak terduga saat pendaftaran:', e);
@@ -253,7 +291,7 @@ async function handleForgotPasswordSubmit(event) {
             // Pesan sukses umum untuk keamanan (tidak memberitahu apakah email terdaftar atau tidak)
             showNotification('Jika email terdaftar, instruksi reset telah dikirim.', 'success');
             // Opsional: Kembali ke form login setelah sukses
-            // switchToLoginTab(); // Asumsi ada fungsi switchToLoginTab
+            // switchFormView('login'); // Asumsi ada fungsi switchFormView
         }
     } catch (e) {
         console.error('Error tidak terduga saat reset password:', e);
@@ -262,32 +300,29 @@ async function handleForgotPasswordSubmit(event) {
 }
 
 
-// --- Logika Ganti Tab dan Tampilkan Form ---
+// --- Logika Ganti Tab dan Tampilkan Form (Disesuaikan untuk Absolute Positioning) ---
 
 // Fungsi helper untuk beralih ke tab/form tertentu
 function switchFormView(viewId) {
     const views = {
         login: {
             tab: loginTab,
-            form: loginFormContainer,
-            formElement: loginFormElement
+            formContainer: loginFormContainer
         },
         register: {
             tab: registerTab,
-            form: registerFormContainer,
-            formElement: registerFormElement
+            formContainer: registerFormContainer
         },
         forgotPassword: {
             tab: null,
-            form: forgotPasswordFormElement,
-            formElement: forgotPasswordFormElement
-        } // forgottenPasswordFormElement adalah form element itu sendiri
+            formContainer: forgotPasswordFormContainer
+        }
     };
 
     // Pastikan elemen-elemen utama ada
-    if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer || !forgotPasswordFormElement) {
+    if (!loginTab || !registerTab || !loginFormContainer || !registerFormContainer || !forgotPasswordFormContainer) {
         console.error("Gagal beralih tampilan form: Elemen UI utama tidak ditemukan.");
-        showNotification('Error: Struktur halaman tidak lengkap untuk beralih tampilan.', 'error');
+        showNotification('Error: Struktur halaman tidak lengkap untuk beralih tampilan. Cek console.', 'error');
         return;
     }
 
@@ -303,16 +338,22 @@ function switchFormView(viewId) {
             else view.tab.classList.remove('active');
         }
 
-        // Atur visibilitas container/form utama
-        if (view.form) {
-            if (isActive) view.form.classList.remove('hidden');
-            else view.form.classList.add('hidden');
-        }
-
-        // Pastikan form element itu sendiri juga diatur visibilitasnya jika perlu (terutama forgot password form)
-        if (view.formElement) {
-            if (isActive) view.formElement.classList.remove('hidden');
-            else view.formElement.classList.add('hidden');
+        // Atur visibilitas container form menggunakan kelas hidden-abs
+        if (view.formContainer) {
+            if (isActive) {
+                view.formContainer.classList.remove('hidden-abs');
+                // Jika pakai transisi di CSS dengan opacity/transform, bisa tambahkan kelas 'show' di sini
+                // view.formContainer.classList.add('show');
+                view.formContainer.style.display = 'block'; // Pastikan display block untuk absolute positioning
+            } else {
+                view.formContainer.classList.add('hidden-abs');
+                // Jika pakai transisi, hapus kelas 'show' di sini
+                // view.formContainer.classList.remove('show');
+                // Beri sedikit waktu untuk transisi (jika ada) sebelum set display: none
+                setTimeout(() => {
+                    view.formContainer.style.display = 'none'; // Sembunyikan setelah transisi
+                }, 300); // Sesuaikan delay dengan durasi transisi CSS
+            }
         }
     }
     console.log(`Beralih tampilan ke: ${viewId}.`);
@@ -327,30 +368,33 @@ function switchFormView(viewId) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded. Initializing login/register page...");
 
-    // Mendapatkan referensi elemen-elemen UI utama
-    // Menggunakan const untuk mencegah reassignment
+    // Mendapatkan referensi elemen-elemen UI utama (Pastikan ID ada di HTML)
     const loginTabElement = document.getElementById('loginTab');
     const registerTabElement = document.getElementById('registerTab');
-    const loginFormContainerElement = document.getElementById('loginForm'); // Ini adalah DIV container form login
-    const registerFormContainerElement = document.getElementById('registerForm'); // Ini adalah DIV container form register
-    const loginFormElement = document.getElementById('login'); // Ini adalah FORM element login
-    const registerFormElement = document.getElementById('register'); // Ini adalah FORM element register
-    const forgotPasswordLinkElement = document.getElementById('forgotPasswordLink'); // Ini adalah link Lupa Password
-    const forgotPasswordFormElement = document.getElementById('forgotPasswordForm'); // Ini adalah FORM element Lupa Password (pastikan ID ini ada di HTML)
-    const switchToLoginFromForgotLinkElement = document.getElementById('switchToLoginFromForgot'); // Link Kembali ke Login dari form Lupa Password
-    const switchToLoginLinkElement = document.getElementById('switchToLogin'); // Link Kembali ke Login dari form Register
-    const switchToRegisterLinkElement = document.getElementById('switchToRegister'); // Link Daftar Sekarang dari form Login
+    const loginFormContainerElement = document.getElementById('loginForm');
+    const registerFormContainerElement = document.getElementById('registerForm');
+    const forgotPasswordLinkElement = document.getElementById('forgotPasswordLink');
+    const forgotPasswordFormContainerElement = document.getElementById('forgotPasswordForm'); // Ganti ke container
+    const switchToLoginFromForgotLinkElement = document.getElementById('switchToLoginFromForgot');
+    const switchToLoginLinkElement = document.getElementById('switchToLogin');
+    const switchToRegisterLinkElement = document.getElementById('switchToRegister');
+
+    // Ambil form elemen <form> di dalam container
+    const loginFormElement = loginFormContainerElement ? loginFormContainerElement.querySelector('form') : null;
+    const registerFormElement = registerFormContainerElement ? registerFormContainerElement.querySelector('form') : null;
+    const forgotPasswordFormElement = forgotPasswordFormContainerElement ? forgotPasswordFormContainerElement.querySelector('form') : null;
 
 
     // --- Cek Kelengkapan Struktur HTML KRITIS ---
     // Memeriksa apakah semua elemen utama yang dicari oleh script DITEMUKAN di DOM.
     // Jika ada yang tidak ditemukan, script tidak bisa berjalan dengan benar.
-    if (!loginTabElement || !registerTabElement || !loginFormContainerElement || !registerFormContainerElement || !loginFormElement || !registerFormElement || !forgotPasswordLinkElement || !forgotPasswordFormElement || !switchToLoginFromForgotLinkElement || !switchToLoginLinkElement || !switchToRegisterLinkElement) {
+    // Jika cek ini gagal, log error akan muncul di console.
+    if (!loginTabElement || !registerTabElement || !loginFormContainerElement || !registerFormContainerElement || !forgotPasswordLinkElement || !forgotPasswordFormContainerElement || !switchToLoginFromForgotLinkElement || !switchToLoginLinkElement || !switchToRegisterLinkElement || !loginFormElement || !registerFormElement || !forgotPasswordFormElement) {
         console.error("HTML structure for forms, tabs, or links is not complete. Cannot initialize.");
-        showNotification('Error: Struktur halaman tidak lengkap untuk inisialisasi.', 'error');
-        // Jangan return; di sini agar log lain bisa muncul, tapi jangan pasang listener
+        showNotification('Error: Struktur halaman tidak lengkap untuk inisialisasi. Cek console.', 'error');
+        // Jangan return; di sini agar log lain (seperti Supabase init) bisa muncul
     } else {
-        console.log("HTML structure check passed. All required elements found.");
+        console.log("HTML structure check passed. All required elements found. Attaching listeners...");
 
 
         // Pasang listener untuk ganti tab / form view
@@ -360,12 +404,10 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             switchFormView('forgotPassword');
         });
-        // Listener untuk link kembali ke login dari form lupa password
         switchToLoginFromForgotLinkElement.addEventListener('click', (event) => {
             event.preventDefault();
             switchFormView('login');
         });
-        // Listener untuk link beralih antara form login dan register
         switchToLoginLinkElement.addEventListener('click', (event) => {
             event.preventDefault();
             switchFormView('login');
@@ -383,10 +425,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // Setup toggle password untuk form login dan register
-        // Pastikan ID checkbox dan input password sesuai dengan HTML Anda
-        setupPasswordToggle('showLoginPassword', 'loginPassword'); // Checkbox & Input Password Login
-        setupPasswordToggle('showPassword', 'password'); // Checkbox & Input Password Register
-        setupPasswordToggle('showConfirmPassword', 'confirmPassword'); // Checkbox & Konfirmasi Password Register
+        setupPasswordToggle('showLoginPassword', 'loginPassword');
+        setupPasswordToggle('showPassword', 'password');
+        setupPasswordToggle('showConfirmPassword', 'confirmPassword');
+        // Setup toggle password untuk form lupa password jika ada input password baru di sana (biasanya tidak)
+        // setupPasswordToggle('showForgotNewPassword', 'forgotNewPassword');
 
 
         // Logika inisialisasi tampilan form (default ke login)
@@ -399,22 +442,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }); // Akhir DOMContentLoaded
 
-// Optional: Tambahkan logika untuk menangani event SIGNED_IN jika Anda ingin
-// redirect otomatis saat sesi ditemukan SAAT MEMBUKA index.html.
-// Saat ini, script ini TIDAK melakukan redirect otomatis pada sesi awal.
-// Jika Anda ingin kembali ke perilaku redirect otomatis saat sesi ditemukan di index.html,
-// aktifkan kembali atau tambahkan logika di listener onAuthStateChange di atas.
+// Optional: Listener onAuthStateChange jika perlu redirect otomatis saat sesi ditemukan di index.html
 /*
 supabaseClient.auth.onAuthStateChange((event, session) => {
     console.log('Auth state change:', event, session);
     if (event === 'INITIAL_SESSION' && session) {
          console.log('Initial session found, redirecting to homepage...');
-         window.location.replace('/homepage.html');
+         redirectToHomepage();
     }
-     // Anda mungkin juga ingin menangani 'SIGNED_IN' jika login terjadi dari tab lain
      if (event === 'SIGNED_IN' && session && window.location.pathname === '/index.html') {
           console.log('Signed in event detected on login page, redirecting...');
-          window.location.replace('/homepage.html');
+          redirectToHomepage();
      }
      // Logika SIGNED_OUT sudah ditangani di atas
 });
