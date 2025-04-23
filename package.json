@@ -1,13 +1,20 @@
 {
-  "name": "dbweb",
+  "name": "dbweb-project",
   "version": "1.0.0",
   "description": "Personal Web With Us",
   "scripts": {
-    "start": "",
-    "deploy": "vercel"
+    "build": "echo 'No build step required for static site'",
+    "start": "echo 'Starting static server...' && npx serve .",
+    "deploy": "vercel --prod"
   },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "pg": "^8.14.1"
-  }
+  "keywords": [
+    "static",
+    "html",
+    "css",
+    "javascript",
+    "supabase",
+    "vercel"
+  ],
+  "author": "Rizky_AR",
+  "license": "MIT"
 }

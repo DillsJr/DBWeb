@@ -170,7 +170,7 @@ body.homepage-body .homepage-main-content .welcome-heading {
 
 /* Gaya Username di Judul Selamat Datang */
 body.homepage-body .homepage-main-content .welcome-heading #loggedInUsername {
-    color: #b8c1ec;
+    color: #6246ea;
     /* Warna username yang menonjol */
     font-weight: bold;
 }

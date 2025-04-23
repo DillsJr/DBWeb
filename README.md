@@ -1,129 +1,159 @@
-# DBWeb (DutBit Web)
+# DBWeb Project
 
-Aplikasi web sederhana untuk personal web (Daftar, Masuk, Lupa Password, Reset Password) dan halaman beranda dasar. Dibangun menggunakan HTML, CSS, dan JavaScript untuk frontend, serta Node.js Serverless Functions di Vercel dengan database PostgreSQL (Supabase) sebagai backend.
+Sebuah proyek contoh website statis sederhana yang mengintegrasikan autentikasi pengguna (Login, Daftar, Lupa/Reset
+Password) dan penyimpanan file (Unggah/Tampil Foto Profil) menggunakan Supabase sebagai backend.
 
 ## Fitur
 
-* **Sistem Otentikasi Pengguna Lengkap:**
-    * Pendaftaran Pengguna Baru
-    * Login Pengguna (dengan Nomor WhatsApp atau identifier lain)
-    * Lupa Password (memerlukan integrasi pengiriman kode reset, misalnya via WhatsApp API - *fitur pengiriman kode reset ini adalah placeholder, implementasi sebenarnya mungkin memerlukan layanan eksternal*)
-    * Reset Password menggunakan Kode Reset
-* **Homepage:** Halaman beranda sederhana yang menampilkan sapaan nama pengguna yang sedang login.
-* **Proteksi Halaman:** Halaman beranda hanya bisa diakses setelah login, dan tidak bisa kembali via tombol 'Back' setelah logout.
-* **Lihat Password:** Opsi untuk menampilkan/menyembunyikan input password.
-* **Notifikasi Kustom:** Sistem notifikasi pop-up untuk pesan sukses, error, dan info.
-* **Teknologi Modern:** Menggunakan Fetch API untuk komunikasi asinkron ke backend API.
-* **Database:** Menggunakan PostgreSQL sebagai database (diimplementasikan via Supabase).
-* **Deployment:** Siap di-deploy di Vercel.
+* **Autentikasi Pengguna:**
+* Login
+* Daftar Pengguna Baru (dengan verifikasi email)
+* Lupa Password (mengirim link reset via email)
+* Reset Password
+* **Profil Pengguna:**
+* Menampilkan data profil dasar pengguna.
+* Mengunggah dan menampilkan foto profil pengguna (tersimpan di Supabase Storage).
+* Memperbarui data profil teks (Nama Lengkap, Username, Whatsapp) melalui modal.
+* **Navigasi Halaman:**
+* Halaman Login/Daftar (`index.html`).
+* Halaman Beranda (Homepage) setelah login (`homepage.html`).
+* Halaman Reset Password (`reset-password.html`) - diakses dari link email reset.
+* **UI/UX Sederhana:**
+* Tampilan form yang berganti (Login/Daftar/Lupa Password) di `index.html`.
+* Notifikasi feedback pengguna.
+* Modal profil pengguna di homepage.
+* Header halaman beranda yang tetap (fixed).
+* (Opsional) Placeholder untuk fitur Galeri Foto.
 
-## Tumpukan Teknologi (Stack)
+## Teknologi
 
 * **Frontend:**
-    * HTML5
-    * CSS3
-    * JavaScript (Vanilla JS)
+* HTML5
+* CSS3 (`styles.css`, `homestyle.css`)
+* JavaScript (Vanilla JS)
 * **Backend:**
-    * Node.js
-    * Vercel Serverless Functions
-* **Database:**
-    * PostgreSQL
-    * Supabase (digunakan sebagai penyedia database PostgreSQL)
-* **Deployment:**
-    * Vercel
+* [Supabase](https://supabase.com/) (untuk Autentikasi dan Storage)
+* Supabase JavaScript Client Library v2
+* **Hosting/Pengembangan Lokal (Opsional):**
+* [Vercel CLI](https://vercel.com/cli)
 
-## Instalasi dan Setup
+## Struktur Proyek
+DBWeb/
+├── index.html # Halaman Login, Daftar, Lupa Password
+├── homepage.html # Halaman Beranda setelah Login
+├── reset-password.html # Halaman untuk Reset Password
+├── script.js # Logic JavaScript untuk index.html (Login, Daftar, Lupa Password, Navigasi Form)
+├── homepage.js # Logic JavaScript untuk homepage.html (Cek Auth, Logout, Profil, Upload/Tampil Foto Profil)
+├── reset-password.js # Logic JavaScript untuk reset-password.html (Reset Password)
+├── styles.css # Gaya CSS umum untuk semua halaman (form, notifikasi)
+├── homestyle.css # Gaya CSS spesifik untuk homepage (layout, header, profil)
+├── package.json # Konfigurasi proyek (termasuk script build untuk Vercel)
+└── README.md # File ini
+└── users.png # (atau nama lain) Placeholder foto profil lokal
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek ini secara lokal atau mendeploy-nya.
+## Persiapan (Setup)
 
-### Prasyarat
+1. **Buat Proyek Supabase:**
+* Daftar atau masuk ke [dashboard Supabase](https://supabase.com/).
+* Buat proyek baru. Catat **Project URL** dan **Anon Public Key** Anda dari pengaturan proyek (Settings -> API).
+2. **Konfigurasi Autentikasi di Supabase:**
+* Di dashboard Supabase, masuk ke menu **Authentication**.
+* Pergi ke **Settings** (ikon roda gigi).
+* Di bagian **Site URL**, masukkan URL deployment Anda (misal, jika Anda deploy ke Vercel, URL Vercel Anda). Untuk
+pengembangan lokal dengan Vercel CLI, Anda mungkin perlu menambahkan `http://localhost:3000` atau port lain yang Vercel
+gunakan.
+* Di bagian **Redirect URLs**, tambahkan URL berikut (sesuaikan dengan URL deployment atau lokal Anda):
+* URL halaman beranda setelah verifikasi email: `[URL_SITUS_ANDA]/homepage.html` (misal:
+`http://localhost:3000/homepage.html`)
+* URL halaman reset password: `[URL_SITUS_ANDA]/reset-password.html` (misal:
+`http://localhost:3000/reset-password.html`)
+3. **Konfigurasi Storage di Supabase:**
+* Di dashboard Supabase, masuk ke menu **Storage**.
+* Buat bucket baru dengan nama persis **`avatars`**.
+* Klik bucket `avatars`, pergi ke tab **Policies**.
+* Aktifkan **Row Level Security (RLS)** jika belum aktif.
+* Buat kebijakan RLS untuk mengizinkan pengguna terautentikasi mengunggah/memperbarui file dengan nama yang diawali ID
+mereka, dan mengizinkan siapa saja untuk melihat file (jika foto profil publik). Contoh kebijakan SQL (bisa dijalankan
+di SQL Editor Supabase):
+```sql
+-- Enable RLS for the bucket
+alter table storage.objects enable row level security;
 
-* [Node.js dan npm](https://nodejs.org/) (disarankan versi LTS)
-* [Git](https://git-scm.com/)
-* [Vercel CLI](https://vercel.com/download) (`npm install -g vercel`)
-* Akun [Supabase](https://www.supabase.com/) dan database PostgreSQL yang sudah dibuat. Anda memerlukan **Connection String** database Anda.
+-- Policy to allow authenticated users to INSERT (upload) their profile pic
+create policy "Allow authenticated upload"
+on storage.objects for insert to authenticated
+with check (
+bucket_id = 'avatars' AND
+name LIKE (auth.uid()::text || '.%')
+);
 
-### Langkah Setup
+-- Policy to allow authenticated users to UPDATE their profile pic
+create policy "Allow authenticated update"
+on storage.objects for update to authenticated
+using (
+bucket_id = 'avatars' AND
+name LIKE (auth.uid()::text || '.%')
+);
 
-1.  **Clone Repositori:**
-    ```bash
-    git clone git@github.com:DillsJr/DBWeb.git
-    cd <nama_folder_proyek>
-    ```
+-- Policy to allow public SELECT (view) of profile pics
+create policy "Allow public view"
+on storage.objects for select to anon, authenticated -- 'public' role can also be used
+using (bucket_id = 'avatars');
+```
+4. **Unduh Kode Proyek:**
+* Pastikan Anda memiliki semua file HTML (`index.html`, `homepage.html`, `reset-password.html`), CSS (`styles.css`,
+`homestyle.css`), JavaScript (`script.js`, `homepage.js`, `reset-password.js`), dan `package.json` di folder yang sama.
+5. **Konfigurasi Kredensial Supabase di Kode:**
+* Buka file `script.js` dan `reset-password.js`.
+* Ganti nilai `supabaseUrl` dan `supabaseKey` dengan **Project URL** dan **Anon Public Key** Supabase Anda yang
+sebenarnya.
+6. **Siapkan File Placeholder:**
+* Pastikan ada file gambar dengan nama `users.png` (atau sesuai dengan `src` di `<img id="userProfilePic">` di
+`homepage.html`) di folder yang sama dengan `homepage.html`. File ini digunakan sebagai gambar default jika foto profil
+pengguna belum diunggah.
 
-2.  **Install Dependensi Node.js:**
-    ```bash
-    npm install
-    # atau jika Anda menggunakan Yarn
-    # yarn install
-    ```
-    Ini akan menginstal paket-paket seperti `@vercel/postgres`, `bcrypt` (jika digunakan untuk hashing password di backend), dll.
+## Cara Menjalankan Secara Lokal (Menggunakan Vercel CLI)
 
-3.  **Setup Environment Variables (Lokal):**
-    * Buat file bernama `.env.local` di root folder proyek Anda.
-    * Isi file tersebut dengan connection string database Supabase Anda:
-        ```env
-        DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/[database]?sslmode=require
-        ```
-    * Ganti placeholder `[user]`, `[password]`, `[host]`, `[port]`, `[database]` dengan detail database Supabase Anda. Pastikan parameter `?sslmode=require` disertakan jika Anda menggunakan database Supabase.
-    * **PENTING:** Pastikan `.env.local` terdaftar di file `.gitignore` Anda agar tidak ter-commit ke repositori publik.
+1. Pastikan Anda sudah menginstal [Node.js](https://nodejs.org/).
+2. Instal Vercel CLI secara global: `npm install -g vercel`
+3. Buka Command Prompt atau Terminal, navigasikan ke folder utama proyek Anda (`C:\XamppMI\htdocs\DBWeb`).
+4. Jalankan perintah: `vercel dev`
+5. Vercel CLI akan memulai server pengembangan lokal, biasanya di `http://localhost:3000`. Buka alamat ini di browser
+Anda.
 
-4.  **Setup Environment Variables (Vercel Deployment):**
-    * Buka dashboard Vercel proyek Anda.
-    * Pergi ke Project Settings -> Environment Variables.
-    * Tambahkan variabel baru:
-        * Nama: `DATABASE_URL`
-        * Value: Masukkan **Connection String database Supabase Anda**.
-        * Environment: Pilih `Production`, `Preview`, dan `Development`.
-    * Klik "Save".
+## Cara Menjalankan Secara Lokal (Menggunakan Simple Web Server)
 
-5.  **Koneksi Database di Kode Backend:**
-    * Pastikan Serverless Functions Anda (di folder `api/`) menggunakan `process.env.DATABASE_URL` untuk mendapatkan connection string database. Contoh:
-      ```javascript
-      import { sql } from '@vercel/postgres'; // atau library DB lain
-      // ... di dalam handler function ...
-      const client = await sql.connect(); // atau cara koneksi sesuai library Anda
-      // ... lakukan query ...
-      client.release(); // penting untuk melepaskan koneksi
-      ```
-    * Jika Anda menggunakan `@vercel/postgres`, koneksi biasanya sudah dihandle, cukup panggil `await sql` langsung.
+Jika Anda tidak ingin menggunakan Vercel CLI secara lokal:
 
-## Menjalankan Secara Lokal
+1. Pastikan Anda memiliki simple web server terinstal atau gunakan fitur live server di editor seperti VS Code.
+2. Jika menggunakan Python 3: Buka Command Prompt/Terminal di folder proyek, jalankan `python -m http.server 8000`. Lalu
+buka `http://localhost:8000/index.html` di browser.
+3. Jika menggunakan Node.js: Instal paket `serve` (`npm install -g serve`), lalu jalankan `serve .` di folder proyek,
+dan buka alamat yang diberikan (biasanya `http://localhost:3000`).
 
-Setelah menyelesaikan langkah-langkah setup:
+## Deployment (Menggunakan Vercel)
 
-1.  Buka Terminal atau Command Prompt di root folder proyek Anda.
-2.  Jalankan perintah:
-    ```bash
-    vercel dev
-    ```
-3.  Vercel CLI akan membangun proyek Anda dan menjalankannya di server lokal, biasanya di `http://localhost:3000`.
-4.  Buka browser Anda dan akses alamat tersebut. Anda sekarang bisa berinteraksi dengan frontend dan backend API di lingkungan lokal.
+1. Pastikan Anda sudah login ke Vercel melalui CLI: `vercel login`
+2. Buka Command Prompt atau Terminal, navigasikan ke folder utama proyek Anda.
+3. Jalankan perintah: `vercel`
+4. Ikuti instruksi di terminal. Vercel akan mendeteksi bahwa ini adalah proyek statis.
+5. Setelah deployment selesai, Vercel akan memberikan URL publik untuk situs Anda.
+6. **PENTING:** Setelah deploy, perbarui **Site URL** dan **Redirect URLs** di pengaturan Authentication Supabase Anda
+agar sesuai dengan URL publik dari Vercel.
 
-## Deployment
+## Kontribusi
 
-Proyek ini dikonfigurasi untuk mudah di-deploy di Vercel:
+Proyek ini adalah contoh dasar. Anda bisa mengembangkannya dengan:
+* Menambahkan validasi form yang lebih ketat.
+* Mengimplementasikan fitur galeri foto (upload/tampil banyak foto).
+* Menyimpan metadata profil tambahan di tabel database terpisah.
+* Menambahkan fitur ganti password dari halaman profil.
+* Meningkatkan tampilan UI/UX.
 
-1.  Pastikan proyek Anda terhubung ke repositori Git (GitHub, GitLab, atau Bitbucket).
-2.  Setelah melakukan `git push`, Vercel akan secara otomatis mendeteksi proyek ini sebagai "Other" dan menerapkan konfigurasi dari `vercel.json` serta environment variables yang Anda atur di dashboard.
-3.  Deployment baru akan dibuat untuk setiap *commit* ke branch utama (misalnya `main`) dan untuk setiap *Pull Request*.
+## Lisensi
 
-## Penggunaan Aplikasi
-
-1.  Buka halaman login/daftar (akses URL Vercel yang di-deploy, atau `http://localhost:3000` jika menjalankan lokal).
-2.  **Daftar:** Pilih tab "Daftar", isi semua informasi yang diperlukan (Nama Lengkap, Username, Whatsapp, Email, Password, Konfirmasi Password), lalu klik tombol Daftar. Jika berhasil, Anda akan melihat notifikasi sukses dan dialihkan ke tab Login.
-3.  **Login:** Pilih tab "Masuk", masukkan Nomor Whatsapp dan Password yang sudah terdaftar, lalu klik tombol Masuk. Jika berhasil, Anda akan melihat notifikasi sukses dan dialihkan ke `homepage.html`.
-4.  **Homepage:** Di halaman beranda, Anda akan melihat sapaan nama pengguna yang login.
-5.  **Logout:** Klik tombol "Logout". Ini akan menghapus status login Anda dari browser dan mengalihkan kembali ke halaman login. Anda tidak akan bisa kembali ke halaman home menggunakan tombol 'Back' browser.
-6.  **Lupa Password:** Di halaman login, klik link "Lupa Password?". Masukkan Nomor Whatsapp Anda dan ikuti instruksi (memerlukan implementasi pengiriman kode di backend). Setelah mendapatkan kode, masukkan kode reset dan password baru di form reset password.
-
-## Pengembangan Lanjutan (Opsional)
-
-* Implementasi fitur pengiriman kode reset password (misalnya menggunakan layanan SMS gateway atau WhatsApp API).
-* Validasi input frontend yang lebih lengkap (format email, format nomor whatsapp, kekuatan password).
-* Penanganan error dan validasi di sisi backend yang lebih detail.
-* Menambahkan fitur-fitur lain di homepage.
-* Menggunakan library atau framework frontend (React, Vue, Angular) jika aplikasi menjadi lebih kompleks.
-* Implementasi sistem sesi atau token (JWT) yang lebih aman daripada hanya mengandalkan `localStorage` untuk status login.
+Proyek ini dilisensikan di bawah [Lisensi MIT](https://opensource.org/licenses/MIT).
 
 ---
+
+Selamat mengembangkan! Jika ada pertanyaan atau kendala, jangan ragu untuk bertanya.
