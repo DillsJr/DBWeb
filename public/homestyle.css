@@ -143,11 +143,12 @@ body.homepage-body .homepage-main-content {
     max-width: 800px;
     /* KRITIS: Batasi lebar maksimum main content */
     margin: 20px auto;
-    /* KRITIS: Gunakan margin auto untuk menengahkan blok main */
+    /* Gunakan margin auto untuk menengahkan blok main */
 
-    /* KRITIS: Tambahkan margin-top untuk menggeser konten ke bawah agar tidak tertutup fixed header */
-    margin-top: 80px;
-    /* Sesuaikan dengan tinggi header (60px) + margin-top asli elemen main (20px) */
+    /* KRITIS: Sesuaikan margin-top untuk menggeser konten agar tidak tertutup fixed header */
+    /* Sebelumnya 80px (60px header + 20px buffer), kita kurangi buffernya */
+    margin-top: -250px;
+    /* Contoh: 60px header + 10px buffer */
 }
 
 /* Gaya Kolom Teks (Info Selamat Datang) */
@@ -238,22 +239,11 @@ body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
 }
 
 /* --- Menghapus Gaya Lama untuk Overlay Area Upload di Image Column (Dipindah) --- */
-/*
-.upload-area,
-.upload-area:hover,
-.upload-area .file-input,
-.upload-area .upload-button,
-.upload-area .upload-button:hover,
-.upload-area .upload-text {
-    // Remove or comment out styles related to the old upload overlay UI
-}
-*/
+/* (Bagian ini sudah dihapus/dikomentari di versi CSS sebelumnya, dibiarkan kosong di sini) */
 
 
-/* --- Gaya untuk Bagian Unggah Foto Umum & Galeri --- */
+/* --- Gaya untuk Bagian Galeri Foto --- */
 
-/* Menghapus gaya untuk .upload-general-photos-section */
-/* .upload-general-photos-section, */
 .user-photos-gallery-section {
     background-color: #fffffe;
     /* Latar belakang putih untuk bagian ini */
@@ -273,60 +263,12 @@ body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     /* KRITIS: Tambahkan margin auto di sini untuk menengahkan blok sections */
 }
 
-/* Menghapus gaya untuk h2 di .upload-general-photos-section */
-/* .upload-general-photos-section h2, */
 .user-photos-gallery-section h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #22444d;
     /* Warna judul bagian */
 }
-
-/* Menghapus gaya untuk Area Unggah Foto Umum */
-/*
-.general-upload-area {
-    border: 2px dashed #b8c1ec;
-    border-radius: 8px;
-    padding: 30px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    min-height: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.general-upload-area:hover {
-    background-color: #eef1f6;
-    border-color: #a7b9de;
-}
-
-.general-upload-area .file-input {
-     display: none;
-}
-
-.general-upload-button {
-    background-color: #eebbc3;
-    color: #121629;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.general-upload-button:hover {
-     background-color: #d48c9a;
-}
-
-.general-upload-text {
-    font-size: 0.9em;
-    color: #555;
-}
-*/
 
 
 /* Gaya Container Galeri Foto */
@@ -653,8 +595,9 @@ body.no-scroll {
         margin: 15px auto;
 
         /* KRITIS: Sesuaikan margin-top di mobile */
-        margin-top: 75px;
-        /* Misal 60px header + 15px margin atas bawaan main di mobile */
+        /* Sebelumnya 75px (60px header + 15px buffer), kita kurangi buffernya */
+        margin-top: 70px;
+        /* Contoh: 60px header + 10px buffer di mobile */
     }
 
     body.homepage-body .homepage-main-content .text-column {
@@ -694,10 +637,6 @@ body.no-scroll {
     }
 
     /* --- Media Query Khusus untuk Bagian Unggah & Galeri di Layar Kecil --- */
-    /* Menghapus gaya media query untuk .upload-general-photos-section */
-    /*
-    .upload-general-photos-section,
-    */
     .user-photos-gallery-section {
         padding: 15px;
         /* Kurangi padding section */
@@ -711,49 +650,10 @@ body.no-scroll {
         /* Tambahkan margin auto di mobile */
     }
 
-    /* Menghapus gaya media query untuk h2 di .upload-general-photos-section */
-    /*
-    .upload-general-photos-section h2,
-    */
     .user-photos-gallery-section h2 {
         font-size: 1.2em;
         /* Sesuaikan ukuran judul bagian */
     }
-
-
-    /* Menghapus gaya media query untuk general upload area */
-    /*
-    .general-upload-area {
-        padding: 20px;
-        min-height: 150px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .general-upload-area:hover {
-        background-color: #eef1f6;
-        border-color: #a7b9de;
-    }
-
-    .general-upload-area .file-input {
-         display: none;
-    }
-
-    .general-upload-button {
-        padding: 10px 20px;
-        font-size: 1em;
-    }
-
-    .general-upload-button:hover {
-         background-color: #d48c9a;
-    }
-
-    .general-upload-text {
-        font-size: 0.9em;
-    }
-    */
 
 
     /* Gaya Container Galeri Foto di Mobile */
