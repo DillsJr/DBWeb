@@ -1,17 +1,142 @@
-// public/homepage.js - Script untuk halaman beranda (Integrasi Supabase)
+// public/homepage.js - Script untuk halaman beranda (Integrasi Supabase & Storage)
 
 // --- KONFIGURASI SUPABASE ---
 // Gunakan URL dan Anon Key yang sama dengan di script.js
 // !!! PERINGATAN KRITIS: Menyimpan URL dan ANON KEY secara langsung di kode klien yang publik
-// TIDAK AMAN untuk aplikasi produksi.
+// TIDAK AMAN untuk aplikasi produksi. Gunakan environment variables atau server-side logic.
 const supabaseUrl = 'https://gdhetudsmvypfpksggqp.supabase.co'; // GANTI dengan URL Supabase Anda
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaGV0dWRzbXZ5cGZwa3NnZ3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNDQ3OTksImV4cCI6MjA2MDgyMDIyOX0.-E9dDIBX8s-AL50bG_vrcdIOAMzeXh1VFzsJbSL5znE'; // GANTI dengan Anon Key Supabase Anda
+const supabaseKey = 'GANTI_DENGAN_ANON_KEY_SUPABASE_ANDA'; // !!! GANTI DENGAN ANON KEY SUPABASE YANG BENAR !!!
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 console.log("Supabase client initialized on homepage.");
 
-// --- Logika Cek Status Login dan Tampilkan Info Pengguna ---
+// --- Fungsi Redirect ke Halaman Login ---
+function redirectToLogin() {
+    console.log("Redirecting to login page...");
+    // Gunakan window.location.replace agar halaman login menggantikan halaman saat ini di riwayat
+    window.location.replace('/index.html'); // Pastikan '/index.html' adalah path halaman login Anda
+}
+
+
+// --- Fungsi untuk Mengunggah Foto Profil ---
+async function uploadProfilePicture(file, userId) {
+    if (!file || !userId) {
+        console.error("File atau User ID tidak ada untuk upload.");
+        alert("Gagal mengunggah foto: File tidak valid atau pengguna tidak dikenali.");
+        return null;
+    }
+
+    const fileExt = file.name.split('.').pop(); // Ambil ekstensi file
+    const newFileName = `avatar.${fileExt}`; // Nama file di Storage (misal: avatar.png)
+    // Path file di bucket: <user_id>/avatar.<ekstensi>
+    const filePath = `${userId}/${newFileName}`; // Contoh path
+
+    console.log(`Uploading file "${file.name}" to path "${filePath}"...`);
+
+    // Panggil fungsi upload dari Supabase Storage
+    const {
+        data,
+        error
+    } = await supabaseClient.storage
+        .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda (misal: 'profile-pictures')
+        .upload(filePath, file, {
+            cacheControl: '3600', // Cache selama 1 jam
+            upsert: true // Timpa file yang sudah ada jika nama file sama
+        });
+
+    if (error) {
+        console.error('Error uploading profile picture:', error.message);
+        alert('Gagal mengunggah foto profil: ' + error.message);
+        return null;
+    } else {
+        console.log('Upload profile picture successful:', data);
+        alert('Foto profil berhasil diunggah!');
+        // Setelah berhasil diunggah, dapatkan URL publik untuk menampilkannya
+        // Supabase Storage v2 membutuhkan getPublicUrl secara terpisah setelah upload
+        const {
+            data: publicData
+        } = supabaseClient.storage
+            .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
+            .getPublicUrl(filePath); // Dapatkan URL publik file yang baru diunggah
+
+        if (publicData && publicData.publicUrl) {
+            console.log('Public URL:', publicData.publicUrl);
+            return publicData.publicUrl; // Kembalikan URL publik
+        } else {
+            console.error('Failed to get public URL after upload.');
+            alert('Foto profil berhasil diunggah, tetapi gagal mendapatkan URL untuk menampilkannya.');
+            return null;
+        }
+    }
+}
+
+// --- Fungsi untuk Memuat Foto Profil yang Sudah Ada ---
+async function loadProfilePicture(userId) {
+    const userProfilePicElement = document.getElementById('userProfilePic');
+    if (!userProfilePicElement) {
+        console.warn("Profile picture element with ID 'userProfilePic' not found.");
+        return;
+    }
+
+    if (!userId) {
+        console.warn("User ID tidak ada untuk memuat foto profil.");
+        userProfilePicElement.src = 'placeholder-profile-pic.png'; // Set placeholder jika tidak ada user
+        return;
+    }
+
+    // Path yang diharapkan untuk foto profil di bucket (misal: 'UUID_USER_ANDA/avatar.png')
+    // Kita perlu mencoba beberapa ekstensi umum (png, jpg, jpeg) jika nama file selalu 'avatar'
+    const possibleExtensions = ['png', 'jpg', 'jpeg', 'gif']; // Tambahkan ekstensi lain jika diperlukan
+    let foundImageUrl = null;
+
+    for (const ext of possibleExtensions) {
+        const filePath = `${userId}/avatar.${ext}`; // Coba path dengan ekstensi ini
+
+        // Coba dapatkan daftar file di folder pengguna di bucket storage
+        // Ini untuk mengecek apakah ada file avatar di sana sebelum mencoba getPublicUrl
+        const {
+            data: files,
+            error: listError
+        } = await supabaseClient.storage
+            .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
+            .list(userId + '/', {
+                search: `avatar.${ext}` // Cari file dengan nama 'avatar.<ext>' di folder user
+            });
+
+        if (listError) {
+            console.error(`Error listing file ${filePath}:`, listError.message);
+            continue; // Coba ekstensi berikutnya
+        }
+
+        if (files && files.length > 0) {
+            // File ditemukan, ambil URL publiknya
+            const {
+                data: publicData
+            } = supabaseClient.storage
+                .from('profile-pictures') // GANTI dengan NAMA BUCKET Supabase Storage Anda
+                .getPublicUrl(filePath);
+
+            if (publicData && publicData.publicUrl) {
+                foundImageUrl = publicData.publicUrl;
+                console.log('Profile picture found and loading from URL:', foundImageUrl);
+                break; // Hentikan loop setelah menemukan URL
+            }
+        }
+    }
+
+
+    if (foundImageUrl) {
+        userProfilePicElement.src = foundImageUrl; // Set src gambar ke URL publik yang ditemukan
+    } else {
+        // Jika tidak ada file avatar dengan ekstensi yang dicoba di folder pengguna
+        console.log('No profile picture found for user or failed to load.', userId);
+        userProfilePicElement.src = 'placeholder-profile-pic.png'; // Set src gambar ke placeholder
+    }
+}
+
+
+// --- Logika Utama: Cek Status Login, Tampilkan Info Pengguna, dan Setup Listener ---
 async function checkLoginStatusAndLoadUser() {
     // Coba dapatkan sesi pengguna saat ini
     const {
@@ -42,7 +167,7 @@ async function checkLoginStatusAndLoadUser() {
 
     // Sesi ditemukan, pengguna login
     console.log('Active session found:', data.session);
-    const user = data.session.user;
+    const user = data.session.user; // Objek user Supabase
 
     // Ambil data tambahan pengguna (metadata) yang disimpan saat pendaftaran
     // Data ini tersimpan di user.user_metadata
@@ -71,100 +196,75 @@ async function checkLoginStatusAndLoadUser() {
         console.warn("Element with ID 'loggedInUsername' not found.");
     }
 
-    // --- LOGIKA FOTO PROFIL (Belum Implemented - Placeholder) ---
-    // Untuk membuat ini berfungsi:
-    // 1. Buat bucket di Supabase Storage (misal: 'profile-pictures').
-    // 2. Atur Row Level Security (RLS) di Storage agar pengguna hanya bisa baca/tulis file mereka sendiri.
-    // 3. Saat login/memuat halaman, ambil URL foto profil pengguna dari Storage atau database.
-    // 4. Tampilkan foto profil di userProfilePicElement.
-    // 5. Tambahkan listener pada profilePicInput untuk menangani unggah file.
-    console.log("Bagian menampilkan dan mengunggah foto profil belum diimplementasikan sepenuhnya.");
-
-    // Contoh (kode ini belum lengkap dan mungkin perlu penyesuaian):
-    // async function loadProfilePicture(userId) {
-    //    // Logika untuk mengambil URL foto profil dari Storage atau database
-    //    const { data, error } = await supabaseClient.storage.from('profile-pictures').getPublicUrl(`public/${userId}/avatar.png`); // Sesuaikan path dan nama file
-    //    if (data && data.publicUrl) {
-    //        userProfilePicElement.src = data.publicUrl;
-    //    } else {
-    //        userProfilePicElement.src = 'placeholder-profile-pic.png'; // Placeholder
-    //    }
-    // }
-
-    // if (user && userProfilePicElement) {
-    //    loadProfilePicture(user.id);
-    // }
-
-    // if (profilePicInput && user) {
-    //     profilePicInput.addEventListener('change', async (e) => {
-    //         const file = e.target.files[0];
-    //         if (!file) return;
-    //         const fileExt = file.name.split('.').pop();
-    //         const newFileName = `${user.id}.${fileExt}`; // Contoh nama file berdasarkan user ID
-    //         const filePath = `public/${user.id}/${newFileName}`; // Contoh path di bucket
-    //
-    //         const { error: uploadError } = await supabaseClient.storage
-    //             .from('profile-pictures') // Nama bucket Anda
-    //             .upload(filePath, file, {
-    //                 cacheControl: '3600',
-    //                 upsert: true // Timpa file lama jika ada
-    //             });
-    //
-    //         if (uploadError) {
-    //             console.error('Error uploading profile picture:', uploadError.message);
-    //             alert('Gagal mengunggah foto profil: ' + uploadError.message);
-    //         } else {
-    //             alert('Foto profil berhasil diunggah!');
-    //             loadProfilePicture(user.id); // Muat ulang foto setelah diunggah
-    //         }
-    //     });
-    // }
-
-
-    // --- Logika Logout ---
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            console.log('Attempting to log out...');
-            // Panggil fungsi signOut dari Supabase Auth
-            const {
-                error: logoutError
-            } = await supabaseClient.auth.signOut();
-
-            if (logoutError) {
-                console.error('Error logging out:', logoutError.message);
-                alert('Gagal logout: ' + logoutError.message); // Tampilkan notifikasi sederhana jika gagal logout
-            } else {
-                console.log('Logout successful.');
-                // Setelah berhasil logout, Supabase akan menghapus sesi.
-                // Redireksi kembali ke halaman login akan ditangani oleh
-                // onAuthStateChange listener di script.js (di halaman login)
-                // atau Anda bisa tambahkan redirect eksplisit di sini jika perlu:
-                redirectToLogin();
-            }
-        });
+    // --- Logika FOTO PROFIL (Implemented) ---
+    // Muat foto profil saat halaman dimuat
+    if (user) {
+        loadProfilePicture(user.id); // Panggil fungsi untuk memuat foto profil
     } else {
-        console.warn("Logout button with ID 'logoutButton' not found.");
+        console.warn("User object not available to load profile picture.");
+        if (userProfilePicElement) userProfilePicElement.src = 'placeholder-profile-pic.png';
     }
 
+    // Tambahkan listener untuk input file foto profil
+    if (profilePicInput && user) {
+        // Hapus listener lama jika ada (penting jika checkLoginStatusAndLoadUser dipanggil lebih dari sekali)
+        profilePicInput.removeEventListener('change', handleProfilePicChange);
+        // Tambahkan listener baru
+        profilePicInput.addEventListener('change', handleProfilePicChange);
+    } else {
+        if (!profilePicInput) console.warn("Profile picture input with ID 'profilePicInput' not found.");
+        if (!user) console.warn("User object not available to set up profile picture upload listener.");
+    }
+
+    // Handler terpisah untuk event change pada input foto profil
+    async function handleProfilePicChange(e) {
+        const file = e.target.files[0]; // Ambil file yang dipilih
+        // BARIS PERBAIKAN SINTAKSIS: Dapatkan user lagi jika perlu, pastikan optional chaining benar
+        const user = (await supabaseClient.auth.getSession()).data.session?.user;
+
+        if (!file) {
+            console.log("Tidak ada file yang dipilih untuk foto profil.");
+            return;
+        }
+        console.log("File dipilih untuk foto profil:", file);
+
+        if (!user) {
+            console.error("User not found for profile picture upload.");
+            alert("Gagal mengunggah foto: Pengguna tidak dikenali.");
+            e.target.value = null; // Reset input file
+            return;
+        }
+
+        // Panggil fungsi untuk mengunggah file
+        const publicUrl = await uploadProfilePicture(file, user.id);
+
+        // Jika upload berhasil dan mendapatkan URL publik, tampilkan foto baru
+        if (publicUrl && userProfilePicElement) {
+            userProfilePicElement.src = publicUrl;
+        }
+
+        // Reset input file agar event 'change' terpicu lagi meskipun file yang sama dipilih
+        e.target.value = null;
+    }
+
+
     // --- TODO: Tambahkan logika untuk Bagian Unggah Foto Konten Umum & Galeri di sini ---
-    // Ini memerlukan implementasi terpisah untuk menangani pemilihan file,
-    // proses unggah ke bucket Supabase Storage, mendapatkan URL file,
-    // menyimpan info file (misal: URL, user ID, timestamp) di tabel database,
-    // mengambil daftar foto pengguna dari database saat halaman dimuat/di-refresh,
-    // dan menampilkannya di grid galeri.
+    // Bagian ini memerlukan implementasi tambahan untuk:
+    // 1. Buat bucket Supabase Storage terpisah (misal: 'general-photos').
+    // 2. Atur RLS untuk bucket general-photos.
+    // 3. Logika JavaScript untuk menangani event 'change' atau 'drop' pada area upload umum.
+    // 4. Fungsi untuk mengunggah file-file umum ke bucket storage.
+    // 5. Logika untuk menyimpan metadata foto (user_id, url file, timestamp) di tabel database (misal: 'photos').
+    // 6. Fungsi untuk mengambil daftar foto pengguna dari tabel 'photos' saat halaman dimuat.
+    // 7. Logika untuk menampilkan daftar foto tersebut dalam grid galeri (#userPhotosGallery).
+    // 8. Opsional: fungsi untuk menghapus foto.
     console.log("Bagian upload foto umum dan galeri belum diimplementasikan.");
 
 
 }
 
-// --- Fungsi Redirect ke Halaman Login ---
-function redirectToLogin() {
-    // Gunakan window.location.replace agar halaman login menggantikan halaman saat ini di riwayat
-    window.location.replace('/index.html'); // Pastikan '/index.html' adalah path halaman login Anda
-}
 
-
-// Jalankan fungsi utama (cek status login dan tampilkan info) saat seluruh DOM halaman beranda selesai dimuat
+// Jalankan fungsi utama (cek status login dan tampilkan info, setup listener) saat seluruh DOM halaman beranda selesai dimuat
 document.addEventListener('DOMContentLoaded', checkLoginStatusAndLoadUser);
 
 // Optional: Anda bisa menambahkan listener onAuthStateChange di sini juga
