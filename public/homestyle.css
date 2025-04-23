@@ -80,7 +80,7 @@ body.homepage-body .homepage-header .header-right {
     /* Jarak antara ikon profil dan tombol logout */
 }
 
-/* Gaya Placeholder Ikon Profil */
+/* Gaya Placeholder Ikon Profil di Header */
 body.homepage-body .homepage-header .header-profile-icon {
     font-size: 1.8em;
     /* Ukuran ikon/emoji */
@@ -182,7 +182,7 @@ body.homepage-body .homepage-main-content .homepage-description {
 }
 
 
-/* Gaya Kolom Gambar (Foto Profil) */
+/* Gaya Kolom Gambar (Foto Profil) - Hanya menampilkan foto */
 body.homepage-body .homepage-main-content .image-column {
     flex: 0 0 300px;
     /* Fleksibilitas nol, lebar dasar 300px */
@@ -197,10 +197,10 @@ body.homepage-body .homepage-main-content .image-column {
 }
 
 
-/* Gaya Container Foto Profil */
+/* Gaya Container Foto Profil di halaman utama */
 body.homepage-body .homepage-main-content .profile-pic-container {
     position: relative;
-    /* Diperlukan untuk absolute positioning upload area */
+    /* Diperlukan jika Anda ingin menaruh elemen overlay di masa depan, tapi saat ini tidak dipakai untuk upload di sini */
     width: 150px;
     /* Ukuran container foto profil */
     height: 150px;
@@ -213,9 +213,14 @@ body.homepage-body .homepage-main-content .profile-pic-container {
     /* Border sekitar foto profil */
     background-color: #fff;
     /* Latar belakang putih fallback */
+    /* Ini penting agar area tetap terlihat meskipun img src tidak valid */
+    display: flex;
+    /* Gunakan flexbox untuk menengahkan gambar di dalamnya */
+    justify-content: center;
+    align-items: center;
 }
 
-/* Gaya Gambar Foto Profil */
+/* Gaya Gambar Foto Profil di halaman utama */
 body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     display: block;
     /* Menghilangkan spasi bawah gambar */
@@ -223,71 +228,26 @@ body.homepage-body .homepage-main-content .profile-pic-container .profile-pic {
     height: 100%;
     object-fit: cover;
     /* Pastikan gambar mengisi area tanpa distorsi */
-}
-
-
-/* Gaya Area Upload Foto Profil (Overlay) */
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area {
-    position: absolute;
-    /* Posisikan absolut di atas container */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Overlay semi-transparan */
-    color: #fff;
-    /* Warna teks di overlay */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    /* Awalnya tidak terlihat */
-    transition: opacity 0.3s ease;
-    /* Efek fade in/out */
-    cursor: pointer;
-    /* Menunjukkan bisa diklik/drop */
-}
-
-/* Gaya Area Upload Foto Profil saat Hover */
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area:hover {
-    opacity: 1;
-    /* Terlihat saat hover */
-}
-
-/* Sembunyikan input file asli, gunakan label sebagai tombol */
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area .file-input {
-    display: none;
-}
-
-/* Gaya Tombol Unggah Foto Profil (Label) */
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-button {
-    background-color: #eebbc3;
-    /* Warna tombol */
-    color: #121629;
-    /* Warna teks */
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
-
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-button:hover {
-    background-color: #d48c9a;
-    /* Warna saat hover */
-}
-
-
-/* Gaya Teks Unggah Foto Profil */
-body.homepage-body .homepage-main-content .profile-pic-container .upload-area .upload-text {
-    font-size: 0.8em;
+    /* Gaya untuk visual placeholder jika gambar tidak ditemukan */
+    /* style ini akan ditimpa oleh gambar asli, tapi membantu saat 404 */
+    font-size: 1em;
+    /* Sesuaikan ukuran teks alt jika gambar tidak ada */
+    color: #555;
+    /* Warna teks alt */
     text-align: center;
-    padding: 0 10px;
-    /* Sedikit padding horizontal */
 }
+
+/* --- Menghapus Gaya Lama untuk Overlay Area Upload di Image Column (Dipindah) --- */
+/*
+.upload-area,
+.upload-area:hover,
+.upload-area .file-input,
+.upload-area .upload-button,
+.upload-area .upload-button:hover,
+.upload-area .upload-text {
+    // Remove or comment out styles related to the old upload overlay UI
+}
+*/
 
 
 /* --- Gaya untuk Bagian Unggah Foto Umum & Galeri --- */
@@ -560,6 +520,44 @@ body.homepage-body .homepage-main-content .profile-pic-container .upload-area .u
 }
 
 
+/* --- Gaya untuk input file di dalam form profil (Dipindahkan dari area upload lama) --- */
+.profile-section .input-group input[type="file"] {
+    /* Sembunyikan input file default */
+    display: none;
+}
+
+.profile-section .input-group input[type="file"]+label {
+    /* Jadikan label terlihat seperti tombol */
+    display: inline-block;
+    /* Atau 'block' jika ingin satu baris */
+    background-color: #eebbc3;
+    /* Warna tombol */
+    color: #121629;
+    /* Warna teks */
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+    margin-top: 5px;
+    /* Jarak dari label teks di atasnya */
+}
+
+.profile-section .input-group input[type="file"]+label:hover {
+    background-color: #d48c9a;
+    /* Efek hover */
+}
+
+/* Pastikan label utama di input-group tetap block atau sesuai desain */
+.profile-section .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #121629;
+}
+
+/* --- END Gaya Input File --- */
+
+
 /* Gaya Tombol Simpan di Section Profil */
 .profile-section form button[type="submit"] {
     width: 100%;
@@ -760,6 +758,8 @@ body.no-scroll {
 
     /* Gaya Container Galeri Foto di Mobile */
     .user-photos-gallery {
+        display: grid;
+        /* Menggunakan Grid untuk layout galeri */
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         /* Kolom lebih kecil di mobile */
         gap: 10px;
