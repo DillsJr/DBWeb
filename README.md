@@ -39,16 +39,27 @@ Password) dan penyimpanan file (Unggah/Tampil Foto Profil) menggunakan Supabase 
 
 ## Struktur Proyek
 DBWeb/
+
 ├── index.html # Halaman Login, Daftar, Lupa Password
+
 ├── homepage.html # Halaman Beranda setelah Login
+
 ├── reset-password.html # Halaman untuk Reset Password
+
 ├── script.js # Logic JavaScript untuk index.html (Login, Daftar, Lupa Password, Navigasi Form)
+
 ├── homepage.js # Logic JavaScript untuk homepage.html (Cek Auth, Logout, Profil, Upload/Tampil Foto Profil)
+
 ├── reset-password.js # Logic JavaScript untuk reset-password.html (Reset Password)
+
 ├── styles.css # Gaya CSS umum untuk semua halaman (form, notifikasi)
+
 ├── homestyle.css # Gaya CSS spesifik untuk homepage (layout, header, profil)
+
 ├── package.json # Konfigurasi proyek (termasuk script build untuk Vercel)
+
 └── README.md # File ini
+
 └── users.png # (atau nama lain) Placeholder foto profil lokal
 
 ## Persiapan (Setup)
